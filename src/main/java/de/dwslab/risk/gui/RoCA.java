@@ -2,12 +2,12 @@ package de.dwslab.risk.gui;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import org.w3c.dom.Document;
@@ -22,8 +22,6 @@ import com.mxgraph.swing.util.mxGraphTransferable;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxEvent;
-import com.mxgraph.util.mxEventObject;
-import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.util.mxPoint;
 import com.mxgraph.util.mxResources;
 import com.mxgraph.util.mxUtils;
@@ -46,48 +44,36 @@ public class RoCA extends BasicGraphEditor {
      */
     public static final NumberFormat numberFormat = NumberFormat.getInstance();
 
-    /**
-     * Holds the URL for the icon to be used as a handle for creating new
-     * connections. This is currently unused.
-     */
-    public static URL url = null;
-
-    // RoCA.class.getResource("/com/mxgraph/examples/swing/images/connector.gif");
-
     public RoCA() {
-        this("mxGraph Editor", new CustomGraphComponent(new CustomGraph()));
+        this("RoCA", new CustomGraphComponent(new CustomGraph()));
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            JOptionPane.showMessageDialog(RoCA.this, e.getMessage());
+            e.printStackTrace(System.err);
+        });
     }
 
-    /**
-     *
-     */
     public RoCA(String appTitle, mxGraphComponent component) {
         super(appTitle, component);
         final mxGraph graph = graphComponent.getGraph();
 
         // Creates the shapes palette
         EditorPalette shapesPalette = insertPalette(mxResources.get("shapes"));
-        EditorPalette imagesPalette = insertPalette(mxResources.get("images"));
-        EditorPalette symbolsPalette = insertPalette(mxResources.get("symbols"));
+        // EditorPalette imagesPalette = insertPalette(mxResources.get("images"));
+        // EditorPalette symbolsPalette = insertPalette(mxResources.get("symbols"));
 
         // Sets the edge template to be used for creating new edges if an edge
         // is clicked in the shape palette
-        shapesPalette.addListener(mxEvent.SELECT, new mxIEventListener() {
+        shapesPalette.addListener(mxEvent.SELECT, (sender, evt) -> {
+            Object tmp = evt.getProperty("transferable");
 
-            @Override
-            public void invoke(Object sender, mxEventObject evt) {
-                Object tmp = evt.getProperty("transferable");
+            if (tmp instanceof mxGraphTransferable) {
+                mxGraphTransferable t = (mxGraphTransferable) tmp;
+                Object cell = t.getCells()[0];
 
-                if (tmp instanceof mxGraphTransferable) {
-                    mxGraphTransferable t = (mxGraphTransferable) tmp;
-                    Object cell = t.getCells()[0];
-
-                    if (graph.getModel().isEdge(cell)) {
-                        ((CustomGraph) graph).setEdgeTemplate(cell);
-                    }
+                if (graph.getModel().isEdge(cell)) {
+                    ((CustomGraph) graph).setEdgeTemplate(cell);
                 }
             }
-
         });
 
         // Adds some template cells for dropping into the graph
@@ -193,144 +179,144 @@ public class RoCA extends BasicGraphEditor {
                         .getResource("/com/mxgraph/examples/swing/images/arrow.png")), "arrow",
                         120, 120, "");
 
-        imagesPalette
-        .addTemplate(
-                "Bell",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/bell.png")),
-                        "image;image=/com/mxgraph/examples/swing/images/bell.png", 50, 50, "Bell");
-        imagesPalette
-        .addTemplate(
-                "Box",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/box.png")),
-                        "image;image=/com/mxgraph/examples/swing/images/box.png", 50, 50, "Box");
-        imagesPalette.addTemplate(
-                "Cube",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/cube_green.png")),
-                        "image;image=/com/mxgraph/examples/swing/images/cube_green.png", 50, 50, "Cube");
-        imagesPalette.addTemplate(
-                "User",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/dude3.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/dude3.png", 50, 50, "User");
-        imagesPalette.addTemplate(
-                "Earth",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/earth.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/earth.png", 50, 50, "Earth");
-        imagesPalette
-        .addTemplate(
-                "Gear",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/gear.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/gear.png", 50, 50,
-                "Gear");
-        imagesPalette.addTemplate(
-                "Home",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/house.png")),
-                        "image;image=/com/mxgraph/examples/swing/images/house.png", 50, 50, "Home");
-        imagesPalette.addTemplate(
-                "Package",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/package.png")),
-                        "image;image=/com/mxgraph/examples/swing/images/package.png", 50, 50, "Package");
-        imagesPalette.addTemplate(
-                "Printer",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/printer.png")),
-                        "image;image=/com/mxgraph/examples/swing/images/printer.png", 50, 50, "Printer");
-        imagesPalette.addTemplate(
-                "Server",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/server.png")),
-                        "image;image=/com/mxgraph/examples/swing/images/server.png", 50, 50, "Server");
-        imagesPalette
-        .addTemplate(
-                "Workplace",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/workplace.png")),
-                        "image;image=/com/mxgraph/examples/swing/images/workplace.png", 50, 50,
-                "Workplace");
-        imagesPalette.addTemplate(
-                "Wrench",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/wrench.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/wrench.png", 50, 50, "Wrench");
-
-        symbolsPalette.addTemplate(
-                "Cancel",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/cancel_end.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/cancel_end.png", 80, 80,
-                "Cancel");
-        symbolsPalette.addTemplate(
-                "Error",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/error.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/error.png", 80, 80, "Error");
-        symbolsPalette.addTemplate(
-                "Event",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/event.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/event.png", 80, 80, "Event");
-        symbolsPalette
-        .addTemplate(
-                "Fork",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/fork.png")),
-                        "rhombusImage;image=/com/mxgraph/examples/swing/images/fork.png", 80, 80,
-                "Fork");
-        symbolsPalette.addTemplate(
-                "Inclusive",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/inclusive.png")),
-                        "rhombusImage;image=/com/mxgraph/examples/swing/images/inclusive.png", 80, 80,
-                "Inclusive");
-        symbolsPalette
-        .addTemplate(
-                "Link",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/link.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/link.png", 80, 80,
-                "Link");
-        symbolsPalette.addTemplate(
-                "Merge",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/merge.png")),
-                        "rhombusImage;image=/com/mxgraph/examples/swing/images/merge.png", 80, 80, "Merge");
-        symbolsPalette.addTemplate(
-                "Message",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/message.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/message.png", 80, 80,
-                "Message");
-        symbolsPalette.addTemplate(
-                "Multiple",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/multiple.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/multiple.png", 80, 80,
-                "Multiple");
-        symbolsPalette
-        .addTemplate(
-                "Rule",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/rule.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/rule.png", 80, 80,
-                "Rule");
-        symbolsPalette.addTemplate(
-                "Terminate",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/terminate.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/terminate.png", 80, 80,
-                "Terminate");
-        symbolsPalette.addTemplate(
-                "Timer",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/timer.png")),
-                        "roundImage;image=/com/mxgraph/examples/swing/images/timer.png", 80, 80, "Timer");
+        // imagesPalette
+        // .addTemplate(
+        // "Bell",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/bell.png")),
+        // "image;image=/com/mxgraph/examples/swing/images/bell.png", 50, 50, "Bell");
+        // imagesPalette
+        // .addTemplate(
+        // "Box",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/box.png")),
+        // "image;image=/com/mxgraph/examples/swing/images/box.png", 50, 50, "Box");
+        // imagesPalette.addTemplate(
+        // "Cube",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/cube_green.png")),
+        // "image;image=/com/mxgraph/examples/swing/images/cube_green.png", 50, 50, "Cube");
+        // imagesPalette.addTemplate(
+        // "User",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/dude3.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/dude3.png", 50, 50, "User");
+        // imagesPalette.addTemplate(
+        // "Earth",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/earth.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/earth.png", 50, 50, "Earth");
+        // imagesPalette
+        // .addTemplate(
+        // "Gear",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/gear.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/gear.png", 50, 50,
+        // "Gear");
+        // imagesPalette.addTemplate(
+        // "Home",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/house.png")),
+        // "image;image=/com/mxgraph/examples/swing/images/house.png", 50, 50, "Home");
+        // imagesPalette.addTemplate(
+        // "Package",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/package.png")),
+        // "image;image=/com/mxgraph/examples/swing/images/package.png", 50, 50, "Package");
+        // imagesPalette.addTemplate(
+        // "Printer",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/printer.png")),
+        // "image;image=/com/mxgraph/examples/swing/images/printer.png", 50, 50, "Printer");
+        // imagesPalette.addTemplate(
+        // "Server",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/server.png")),
+        // "image;image=/com/mxgraph/examples/swing/images/server.png", 50, 50, "Server");
+        // imagesPalette
+        // .addTemplate(
+        // "Workplace",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/workplace.png")),
+        // "image;image=/com/mxgraph/examples/swing/images/workplace.png", 50, 50,
+        // "Workplace");
+        // imagesPalette.addTemplate(
+        // "Wrench",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/wrench.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/wrench.png", 50, 50, "Wrench");
+        //
+        // symbolsPalette.addTemplate(
+        // "Cancel",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/cancel_end.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/cancel_end.png", 80, 80,
+        // "Cancel");
+        // symbolsPalette.addTemplate(
+        // "Error",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/error.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/error.png", 80, 80, "Error");
+        // symbolsPalette.addTemplate(
+        // "Event",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/event.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/event.png", 80, 80, "Event");
+        // symbolsPalette
+        // .addTemplate(
+        // "Fork",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/fork.png")),
+        // "rhombusImage;image=/com/mxgraph/examples/swing/images/fork.png", 80, 80,
+        // "Fork");
+        // symbolsPalette.addTemplate(
+        // "Inclusive",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/inclusive.png")),
+        // "rhombusImage;image=/com/mxgraph/examples/swing/images/inclusive.png", 80, 80,
+        // "Inclusive");
+        // symbolsPalette
+        // .addTemplate(
+        // "Link",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/link.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/link.png", 80, 80,
+        // "Link");
+        // symbolsPalette.addTemplate(
+        // "Merge",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/merge.png")),
+        // "rhombusImage;image=/com/mxgraph/examples/swing/images/merge.png", 80, 80, "Merge");
+        // symbolsPalette.addTemplate(
+        // "Message",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/message.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/message.png", 80, 80,
+        // "Message");
+        // symbolsPalette.addTemplate(
+        // "Multiple",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/multiple.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/multiple.png", 80, 80,
+        // "Multiple");
+        // symbolsPalette
+        // .addTemplate(
+        // "Rule",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/rule.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/rule.png", 80, 80,
+        // "Rule");
+        // symbolsPalette.addTemplate(
+        // "Terminate",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/terminate.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/terminate.png", 80, 80,
+        // "Terminate");
+        // symbolsPalette.addTemplate(
+        // "Timer",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/timer.png")),
+        // "roundImage;image=/com/mxgraph/examples/swing/images/timer.png", 80, 80, "Timer");
     }
 
     /**

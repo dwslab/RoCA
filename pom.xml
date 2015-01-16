@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.dwslab.risk</groupId>
-	<artifactId>gui</artifactId>
+	<artifactId>RoCA</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
@@ -15,9 +15,15 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>com.googlecode.rockit</groupId>
+			<artifactId>rockit</artifactId>
+			<version>[0.5.276,)</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.mxgraph</groupId>
 			<artifactId>jgraphx</artifactId>
-			<version>3.1.2.0</version>
+			<version>3.1.2.1</version>
 		</dependency>
 
 	</dependencies>
