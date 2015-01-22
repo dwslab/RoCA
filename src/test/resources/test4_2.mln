@@ -1,0 +1,28 @@
+// Observed Predicates
+*dependsOn(infra, infra)
+*hasRiskDegree(infra, risk, float_)
+
+
+// Hidden Predicates
+hasRisk(infra, risk)
+offline(infra)
+
+
+// ========= STANDARD ============
+!dependsOn(x, y) v !offline(y) v offline(x).
+!hasRisk(x, y) v offline(x). 
+conf: !hasRiskDegree(x, y, conf) v hasRisk(x, y)
+
+
+// =========== ABDUCTION ==============
+// FORALL x !offline(x) v ((EXISTS y dependsOn(x,y) ^ offline(y)) v (EXISTS y hasRisk(x, y)))
+// ? !offline(x) v offline([dependsOn(x,?)]) v hasRisk(x, [hasRisk(x,?)])
+
+
+
+
+
+
+
+
+

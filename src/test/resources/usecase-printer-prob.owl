@@ -1,0 +1,311 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY usecase-printer "http://dwslab.de/riskmanagement/usecase-printer.owl#" >
+]>
+
+
+<rdf:RDF xmlns="http://dwslab.de/riskmanagement/usecase-printer.owl#"
+     xml:base="http://dwslab.de/riskmanagement/usecase-printer.owl"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:usecase-printer="http://dwslab.de/riskmanagement/usecase-printer.owl#">
+    <owl:Ontology rdf:about="http://dwslab.de/riskmanagement/usecase-printer.owl"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#hasMlnProbability -->
+
+    <owl:AnnotationProperty rdf:about="&usecase-printer;hasMlnProbability"/>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#hasMlnWeight -->
+
+    <owl:AnnotationProperty rdf:about="&usecase-printer;hasMlnWeight"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#dependsOn -->
+
+    <owl:ObjectProperty rdf:about="&usecase-printer;dependsOn"/>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#hasRisk -->
+
+    <owl:ObjectProperty rdf:about="&usecase-printer;hasRisk"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Printer -->
+
+    <owl:Class rdf:about="&usecase-printer;Printer"/>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Risk -->
+
+    <owl:Class rdf:about="&usecase-printer;Risk"/>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Server -->
+
+    <owl:Class rdf:about="&usecase-printer;Server"/>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Service -->
+
+    <owl:Class rdf:about="&usecase-printer;Service"/>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Power_Source -->
+
+    <owl:Class rdf:about="&usecase-printer;Power_Source"/>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Switch -->
+
+    <owl:Class rdf:about="&usecase-printer;Switch"/>
+    
+
+    <owl:Class rdf:about="&usecase-printer;TestClass"/>
+
+	
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;Individual">
+        <rdf:type rdf:resource="&usecase-printer;NonDeclaredClass"/>
+        <nonDeclaredProperty rdf:resource="&usecase-printer;NonDeclaredIndividual"/>
+    </owl:NamedIndividual>
+
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#CAS-Server -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;CAS-Server">
+        <rdf:type rdf:resource="&usecase-printer;Server"/>
+        <dependsOn rdf:resource="&usecase-printer;Lehrstuhlswitch"/>
+        <dependsOn rdf:resource="&usecase-printer;Steckdose"/>
+        <hasRisk rdf:resource="&usecase-printer;Virenbefall"/>
+    </owl:NamedIndividual>
+    <owl:Axiom>
+        <hasMlnWeight>0.5</hasMlnWeight>
+        <owl:annotatedSource rdf:resource="&usecase-printer;CAS-Server"/>
+        <owl:annotatedTarget rdf:resource="&usecase-printer;Virenbefall"/>
+        <owl:annotatedProperty rdf:resource="&usecase-printer;hasRisk"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Denial_of_Service -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;Denial_of_Service">
+        <rdf:type rdf:resource="&usecase-printer;Risk"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Druckservice -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;Druckservice">
+        <rdf:type rdf:resource="&usecase-printer;Service"/>
+        <dependsOn rdf:resource="&usecase-printer;bizhub"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#LDAP-Service -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;LDAP-Service">
+        <rdf:type rdf:resource="&usecase-printer;Service"/>
+        <dependsOn rdf:resource="&usecase-printer;CAS-Server"/>
+        <hasRisk rdf:resource="&usecase-printer;Denial_of_Service"/>
+    </owl:NamedIndividual>
+    <owl:Axiom>
+        <hasMlnProbability>0.05</hasMlnProbability>
+        <owl:annotatedTarget rdf:resource="&usecase-printer;Denial_of_Service"/>
+        <owl:annotatedSource rdf:resource="&usecase-printer;LDAP-Service"/>
+        <owl:annotatedProperty rdf:resource="&usecase-printer;hasRisk"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Lehrstuhlswitch -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;Lehrstuhlswitch">
+        <rdf:type rdf:resource="&usecase-printer;Switch"/>
+        <dependsOn rdf:resource="&usecase-printer;Steckdose"/>
+        <hasRisk rdf:resource="&usecase-printer;Überlastung"/>
+    </owl:NamedIndividual>
+    <owl:Axiom>
+        <hasMlnWeight>-2</hasMlnWeight>
+        <owl:annotatedSource rdf:resource="&usecase-printer;Lehrstuhlswitch"/>
+        <owl:annotatedProperty rdf:resource="&usecase-printer;hasRisk"/>
+        <owl:annotatedTarget rdf:resource="&usecase-printer;Überlastung"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Mailserver -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;Mailserver">
+        <rdf:type rdf:resource="&usecase-printer;Server"/>
+        <dependsOn rdf:resource="&usecase-printer;Lehrstuhlswitch"/>
+        <dependsOn rdf:resource="&usecase-printer;Steckdose"/>
+        <hasRisk rdf:resource="&usecase-printer;Virenbefall"/>
+    </owl:NamedIndividual>
+    <owl:Axiom>
+        <hasMlnWeight>0.7</hasMlnWeight>
+        <owl:annotatedSource rdf:resource="&usecase-printer;Mailserver"/>
+        <owl:annotatedTarget rdf:resource="&usecase-printer;Virenbefall"/>
+        <owl:annotatedProperty rdf:resource="&usecase-printer;hasRisk"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Mailservice -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;Mailservice">
+        <rdf:type rdf:resource="&usecase-printer;Service"/>
+        <hasRisk rdf:resource="&usecase-printer;Denial_of_Service"/>
+        <dependsOn rdf:resource="&usecase-printer;LDAP-Service"/>
+        <dependsOn rdf:resource="&usecase-printer;Mailserver"/>
+    </owl:NamedIndividual>
+    <owl:Axiom>
+        <hasMlnWeight>-0.1</hasMlnWeight>
+        <owl:annotatedTarget rdf:resource="&usecase-printer;Denial_of_Service"/>
+        <owl:annotatedSource rdf:resource="&usecase-printer;Mailservice"/>
+        <owl:annotatedProperty rdf:resource="&usecase-printer;hasRisk"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Papierstau -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;Papierstau">
+        <rdf:type rdf:resource="&usecase-printer;Risk"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Scanservice -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;Scanservice">
+        <rdf:type rdf:resource="&usecase-printer;Service"/>
+        <dependsOn rdf:resource="&usecase-printer;Mailservice"/>
+        <dependsOn rdf:resource="&usecase-printer;bizhub"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Steckdose -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;Steckdose">
+        <rdf:type rdf:resource="&usecase-printer;Power_Source"/>
+        <hasRisk rdf:resource="&usecase-printer;Stromausfall"/>
+    </owl:NamedIndividual>
+    <owl:Axiom>
+        <hasMlnProbability>0.01</hasMlnProbability>
+        <owl:annotatedSource rdf:resource="&usecase-printer;Steckdose"/>
+        <owl:annotatedTarget rdf:resource="&usecase-printer;Stromausfall"/>
+        <owl:annotatedProperty rdf:resource="&usecase-printer;hasRisk"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Stromausfall -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;Stromausfall">
+        <rdf:type rdf:resource="&usecase-printer;Risk"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Virenbefall -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;Virenbefall">
+        <rdf:type rdf:resource="&usecase-printer;Risk"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#bizhub -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;bizhub">
+        <rdf:type rdf:resource="&usecase-printer;Printer"/>
+        <dependsOn rdf:resource="&usecase-printer;Lehrstuhlswitch"/>
+        <hasRisk rdf:resource="&usecase-printer;Papierstau"/>
+        <dependsOn rdf:resource="&usecase-printer;Steckdose"/>
+    </owl:NamedIndividual>
+    <owl:Axiom>
+        <hasMlnProbability>0.1</hasMlnProbability>
+        <owl:annotatedTarget rdf:resource="&usecase-printer;Papierstau"/>
+        <owl:annotatedSource rdf:resource="&usecase-printer;bizhub"/>
+        <owl:annotatedProperty rdf:resource="&usecase-printer;hasRisk"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://dwslab.de/riskmanagement/usecase-printer.owl#Überlastung -->
+
+    <owl:NamedIndividual rdf:about="&usecase-printer;Überlastung">
+        <rdf:type rdf:resource="&usecase-printer;Risk"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net -->
+

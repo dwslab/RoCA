@@ -3,13 +3,11 @@ package de.dwslab.risk.gui.jgraphx.model;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import de.dwslab.risk.gui.exception.RoCAException;
@@ -17,7 +15,7 @@ import de.dwslab.risk.gui.exception.RoCAException;
 public class MlnBackgroundKnowledge implements BackgroundKnowledge {
 
     private final Map<String, Predicate> predicates;
-    private final Map<String, List<String>> entities;
+    private final Map<String, Set<String>> entities;
     private final Map<String, Set<Literal>> groundings;
 
     public MlnBackgroundKnowledge(Path mln, Path evidence) {
@@ -49,7 +47,7 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
         return map;
     }
 
-    private Map<String, List<String>> parseEntities(Path evidence) throws IOException {
+    private Map<String, Set<String>> parseEntities(Path evidence) throws IOException {
         Map<String, Set<String>> entities = new HashMap<>();
 
         Files.lines(evidence)
@@ -74,13 +72,7 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
                     }
                 });
 
-        // string -> list instead of string -> set
-        Map<String, List<String>> entities2 = new HashMap<>();
-        for (Entry<String, Set<String>> entry : entities.entrySet()) {
-            entities2.put(entry.getKey(), new ArrayList<>(entry.getValue()));
-        }
-
-        return entities2;
+        return entities;
     }
 
     private static Map<String, Set<Literal>> parseGroundings(Path evidence) throws Exception {
@@ -107,23 +99,22 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
         return groundings;
     }
 
-    /**
-     * @return the predicates
-     */
+    @Override
     public Map<String, Predicate> getPredicates() {
         return predicates;
     }
 
-    /**
-     * @return the entities
-     */
-    public Map<String, List<String>> getEntities() {
+    @Override
+    public Set<String> getTypes() {
+        return entities.keySet();
+    }
+
+    @Override
+    public Map<String, Set<String>> getEntities() {
         return entities;
     }
 
-    /**
-     * @return the groundings
-     */
+    @Override
     public Map<String, Set<Literal>> getGroundings() {
         return groundings;
     }

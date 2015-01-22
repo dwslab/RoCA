@@ -1,0 +1,18 @@
+dependsOn("Print", "Bizhub")
+dependsOn("Scan", "Bizhub")
+
+hasRiskDegree("Print","FPrint", -100.01)
+hasRiskDegree("Scan", "FScan", -20.02)
+hasRiskDegree("Bizhub", "FBizhub", -30.03)
+hasRiskDegree("Bizhub", "FBizhub2", -31.03)
+
+offline("Print")
+!offline("Bizhub")
+
+
+
+
+
+
+
+

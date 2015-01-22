@@ -1,0 +1,31 @@
+dependsOn("Print", "Bizhub")
+dependsOn("Scan", "Bizhub")
+
+hasRiskDegree("Print","FPrint", -100.01)
+!hasRisk("Print", "FBizhub")
+!hasRisk("Print", "FScan")
+!hasRisk("Print", "FBizhub2")
+
+
+hasRiskDegree("Scan", "FScan", -20.02)
+!hasRisk("Scan", "FBizhub")
+!hasRisk("Scan", "FPrint")
+!hasRisk("Scan", "FBizhub2")
+
+hasRiskDegree("Bizhub", "FBizhub", -30.03)
+hasRiskDegree("Bizhub", "FBizhub2", -31.03)
+!hasRisk("Bizhub", "FPrint")
+!hasRisk("Bizhub", "FScan")
+
+
+
+offline("Print")
+!offline("Bizhub")
+
+
+
+
+
+
+
+

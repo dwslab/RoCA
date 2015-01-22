@@ -1,9 +1,11 @@
 package de.dwslab.risk.gui.jgraphx;
 
+import static de.dwslab.risk.gui.jgraphx.actions.LoadBackgroundKnowledgeAction.KnowledgeType.MLN;
+import static de.dwslab.risk.gui.jgraphx.actions.LoadBackgroundKnowledgeAction.KnowledgeType.ONTOLOGY;
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
@@ -12,8 +14,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 
 import com.mxgraph.analysis.StructuralException;
 import com.mxgraph.analysis.mxAnalysisGraph;
@@ -31,6 +31,7 @@ import com.mxgraph.util.mxResources;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxGraphView;
 
+import de.dwslab.risk.gui.RoCA;
 import de.dwslab.risk.gui.jgraphx.EditorActions.AlignCellsAction;
 import de.dwslab.risk.gui.jgraphx.EditorActions.AutosizeAction;
 import de.dwslab.risk.gui.jgraphx.EditorActions.BackgroundAction;
@@ -67,6 +68,7 @@ import de.dwslab.risk.gui.jgraphx.EditorActions.TogglePropertyItem;
 import de.dwslab.risk.gui.jgraphx.EditorActions.ToggleRulersItem;
 import de.dwslab.risk.gui.jgraphx.EditorActions.WarningAction;
 import de.dwslab.risk.gui.jgraphx.EditorActions.ZoomPolicyAction;
+import de.dwslab.risk.gui.jgraphx.actions.LoadBackgroundKnowledgeAction;
 
 public class EditorMenuBar extends JMenuBar {
 
@@ -79,7 +81,7 @@ public class EditorMenuBar extends JMenuBar {
         IS_CONNECTED, IS_SIMPLE, IS_CYCLIC_DIRECTED, IS_CYCLIC_UNDIRECTED, COMPLEMENTARY, REGULARITY, COMPONENTS, MAKE_CONNECTED, MAKE_SIMPLE, IS_TREE, ONE_SPANNING_TREE, IS_DIRECTED, GET_CUT_VERTEXES, GET_CUT_EDGES, GET_SOURCES, GET_SINKS, PLANARITY, IS_BICONNECTED, GET_BICONNECTED, SPANNING_TREE, FLOYD_ROY_WARSHALL
     }
 
-    public EditorMenuBar(final BasicGraphEditor editor) {
+    public EditorMenuBar(final RoCA editor) {
         final mxGraphComponent graphComponent = editor.getGraphComponent();
         final mxGraph graph = graphComponent.getGraph();
         mxAnalysisGraph aGraph = new mxAnalysisGraph();
@@ -151,56 +153,31 @@ public class EditorMenuBar extends JMenuBar {
         menu = add(new JMenu(mxResources.get("view")));
 
         JMenuItem item = menu.add(new TogglePropertyItem(graphComponent, mxResources
-                .get("pageLayout"), "PageVisible", true, new ActionListener() {
-
-            /**
-             *
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (graphComponent.isPageVisible() && graphComponent.isCenterPage()) {
-                    graphComponent.zoomAndCenter();
-                } else {
-                    graphComponent.getGraphControl().updatePreferredSize();
-                }
+                .get("pageLayout"), "PageVisible", true, e -> {
+            if (graphComponent.isPageVisible() && graphComponent.isCenterPage()) {
+                graphComponent.zoomAndCenter();
+            } else {
+                graphComponent.getGraphControl().updatePreferredSize();
             }
         }));
 
-        item.addActionListener(new ActionListener() {
+        item.addActionListener(e -> {
+            if (e.getSource() instanceof TogglePropertyItem) {
+                final mxGraphComponent graphComponent1 = editor.getGraphComponent();
+                TogglePropertyItem toggleItem = (TogglePropertyItem) e.getSource();
 
-            /*
-             * (non-Javadoc)
-             * 
-             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() instanceof TogglePropertyItem) {
-                    final mxGraphComponent graphComponent = editor.getGraphComponent();
-                    TogglePropertyItem toggleItem = (TogglePropertyItem) e.getSource();
+                if (toggleItem.isSelected()) {
+                    // Scrolls the view to the center
+                    SwingUtilities.invokeLater(() -> {
+                        graphComponent1.scrollToCenter(true);
+                        graphComponent1.scrollToCenter(false);
+                    });
+                } else {
+                    // Resets the translation of the view
+                    mxPoint tr = graphComponent1.getGraph().getView().getTranslate();
 
-                    if (toggleItem.isSelected()) {
-                        // Scrolls the view to the center
-                        SwingUtilities.invokeLater(new Runnable() {
-
-                            /*
-                             * (non-Javadoc)
-                             * 
-                             * @see java.lang.Runnable#run()
-                             */
-                            @Override
-                            public void run() {
-                                graphComponent.scrollToCenter(true);
-                                graphComponent.scrollToCenter(false);
-                            }
-                        });
-                    } else {
-                        // Resets the translation of the view
-                        mxPoint tr = graphComponent.getGraph().getView().getTranslate();
-
-                        if (tr.getX() != 0 || tr.getY() != 0) {
-                            graphComponent.getGraph().getView().setTranslate(new mxPoint());
-                        }
+                    if (tr.getX() != 0 || tr.getY() != 0) {
+                        graphComponent1.getGraph().getView().setTranslate(new mxPoint());
                     }
                 }
             }
@@ -349,16 +326,7 @@ public class EditorMenuBar extends JMenuBar {
                 "TripleBuffered", true));
 
         submenu.add(new TogglePropertyItem(graphComponent, mxResources.get("preferPageSize"),
-                "PreferPageSize", true, new ActionListener() {
-
-                    /**
-             *
-             */
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        graphComponent.zoomAndCenter();
-                    }
-                }));
+                "PreferPageSize", true, e -> graphComponent.zoomAndCenter()));
 
         // TODO: This feature is not yet implemented
         // submenu.add(new TogglePropertyItem(graphComponent, mxResources
@@ -381,16 +349,9 @@ public class EditorMenuBar extends JMenuBar {
         submenu.addSeparator();
 
         submenu.add(new TogglePropertyItem(graphComponent, mxResources.get("centerPage"),
-                "CenterPage", true, new ActionListener() {
-
-                    /**
-             *
-             */
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (graphComponent.isPageVisible() && graphComponent.isCenterPage()) {
-                            graphComponent.zoomAndCenter();
-                        }
+                "CenterPage", true, e -> {
+                    if (graphComponent.isPageVisible() && graphComponent.isCenterPage()) {
+                        graphComponent.zoomAndCenter();
                     }
                 }));
 
@@ -456,53 +417,14 @@ public class EditorMenuBar extends JMenuBar {
         submenu.add(new TogglePropertyItem(graph, mxResources.get("allowLoops"), "AllowLoops"));
         submenu.add(new TogglePropertyItem(graph, mxResources.get("multigraph"), "Multigraph"));
 
-        // Creates the window menu
-        menu = add(new JMenu(mxResources.get("window")));
+        // Creates the Root Cause Analysis menu
+        menu = add(new JMenu("Root Cause Analyse"));
+        menu.add(editor.bind("Load MLN & Evidence...", new LoadBackgroundKnowledgeAction(MLN,
+                editor)));
+        menu.add(editor.bind("Load Ontology...", new LoadBackgroundKnowledgeAction(ONTOLOGY,
+                editor)));
 
-        UIManager.LookAndFeelInfo[] lafs = UIManager.getInstalledLookAndFeels();
-
-        for (LookAndFeelInfo laf : lafs) {
-            final String clazz = laf.getClassName();
-
-            menu.add(new AbstractAction(laf.getName()) {
-
-                /**
-                 *
-                 */
-                private static final long serialVersionUID = 7588919504149148501L;
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    editor.setLookAndFeel(clazz);
-                }
-            });
-        }
-
-        // Creates a developer menu
-        menu = add(new JMenu("Generate"));
-        menu.add(editor.bind("Null Graph", new InsertGraph(GraphType.NULL, aGraph)));
-        menu.add(editor.bind("Complete Graph", new InsertGraph(GraphType.COMPLETE, aGraph)));
-        menu.add(editor.bind("Grid", new InsertGraph(GraphType.GRID, aGraph)));
-        menu.add(editor.bind("Bipartite", new InsertGraph(GraphType.BIPARTITE, aGraph)));
-        menu.add(editor.bind("Complete Bipartite", new InsertGraph(GraphType.COMPLETE_BIPARTITE,
-                aGraph)));
-        menu.add(editor.bind("Knight's Graph", new InsertGraph(GraphType.KNIGHT, aGraph)));
-        menu.add(editor.bind("King's Graph", new InsertGraph(GraphType.KING, aGraph)));
-        menu.add(editor.bind("Petersen", new InsertGraph(GraphType.PETERSEN, aGraph)));
-        menu.add(editor.bind("Path", new InsertGraph(GraphType.PATH, aGraph)));
-        menu.add(editor.bind("Star", new InsertGraph(GraphType.STAR, aGraph)));
-        menu.add(editor.bind("Wheel", new InsertGraph(GraphType.WHEEL, aGraph)));
-        menu.add(editor.bind("Friendship Windmill", new InsertGraph(GraphType.FRIENDSHIP_WINDMILL,
-                aGraph)));
-        menu.add(editor.bind("Full Windmill", new InsertGraph(GraphType.FULL_WINDMILL, aGraph)));
-        menu.add(editor.bind("Knight's Tour", new InsertGraph(GraphType.KNIGHT_TOUR, aGraph)));
-        menu.addSeparator();
-        menu.add(editor.bind("Simple Random", new InsertGraph(GraphType.SIMPLE_RANDOM, aGraph)));
-        menu.add(editor.bind("Simple Random Tree", new InsertGraph(GraphType.SIMPLE_RANDOM_TREE,
-                aGraph)));
-        menu.addSeparator();
-        menu.add(editor.bind("Reset Style", new InsertGraph(GraphType.RESET_STYLE, aGraph)));
-
+        // Creates a analyze menu
         menu = add(new JMenu("Analyze"));
         menu.add(editor.bind("Is Connected", new AnalyzeGraph(AnalyzeType.IS_CONNECTED, aGraph)));
         menu.add(editor.bind("Is Simple", new AnalyzeGraph(AnalyzeType.IS_SIMPLE, aGraph)));
@@ -545,18 +467,7 @@ public class EditorMenuBar extends JMenuBar {
         menu = add(new JMenu(mxResources.get("help")));
 
         item = menu.add(new JMenuItem(mxResources.get("aboutGraphEditor")));
-        item.addActionListener(new ActionListener() {
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                editor.about();
-            }
-        });
+        item.addActionListener(e -> editor.about());
     }
 
     /**
@@ -903,7 +814,7 @@ public class EditorMenuBar extends JMenuBar {
 
         /**
          * @param aGraph
-         * 
+         *
          */
         public InsertGraph(GraphType tree, mxAnalysisGraph aGraph) {
             graphType = tree;
