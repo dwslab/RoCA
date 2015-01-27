@@ -51,7 +51,6 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
             break;
         case ONTOLOGY:
             throw new RoCAException("Loading ontologies not possible yet");
-            // break;
         default:
             throw new RoCAException("Unknown background knowledge type: " + type);
         }
@@ -80,6 +79,8 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
 
             c.gridx = 2;
             JTextField textFieldMln = new JTextField(50);
+            textFieldMln
+                    .setText("D:\\Documents\\3000 Projekte\\2013 Risikomanagement\\workspace\\RoCA\\src\\test\\resources\\test4_2.mln");
             panel.add(textFieldMln, c);
 
             JButton buttonMln = new JButton("Durchsuchen...");
@@ -103,6 +104,8 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
             c.gridx = 2;
             c.gridwidth = 2;
             JTextField textFieldEvidence = new JTextField(50);
+            textFieldEvidence
+                    .setText("D:\\Documents\\3000 Projekte\\2013 Risikomanagement\\workspace\\RoCA\\src\\test\\resources\\test4_2.db");
             panel.add(textFieldEvidence, c);
 
             JButton buttonEvidence = new JButton("Durchsuchen...");
@@ -130,7 +133,6 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
                     BackgroundKnowledge knowledge = new MlnBackgroundKnowledge(
                             Paths.get(textFieldMln.getText()),
                             Paths.get(textFieldEvidence.getText()));
-                    System.out.println("Loading update");
                     roca.handleKnowledgeUpdate(knowledge);
                 }).start();
             });
@@ -159,7 +161,6 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
 
             add(panel);
         }
-
     }
 
 }

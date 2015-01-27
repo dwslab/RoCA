@@ -7,6 +7,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mxgraph.swing.util.mxGraphTransferable;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
@@ -22,6 +25,7 @@ import de.dwslab.risk.gui.jgraphx.model.BackgroundKnowledge;
 public class RoCA extends BasicGraphEditor {
 
     private static final long serialVersionUID = -4601740824088314699L;
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * Holds the shared number formatter.
@@ -34,7 +38,7 @@ public class RoCA extends BasicGraphEditor {
         super("RoCA", new CustomGraphComponent(new CustomGraph()));
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
             JOptionPane.showMessageDialog(RoCA.this, e.getMessage());
-            e.printStackTrace(System.err);
+            logger.error("Unhandeled exception", e);
         });
 
         final mxGraph graph = graphComponent.getGraph();
@@ -162,6 +166,7 @@ public class RoCA extends BasicGraphEditor {
     }
 
     public void handleKnowledgeUpdate(BackgroundKnowledge knowledge) {
+        logger.debug("Updating background knowledge");
         mxGraph graph = graphComponent.getGraph();
         graph.selectAll();
         graph.removeCells();
