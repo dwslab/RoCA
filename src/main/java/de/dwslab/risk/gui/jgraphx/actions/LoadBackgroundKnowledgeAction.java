@@ -7,9 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.nio.file.Path;
+import java.awt.event.KeyEvent;
 import java.nio.file.Paths;
 
 import javax.swing.AbstractAction;
@@ -19,7 +17,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import de.dwslab.risk.gui.RoCA;
 import de.dwslab.risk.gui.exception.RoCAException;
@@ -27,6 +27,8 @@ import de.dwslab.risk.gui.jgraphx.model.BackgroundKnowledge;
 import de.dwslab.risk.gui.jgraphx.model.MlnBackgroundKnowledge;
 
 public class LoadBackgroundKnowledgeAction extends AbstractAction {
+
+    private static final long serialVersionUID = -6601753337328725L;
 
     private final KnowledgeType type;
     private RoCA roca;
@@ -45,18 +47,6 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
             dialog.pack();
             dialog.setModalityType(APPLICATION_MODAL);
             dialog.setLocationRelativeTo(roca);
-            dialog.addWindowListener(new WindowAdapter() {
-
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    new Thread(() -> {
-                        BackgroundKnowledge knowledge = new MlnBackgroundKnowledge(
-                                dialog.getPathMln(), dialog.getPathEvidence());
-                        roca.handleKnowledgeUpdate(knowledge);
-                    }).start();
-                    super.windowClosed(e);
-                }
-            });
             dialog.setVisible(true);
             break;
         case ONTOLOGY:
@@ -72,10 +62,9 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
         MLN;
     }
 
-    private static class MlnFileChooserDialog extends JDialog {
+    private class MlnFileChooserDialog extends JDialog {
 
-        private Path pathMln;
-        private Path pathEvidence;
+        private static final long serialVersionUID = -6670451737041631711L;
 
         public MlnFileChooserDialog(Window parent) {
             super(parent, "MLN & Evidence auswählen");
@@ -96,6 +85,7 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
             JButton buttonMln = new JButton("Durchsuchen...");
             buttonMln.addActionListener(l -> {
                 JFileChooser fileChooser = new JFileChooser("src/test/resources/");
+                fileChooser.setFileFilter(new FileNameExtensionFilter("MLN Files", "mln"));
                 int returnVal = fileChooser.showOpenDialog(MlnFileChooserDialog.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     textFieldMln.setText(fileChooser.getSelectedFile().getPath());
@@ -118,6 +108,7 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
             JButton buttonEvidence = new JButton("Durchsuchen...");
             buttonEvidence.addActionListener(l -> {
                 JFileChooser fileChooser = new JFileChooser("src/test/resources/");
+                fileChooser.setFileFilter(new FileNameExtensionFilter("Evidence Files", "db"));
                 int returnVal = fileChooser.showOpenDialog(MlnFileChooserDialog.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     textFieldEvidence.setText(fileChooser.getSelectedFile().getPath());
@@ -135,39 +126,38 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
             JButton buttonOk = new JButton("OK");
             buttonOk.addActionListener(l -> {
                 setVisible(false);
-                pathMln = Paths.get(textFieldMln.getText());
-                pathEvidence = Paths.get(textFieldEvidence.getText());
-                textFieldMln.setText(null);
-                textFieldEvidence.setText(null);
+                new Thread(() -> {
+                    BackgroundKnowledge knowledge = new MlnBackgroundKnowledge(
+                            Paths.get(textFieldMln.getText()),
+                            Paths.get(textFieldEvidence.getText()));
+                    System.out.println("Loading update");
+                    roca.handleKnowledgeUpdate(knowledge);
+                }).start();
             });
+            getRootPane().setDefaultButton(buttonOk);
             panel.add(buttonOk, c);
 
             c.gridx = 3;
             c.gridy = 2;
             JButton buttonCancel = new JButton("Abbrechen");
             buttonCancel.addActionListener(l -> {
-                pathMln = null;
-                pathEvidence = null;
-                textFieldMln.setText(null);
-                textFieldEvidence.setText(null);
+                setVisible(false);
             });
             panel.add(buttonCancel, c);
 
+            getRootPane().getInputMap()
+                    .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "foo_CANCEL");
+            getRootPane().getActionMap().put("foo_CANCEL", new AbstractAction() {
+
+                private static final long serialVersionUID = -5058924623712220514L;
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    buttonCancel.doClick();
+                }
+            });
+
             add(panel);
-        }
-
-        /**
-         * @return the pathMln
-         */
-        public Path getPathMln() {
-            return pathMln;
-        }
-
-        /**
-         * @return the pathEvidence
-         */
-        public Path getPathEvidence() {
-            return pathEvidence;
         }
 
     }
