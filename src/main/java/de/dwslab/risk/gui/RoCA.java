@@ -2,6 +2,7 @@ package de.dwslab.risk.gui;
 
 import java.awt.Color;
 import java.text.NumberFormat;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -10,6 +11,8 @@ import javax.swing.UIManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.util.mxGraphTransferable;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
@@ -21,6 +24,7 @@ import de.dwslab.risk.gui.jgraphx.BasicGraphEditor;
 import de.dwslab.risk.gui.jgraphx.EditorMenuBar;
 import de.dwslab.risk.gui.jgraphx.EditorPalette;
 import de.dwslab.risk.gui.jgraphx.model.BackgroundKnowledge;
+import de.dwslab.risk.gui.jgraphx.model.Literal;
 
 public class RoCA extends BasicGraphEditor {
 
@@ -168,9 +172,64 @@ public class RoCA extends BasicGraphEditor {
     public void handleKnowledgeUpdate(BackgroundKnowledge knowledge) {
         logger.debug("Updating background knowledge");
         mxGraph graph = graphComponent.getGraph();
-        graph.selectAll();
-        graph.removeCells();
 
+        try {
+            graph.getModel().beginUpdate();
+
+            // clear the current graph
+            graph.selectAll();
+            graph.removeCells();
+
+            // add the new entities
+            Set<String> infras = knowledge.getEntities().get("infra");
+            for (String infra : infras) {
+                insertEntity(infra, graph);
+            }
+
+            // connect the entities with edges
+            Set<Literal> dependsOns = knowledge.getGroundings().get("dependsOn");
+            Set<Literal> hasRisks = knowledge.getGroundings().get("hasRiskDegree");
+            Set<Literal> offlines = knowledge.getGroundings().get("offline");
+
+            // for (Literal literal : dependsOn) {
+            //
+            // }
+
+            // add the risks
+            Set<String> risks = knowledge.getEntities().get("risk");
+
+            Object parent = graph.getDefaultParent();
+            graph.insertVertex(parent, "rounded=1", "foo", 100, 100, 160, 120);
+
+        } finally {
+            graph.getModel().endUpdate();
+        }
+
+        logger.info("Executing layout");
+        mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
+        try {
+            graph.getModel().beginUpdate();
+            layout.execute(graph.getDefaultParent());
+        } finally {
+            graph.getModel().endUpdate();
+            graph.repaint();
+        }
+    }
+
+    private mxCell insertEntity(String entity, mxGraph graph) {
+        Object parent = graph.getDefaultParent();
+        int x = 100;
+        int y = 100;
+        int width = 160;
+        int height = 120;
+        return (mxCell) graph.insertVertex(parent, entity, entity, x, y, width, height);
+    }
+
+    private mxCell insertDependsOn(mxCell source, mxCell target, mxGraph graph) {
+        Object parent = graph.getDefaultParent();
+        String id = "dependsOn(" + source.getValue() + "," + target.getValue() + ")";
+        Object value = "dependsOn";
+        return (mxCell) graph.insertEdge(parent, id, value, source, target);
     }
 
     /**
