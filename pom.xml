@@ -22,7 +22,7 @@
 
 		<dependency>
 			<groupId>de.dwslab</groupId>
-			<artifactId>ai-utils</artifactId>
+			<artifactId>ai_utils</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
