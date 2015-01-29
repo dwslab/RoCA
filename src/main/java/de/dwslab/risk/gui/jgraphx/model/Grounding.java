@@ -1,9 +1,6 @@
 package de.dwslab.risk.gui.jgraphx.model;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Grounding {
 
@@ -15,33 +12,6 @@ public class Grounding {
         this.negated = negated;
         this.predicate = predicate;
         this.values = values;
-    }
-
-    public Grounding(String literal) {
-        // negated + name
-        Pattern pattern = Pattern.compile("\\s*(!)?(\\w+)\\((.*)\\)\\s*");
-        // Pattern pattern = Pattern.compile("(!)?\\s*([\\w]*).*");
-        Matcher matcher = pattern.matcher(literal.trim());
-
-        String elements = "";
-        negated = false;
-        if (matcher.find()) {
-            if ((matcher.group(1) != null) && matcher.group(1).equals("!")) {
-                negated = true;
-            }
-            predicate = matcher.group(2);
-            elements = matcher.group(3).trim();
-        }
-
-        // variables
-        // Pattern pattern2 = Pattern.compile("([^\\s(),]+)[,\\s)]+");
-        Pattern pattern2 = Pattern.compile("([\\w\\?]+|(\\[.*\\]))+\\s*,?");
-        Matcher matcher2 = pattern2.matcher(elements);
-
-        values = new ArrayList<>();
-        while (matcher2.find()) {
-            values.add(matcher2.group(1));
-        }
     }
 
     public boolean isNegated() {
