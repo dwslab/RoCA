@@ -4,18 +4,22 @@ import java.util.List;
 
 public class Predicate {
 
-    boolean observed;
-    String name;
-    List<String> types;
+    private final boolean negated;
+    private final String name;
+    private final List<String> types;
 
-    public Predicate(boolean observed, String name, List<String> types) {
-        this.observed = observed;
+    public Predicate(String name, List<String> types) {
+        this(false, name, types);
+    }
+
+    public Predicate(boolean negated, String name, List<String> types) {
+        this.negated = negated;
         this.name = name;
         this.types = types;
     }
 
-    public boolean isObserved() {
-        return observed;
+    public boolean isNegated() {
+        return negated;
     }
 
     public String getName() {
@@ -29,8 +33,8 @@ public class Predicate {
     @Override
     public String toString() {
         StringBuilder pred = new StringBuilder();
-        if (observed) {
-            pred.append("*");
+        if (negated) {
+            pred.append("!");
         }
         pred.append(name + "(");
 

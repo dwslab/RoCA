@@ -75,19 +75,26 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
         return entities;
     }
 
-    private static Map<String, Set<Literal>> parseGroundings(Path evidence) throws Exception {
+    private Map<String, Set<Literal>> parseGroundings(Path evidence) throws Exception {
         Map<String, Set<Literal>> groundings = new HashMap<>();
 
         Files.lines(evidence)
                 .filter(str -> !str.isEmpty() && !str.startsWith("//"))
                 .map(String::trim)
-                .map(str -> (str.startsWith("!") ? str.substring(1) : str))
                 .forEach(str -> {
-                    String predicate = str.substring(0, str.indexOf('('));
+                    boolean negated;
+                    String predicate;
+                    if (str.startsWith("!")) {
+                        negated = true;
+                        predicate = str.substring(1, str.indexOf('('));
+                    } else {
+                        negated = false;
+                        predicate = str.substring(0, str.indexOf('('));
+                    }
                     String entitiesString = str.substring(str.indexOf('(') + 1, str.indexOf(')'));
                     String[] entititesArr = entitiesString.split("\\s*,\\s*");
 
-                    Literal literal = new Literal(false, predicate, Arrays.asList(entititesArr));
+                    Literal literal = new Literal(negated, predicate, Arrays.asList(entititesArr));
                     Set<Literal> groundingsSet = groundings.get(predicate);
                     if (groundingsSet == null) {
                         groundingsSet = new HashSet<>();
