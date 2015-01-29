@@ -2,6 +2,8 @@ package de.dwslab.risk.gui;
 
 import java.awt.Color;
 import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
@@ -181,26 +183,39 @@ public class RoCA extends BasicGraphEditor {
             graph.removeCells();
 
             // add the new entities
+            Map<String, mxCell> cellMap = new HashMap<>();
             Set<String> infras = knowledge.getEntities().get("infra");
             for (String infra : infras) {
-                insertEntity(infra, graph);
+                mxCell cell = insertEntity(infra, graph);
+                cellMap.put(infra, cell);
             }
 
             // connect the entities with edges
             Set<Literal> dependsOns = knowledge.getGroundings().get("dependsOn");
-            Set<Literal> hasRisks = knowledge.getGroundings().get("hasRiskDegree");
-            Set<Literal> offlines = knowledge.getGroundings().get("offline");
-
-            // for (Literal literal : dependsOn) {
-            //
-            // }
+            for (Literal literal : dependsOns) {
+                String source = literal.getValues().get(0);
+                String target = literal.getValues().get(1);
+                insertDependsOn(cellMap.get(source), cellMap.get(target), graph);
+            }
 
             // add the risks
             Set<String> risks = knowledge.getEntities().get("risk");
+            for (String risk : risks) {
+                mxCell cell = insertRisk(risk, graph);
+                cellMap.put(risk, cell);
+            }
 
-            Object parent = graph.getDefaultParent();
-            graph.insertVertex(parent, "rounded=1", "foo", 100, 100, 160, 120);
+            Set<Literal> hasRisks = knowledge.getGroundings().get("hasRiskDegree");
+            for (Literal literal : hasRisks) {
+                String source = literal.getValues().get(0);
+                String target = literal.getValues().get(1);
+                String weightStr = literal.getValues().get(2);
+                double weight = Double.parseDouble(weightStr);
+                insertHasRisk(cellMap.get(source), cellMap.get(target), weight, graph);
+            }
 
+            Set<Literal> offlines = knowledge.getGroundings().get("offline");
+            // TODO show offline infrastructure in another color...
         } finally {
             graph.getModel().endUpdate();
         }
@@ -225,10 +240,26 @@ public class RoCA extends BasicGraphEditor {
         return (mxCell) graph.insertVertex(parent, entity, entity, x, y, width, height);
     }
 
+    private mxCell insertRisk(String risk, mxGraph graph) {
+        Object parent = graph.getDefaultParent();
+        int x = 100;
+        int y = 100;
+        int width = 160;
+        int height = 120;
+        return (mxCell) graph.insertVertex(parent, risk, risk, x, y, width, height, "rounded=1");
+    }
+
     private mxCell insertDependsOn(mxCell source, mxCell target, mxGraph graph) {
         Object parent = graph.getDefaultParent();
         String id = "dependsOn(" + source.getValue() + "," + target.getValue() + ")";
         Object value = "dependsOn";
+        return (mxCell) graph.insertEdge(parent, id, value, source, target);
+    }
+
+    private mxCell insertHasRisk(mxCell source, mxCell target, double weight, mxGraph graph) {
+        Object parent = graph.getDefaultParent();
+        String id = "hasRisk(" + source.getValue() + "," + target.getValue() + ")";
+        Object value = "hasRisk: " + weight;
         return (mxCell) graph.insertEdge(parent, id, value, source, target);
     }
 
