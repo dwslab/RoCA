@@ -19,7 +19,7 @@ public interface BackgroundKnowledge {
         Map<String, Predicate> predicates = new HashMap<>();
         Set<String> types = new HashSet<>();
         Map<String, Set<String>> entities = new HashMap<>();
-        Map<String, Set<Literal>> groundings = new HashMap<>();
+        Map<String, Set<Grounding>> groundings = new HashMap<>();
 
         for (BackgroundKnowledge knowledge : knowledgeBases) {
             for (Entry<String, Predicate> entry : knowledge.getPredicates().entrySet()) {
@@ -36,8 +36,8 @@ public interface BackgroundKnowledge {
                 }
                 set.addAll(entry.getValue());
             }
-            for (Entry<String, Set<Literal>> entry : knowledge.getGroundings().entrySet()) {
-                Set<Literal> set = groundings.get(entry.getKey());
+            for (Entry<String, Set<Grounding>> entry : knowledge.getGroundings().entrySet()) {
+                Set<Grounding> set = groundings.get(entry.getKey());
                 if (set == null) {
                     set = new HashSet<>();
                     groundings.put(entry.getKey(), set);
@@ -66,6 +66,6 @@ public interface BackgroundKnowledge {
     /**
      * @return the groundings
      */
-    public Map<String, Set<Literal>> getGroundings();
+    public Map<String, Set<Grounding>> getGroundings();
 
 }

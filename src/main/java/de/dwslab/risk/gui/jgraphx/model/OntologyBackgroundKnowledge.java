@@ -37,7 +37,7 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
     private final Map<String, Predicate> predicates;
     private final Set<String> types;
     private final Map<String, Set<String>> entities;
-    private final Map<String, Set<Literal>> groundings;
+    private final Map<String, Set<Grounding>> groundings;
 
     public OntologyBackgroundKnowledge(Path ontology) {
         try {
@@ -72,7 +72,7 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
-    public Map<String, Set<Literal>> getGroundings() {
+    public Map<String, Set<Grounding>> getGroundings() {
         return groundings;
     }
 
@@ -81,10 +81,10 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
         private final Map<String, Predicate> predicates;
         private final Set<String> types;
         private final Map<String, Set<String>> entities;
-        private final Map<String, Set<Literal>> groundings;
+        private final Map<String, Set<Grounding>> groundings;
 
         public BackgroundKnowledgeVisitor(Map<String, Predicate> predicates, Set<String> types,
-                Map<String, Set<String>> entities, Map<String, Set<Literal>> groundings) {
+                Map<String, Set<String>> entities, Map<String, Set<Grounding>> groundings) {
             this.predicates = predicates;
             this.types = types;
             this.entities = entities;
@@ -133,8 +133,8 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
             // TODO types in der predicates map updaten
             // TODO entities updaten
 
-            Literal literal = new Literal(false, property, values);
-            Set<Literal> literals = groundings.get(property);
+            Grounding literal = new Grounding(false, property, values);
+            Set<Grounding> literals = groundings.get(property);
             if (literals == null) {
                 literals = new HashSet<>();
                 groundings.put(property, literals);
@@ -162,8 +162,8 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
             // TODO types in der predicates map updaten
             // TODO entities updaten
 
-            Literal literal = new Literal(false, theClass, values);
-            Set<Literal> literals = groundings.get(theClass);
+            Grounding literal = new Grounding(false, theClass, values);
+            Set<Grounding> literals = groundings.get(theClass);
             if (literals == null) {
                 literals = new HashSet<>();
                 groundings.put(theClass, literals);
@@ -194,8 +194,8 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
             // TODO types in der predicates map updaten
             // TODO entities updaten
 
-            Literal literal = new Literal(false, property, values);
-            Set<Literal> literals = groundings.get(property);
+            Grounding literal = new Grounding(false, property, values);
+            Set<Grounding> literals = groundings.get(property);
             if (literals == null) {
                 literals = new HashSet<>();
                 groundings.put(property, literals);

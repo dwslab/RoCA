@@ -26,7 +26,7 @@ import de.dwslab.risk.gui.jgraphx.BasicGraphEditor;
 import de.dwslab.risk.gui.jgraphx.EditorMenuBar;
 import de.dwslab.risk.gui.jgraphx.EditorPalette;
 import de.dwslab.risk.gui.jgraphx.model.BackgroundKnowledge;
-import de.dwslab.risk.gui.jgraphx.model.Literal;
+import de.dwslab.risk.gui.jgraphx.model.Grounding;
 
 public class RoCA extends BasicGraphEditor {
 
@@ -191,8 +191,8 @@ public class RoCA extends BasicGraphEditor {
             }
 
             // connect the entities with edges
-            Set<Literal> dependsOns = knowledge.getGroundings().get("dependsOn");
-            for (Literal literal : dependsOns) {
+            Set<Grounding> dependsOns = knowledge.getGroundings().get("dependsOn");
+            for (Grounding literal : dependsOns) {
                 String source = literal.getValues().get(0);
                 String target = literal.getValues().get(1);
                 insertDependsOn(cellMap.get(source), cellMap.get(target), graph);
@@ -205,8 +205,8 @@ public class RoCA extends BasicGraphEditor {
                 cellMap.put(risk, cell);
             }
 
-            Set<Literal> hasRisks = knowledge.getGroundings().get("hasRiskDegree");
-            for (Literal literal : hasRisks) {
+            Set<Grounding> hasRisks = knowledge.getGroundings().get("hasRiskDegree");
+            for (Grounding literal : hasRisks) {
                 String source = literal.getValues().get(0);
                 String target = literal.getValues().get(1);
                 String weightStr = literal.getValues().get(2);
@@ -214,8 +214,8 @@ public class RoCA extends BasicGraphEditor {
                 insertHasRisk(cellMap.get(source), cellMap.get(target), weight, graph);
             }
 
-            Set<Literal> offlines = knowledge.getGroundings().get("offline");
-            for (Literal literal : offlines) {
+            Set<Grounding> offlines = knowledge.getGroundings().get("offline");
+            for (Grounding literal : offlines) {
                 // TODO if predicate is negated ... literal.getPredicate()
                 String infra = literal.getValues().get(0);
                 mxCell cell = cellMap.get(infra);

@@ -5,19 +5,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Literal {
+public class Grounding {
 
     boolean negated;
     String predicate;
     List<String> values;
 
-    public Literal(boolean negated, String predicate, List<String> values) {
+    public Grounding(boolean negated, String predicate, List<String> values) {
         this.negated = negated;
         this.predicate = predicate;
         this.values = values;
     }
 
-    public Literal(String literal) {
+    public Grounding(String literal) {
         // negated + name
         Pattern pattern = Pattern.compile("\\s*(!)?(\\w+)\\((.*)\\)\\s*");
         // Pattern pattern = Pattern.compile("(!)?\\s*([\\w]*).*");

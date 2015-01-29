@@ -12,9 +12,9 @@ public class Formula {
     boolean isHard = true;
     double weight = -1;
 
-    List<Literal> literals = new ArrayList<>();
+    List<Grounding> literals = new ArrayList<>();
 
-    public void addLiteral(Literal l) {
+    public void addLiteral(Grounding l) {
         literals.add(l);
     }
 
@@ -41,7 +41,7 @@ public class Formula {
 
     public List<String> getGroundFormulas(Map<String, Predicate> predicates,
             Map<String, String> predMapping, Map<String, List<String>> entities,
-            Map<String, Set<Literal>> groundings) {
+            Map<String, Set<Grounding>> groundings) {
         List<String> groundFormulas = new ArrayList<>();
 
         List<Map<String, String>> combintations = generateVariableGroundings(
@@ -49,7 +49,7 @@ public class Formula {
         for (Map<String, String> c : combintations) {
             Formula f = new Formula();
 
-            for (Literal l : literals) {
+            for (Grounding l : literals) {
                 boolean negated = l.isNegated();
                 String predicate = l.getPredicate();
 
@@ -68,7 +68,7 @@ public class Formula {
                     } else if (var.startsWith("[") && var.endsWith("]")) {
                         // get "?"
                         var = var.substring(1, var.length() - 1);
-                        Literal exLit = new Literal(var);
+                        Grounding exLit = new Grounding(var);
                         String exPred = exLit.getPredicate();
 
                         List<String> exPredVars = new ArrayList<>();
@@ -91,27 +91,27 @@ public class Formula {
                         }
 
                         // collect all ground axioms of exPred
-                        Set<Literal> relLit = new HashSet<>();
+                        Set<Grounding> relLit = new HashSet<>();
                         if (groundings.containsKey(exPred)) {
                             relLit.addAll(groundings.get(exPred));
                         }
 
                         // collect weighted ground values
                         if (predMapping.containsKey(exPred)) {
-                            Set<Literal> relLit2 = new HashSet<>();
+                            Set<Grounding> relLit2 = new HashSet<>();
                             String pred3 = predMapping.get(exPred);
                             if (groundings.containsKey(pred3)) {
-                                for (Literal l3 : groundings.get(pred3)) {
+                                for (Grounding l3 : groundings.get(pred3)) {
                                     boolean n3 = l3.isNegated();
                                     List<String> v3 = new ArrayList<>(l3.getValues());
                                     v3.remove(v3.size() - 1);
-                                    relLit2.add(new Literal(n3, exPred, v3));
+                                    relLit2.add(new Grounding(n3, exPred, v3));
                                 }
                             }
                             relLit.addAll(relLit2);
                         }
 
-                        for (Literal groundLiteral : relLit) {
+                        for (Grounding groundLiteral : relLit) {
                             if (groundLiteral.isNegated()) {
                                 continue;
                             }
@@ -138,7 +138,7 @@ public class Formula {
 
                 List<List<String>> groundPredComp = generateCombinations2(c2);
                 for (List<String> groundPred : groundPredComp) {
-                    f.addLiteral(new Literal(negated, predicate, groundPred));
+                    f.addLiteral(new Grounding(negated, predicate, groundPred));
                 }
 
             }
@@ -244,7 +244,7 @@ public class Formula {
     private Map<String, String> getVariables(Map<String, Predicate> predicates) {
         Map<String, String> variables = new HashMap<>();
 
-        for (Literal l : literals) {
+        for (Grounding l : literals) {
             List<String> vars = l.getValues();
             List<String> types = predicates.get(l.getPredicate()).getTypes();
             for (int i = 0; i < vars.size(); i++) {

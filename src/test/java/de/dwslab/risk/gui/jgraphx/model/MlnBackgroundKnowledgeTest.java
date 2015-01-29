@@ -48,9 +48,9 @@ public class MlnBackgroundKnowledgeTest {
     @Test
     public void testGetGroundings() {
         BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln, evidence);
-        Map<String, Set<Literal>> groundings = kb.getGroundings();
+        Map<String, Set<Grounding>> groundings = kb.getGroundings();
         int size = 0;
-        for (Set<Literal> names : groundings.values()) {
+        for (Set<Grounding> names : groundings.values()) {
             System.out.println(names);
             size += names.size();
         }

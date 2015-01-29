@@ -12,10 +12,10 @@ class AggregatedBackgroundKnowledge implements BackgroundKnowledge {
     private final Map<String, Predicate> predicates;
     private final Set<String> types;
     private final Map<String, Set<String>> entities;
-    private final Map<String, Set<Literal>> groundings;
+    private final Map<String, Set<Grounding>> groundings;
 
     AggregatedBackgroundKnowledge(Map<String, Predicate> predicates, Set<String> types,
-            Map<String, Set<String>> entities, Map<String, Set<Literal>> groundings) {
+            Map<String, Set<String>> entities, Map<String, Set<Grounding>> groundings) {
         this.predicates = predicates;
         this.types = types;
         this.entities = entities;
@@ -38,7 +38,7 @@ class AggregatedBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
-    public Map<String, Set<Literal>> getGroundings() {
+    public Map<String, Set<Grounding>> getGroundings() {
         return Collections.unmodifiableMap(groundings);
     }
 

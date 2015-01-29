@@ -16,7 +16,7 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
 
     private final Map<String, Predicate> predicates;
     private final Map<String, Set<String>> entities;
-    private final Map<String, Set<Literal>> groundings;
+    private final Map<String, Set<Grounding>> groundings;
 
     public MlnBackgroundKnowledge(Path mln, Path evidence) {
         try {
@@ -75,8 +75,8 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
         return entities;
     }
 
-    private Map<String, Set<Literal>> parseGroundings(Path evidence) throws Exception {
-        Map<String, Set<Literal>> groundings = new HashMap<>();
+    private Map<String, Set<Grounding>> parseGroundings(Path evidence) throws Exception {
+        Map<String, Set<Grounding>> groundings = new HashMap<>();
 
         Files.lines(evidence)
                 .filter(str -> !str.isEmpty() && !str.startsWith("//"))
@@ -94,8 +94,8 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
                     String entitiesString = str.substring(str.indexOf('(') + 1, str.indexOf(')'));
                     String[] entititesArr = entitiesString.split("\\s*,\\s*");
 
-                    Literal literal = new Literal(negated, predicate, Arrays.asList(entititesArr));
-                    Set<Literal> groundingsSet = groundings.get(predicate);
+                    Grounding literal = new Grounding(negated, predicate, Arrays.asList(entititesArr));
+                    Set<Grounding> groundingsSet = groundings.get(predicate);
                     if (groundingsSet == null) {
                         groundingsSet = new HashSet<>();
                         groundings.put(predicate, groundingsSet);
@@ -122,7 +122,7 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
-    public Map<String, Set<Literal>> getGroundings() {
+    public Map<String, Set<Grounding>> getGroundings() {
         return groundings;
     }
 
