@@ -52,7 +52,7 @@ public class OntologyBackgroundKnowledgeTest {
     @Test
     public void testGetGroundings() {
         BackgroundKnowledge kb = new OntologyBackgroundKnowledge(ontology);
-        Map<String, Set<Grounding>> groundings = kb.getGroundings();
+        Map<Predicate, Set<Grounding>> groundings = kb.getGroundings();
         int size = 0;
         for (Set<Grounding> names : groundings.values()) {
             System.out.println(names);

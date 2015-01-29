@@ -4,21 +4,15 @@ import java.util.List;
 
 public class Grounding {
 
-    boolean negated;
-    String predicate;
-    List<String> values;
+    private final Predicate predicate;
+    private final List<String> values;
 
-    public Grounding(boolean negated, String predicate, List<String> values) {
-        this.negated = negated;
+    public Grounding(Predicate predicate, List<String> values) {
         this.predicate = predicate;
         this.values = values;
     }
 
-    public boolean isNegated() {
-        return negated;
-    }
-
-    public String getPredicate() {
+    public Predicate getPredicate() {
         return predicate;
     }
 
@@ -27,28 +21,19 @@ public class Grounding {
     }
 
     public String valuesToString() {
-
         StringBuilder sb = new StringBuilder();
-        if (negated) {
-            sb.append("!" + " ");
-        }
-
         for (int i = 0; i < values.size(); i++) {
             sb.append(values.get(i));
             if (i < (values.size() - 1)) {
                 sb.append(", ");
             }
         }
-
         return sb.toString();
     }
 
     @Override
     public String toString() {
         StringBuilder atom = new StringBuilder();
-        if (negated) {
-            atom.append("!");
-        }
         atom.append(predicate + "(");
         for (int i = 0; i < values.size(); i++) {
             atom.append(values.get(i));
@@ -57,7 +42,6 @@ public class Grounding {
             }
         }
         atom.append(")");
-
         return atom.toString();
     }
 

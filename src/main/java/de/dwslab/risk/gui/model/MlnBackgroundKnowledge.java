@@ -16,10 +16,13 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
 
     private final Map<String, Predicate> predicates;
     private final Map<String, Set<String>> entities;
-    private final Map<String, Set<Grounding>> groundings;
+    private final Map<Predicate, Set<Grounding>> groundings;
+
+    private final Map<Predicate, List<String>> predicateTypes;
 
     public MlnBackgroundKnowledge(Path mln, Path evidence) {
         try {
+            predicateTypes = new HashMap<>();
             predicates = parsePredicates(mln);
             entities = parseEntities(evidence);
             groundings = parseGroundings(evidence);
@@ -40,7 +43,8 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
                     String name = str.substring(0, str.indexOf('('));
                     String[] types = str.substring(str.indexOf('(') + 1, str.indexOf(')'))
                             .split("\\s*,\\s*");
-                    Predicate pred = new Predicate(false, name, Arrays.asList(types));
+                    Predicate pred = new Predicate(false, name);
+                    predicateTypes.put(pred, Arrays.asList(types));
                     map.put(name, pred);
                 });
 
@@ -59,7 +63,7 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
                     String entitiesString = str.substring(str.indexOf('(') + 1, str.indexOf(')'));
                     String[] entititesArr = entitiesString.split("\\s*,\\s*");
 
-                    List<String> types = predicates.get(predicate).getTypes();
+                    List<String> types = predicateTypes.get(new Predicate(predicate));
                     for (int i = 0; i < types.size(); i++) {
                         String type = types.get(i);
                         String entity = entititesArr[i];
@@ -75,26 +79,23 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
         return entities;
     }
 
-    private Map<String, Set<Grounding>> parseGroundings(Path evidence) throws Exception {
-        Map<String, Set<Grounding>> groundings = new HashMap<>();
+    private Map<Predicate, Set<Grounding>> parseGroundings(Path evidence) throws Exception {
+        Map<Predicate, Set<Grounding>> groundings = new HashMap<>();
 
         Files.lines(evidence)
                 .filter(str -> !str.isEmpty() && !str.startsWith("//"))
                 .map(String::trim)
                 .forEach(str -> {
-                    boolean negated;
-                    String predicate;
+                    Predicate predicate;
                     if (str.startsWith("!")) {
-                        negated = true;
-                        predicate = str.substring(1, str.indexOf('('));
+                        predicate = new Predicate(true, str.substring(1, str.indexOf('(')));
                     } else {
-                        negated = false;
-                        predicate = str.substring(0, str.indexOf('('));
+                        predicate = new Predicate(false, str.substring(0, str.indexOf('(')));
                     }
                     String entitiesString = str.substring(str.indexOf('(') + 1, str.indexOf(')'));
                     String[] entititesArr = entitiesString.split("\\s*,\\s*");
 
-                    Grounding literal = new Grounding(negated, predicate, Arrays.asList(entititesArr));
+                    Grounding literal = new Grounding(predicate, Arrays.asList(entititesArr));
                     Set<Grounding> groundingsSet = groundings.get(predicate);
                     if (groundingsSet == null) {
                         groundingsSet = new HashSet<>();
@@ -122,7 +123,7 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
-    public Map<String, Set<Grounding>> getGroundings() {
+    public Map<Predicate, Set<Grounding>> getGroundings() {
         return groundings;
     }
 

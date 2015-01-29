@@ -37,7 +37,7 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
     private final Map<String, Predicate> predicates;
     private final Set<String> types;
     private final Map<String, Set<String>> entities;
-    private final Map<String, Set<Grounding>> groundings;
+    private final Map<Predicate, Set<Grounding>> groundings;
 
     public OntologyBackgroundKnowledge(Path ontology) {
         try {
@@ -72,7 +72,7 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
-    public Map<String, Set<Grounding>> getGroundings() {
+    public Map<Predicate, Set<Grounding>> getGroundings() {
         return groundings;
     }
 
@@ -81,10 +81,10 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
         private final Map<String, Predicate> predicates;
         private final Set<String> types;
         private final Map<String, Set<String>> entities;
-        private final Map<String, Set<Grounding>> groundings;
+        private final Map<Predicate, Set<Grounding>> groundings;
 
         public BackgroundKnowledgeVisitor(Map<String, Predicate> predicates, Set<String> types,
-                Map<String, Set<String>> entities, Map<String, Set<Grounding>> groundings) {
+                Map<String, Set<String>> entities, Map<Predicate, Set<Grounding>> groundings) {
             this.predicates = predicates;
             this.types = types;
             this.entities = entities;
@@ -133,11 +133,12 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
             // TODO types in der predicates map updaten
             // TODO entities updaten
 
-            Grounding literal = new Grounding(false, property, values);
+            Predicate predicate = new Predicate(property);
+            Grounding literal = new Grounding(predicate, values);
             Set<Grounding> literals = groundings.get(property);
             if (literals == null) {
                 literals = new HashSet<>();
-                groundings.put(property, literals);
+                groundings.put(predicate, literals);
             }
             literals.add(literal);
         }
@@ -162,11 +163,12 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
             // TODO types in der predicates map updaten
             // TODO entities updaten
 
-            Grounding literal = new Grounding(false, theClass, values);
+            Predicate predicate = new Predicate(theClass);
+            Grounding literal = new Grounding(predicate, values);
             Set<Grounding> literals = groundings.get(theClass);
             if (literals == null) {
                 literals = new HashSet<>();
-                groundings.put(theClass, literals);
+                groundings.put(predicate, literals);
             }
             literals.add(literal);
         }
@@ -194,11 +196,12 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
             // TODO types in der predicates map updaten
             // TODO entities updaten
 
-            Grounding literal = new Grounding(false, property, values);
+            Predicate predicate = new Predicate(property);
+            Grounding literal = new Grounding(predicate, values);
             Set<Grounding> literals = groundings.get(property);
             if (literals == null) {
                 literals = new HashSet<>();
-                groundings.put(property, literals);
+                groundings.put(predicate, literals);
             }
             literals.add(literal);
         }
@@ -212,21 +215,21 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
         @Override
         public void visit(OWLObjectProperty property) {
             String name = getName(property.getIRI());
-            Predicate predicate = new Predicate(false, name, Collections.EMPTY_LIST);
+            Predicate predicate = new Predicate(false, name);
             predicates.put(name, predicate);
         }
 
         @Override
         public void visit(OWLDataProperty property) {
             String name = getName(property.getIRI());
-            Predicate predicate = new Predicate(false, name, Collections.EMPTY_LIST);
+            Predicate predicate = new Predicate(false, name);
             predicates.put(name, predicate);
         }
 
         @Override
         public void visit(OWLAnnotationProperty property) {
             String name = getName(property.getIRI());
-            Predicate predicate = new Predicate(false, name, Collections.EMPTY_LIST);
+            Predicate predicate = new Predicate(false, name);
             predicates.put(name, predicate);
         }
 
