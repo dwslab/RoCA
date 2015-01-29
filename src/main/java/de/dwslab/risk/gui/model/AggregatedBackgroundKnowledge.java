@@ -1,4 +1,4 @@
-package de.dwslab.risk.gui.jgraphx.model;
+package de.dwslab.risk.gui.model;
 
 import java.util.Collections;
 import java.util.Map;

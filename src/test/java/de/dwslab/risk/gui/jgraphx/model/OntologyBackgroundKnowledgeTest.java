@@ -8,6 +8,11 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.dwslab.risk.gui.model.BackgroundKnowledge;
+import de.dwslab.risk.gui.model.Grounding;
+import de.dwslab.risk.gui.model.OntologyBackgroundKnowledge;
+import de.dwslab.risk.gui.model.Predicate;
+
 public class OntologyBackgroundKnowledgeTest {
 
     private static final Path ontology = Paths.get("src/test/resources/usecase-printer-prob.owl");

@@ -23,8 +23,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import de.dwslab.risk.gui.RoCA;
 import de.dwslab.risk.gui.exception.RoCAException;
-import de.dwslab.risk.gui.jgraphx.model.BackgroundKnowledge;
-import de.dwslab.risk.gui.jgraphx.model.MlnBackgroundKnowledge;
+import de.dwslab.risk.gui.model.BackgroundKnowledge;
+import de.dwslab.risk.gui.model.MlnBackgroundKnowledge;
 
 public class LoadBackgroundKnowledgeAction extends AbstractAction {
 

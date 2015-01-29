@@ -8,6 +8,11 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.dwslab.risk.gui.model.BackgroundKnowledge;
+import de.dwslab.risk.gui.model.Grounding;
+import de.dwslab.risk.gui.model.MlnBackgroundKnowledge;
+import de.dwslab.risk.gui.model.Predicate;
+
 public class MlnBackgroundKnowledgeTest {
 
     private static final Path mln = Paths.get("src/test/resources/test4_2.mln");

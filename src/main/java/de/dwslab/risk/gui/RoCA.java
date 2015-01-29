@@ -25,8 +25,8 @@ import com.mxgraph.view.mxGraph;
 import de.dwslab.risk.gui.jgraphx.BasicGraphEditor;
 import de.dwslab.risk.gui.jgraphx.EditorMenuBar;
 import de.dwslab.risk.gui.jgraphx.EditorPalette;
-import de.dwslab.risk.gui.jgraphx.model.BackgroundKnowledge;
-import de.dwslab.risk.gui.jgraphx.model.Grounding;
+import de.dwslab.risk.gui.model.BackgroundKnowledge;
+import de.dwslab.risk.gui.model.Grounding;
 
 public class RoCA extends BasicGraphEditor {
 
