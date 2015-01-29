@@ -215,7 +215,12 @@ public class RoCA extends BasicGraphEditor {
             }
 
             Set<Literal> offlines = knowledge.getGroundings().get("offline");
-            // TODO show offline infrastructure in another color...
+            for (Literal literal : offlines) {
+                // TODO if predicate is negated ... literal.getPredicate()
+                String infra = literal.getValues().get(0);
+                mxCell cell = cellMap.get(infra);
+                graph.getModel().setStyle(cell, "fillColor=#FF2222");
+            }
         } finally {
             graph.getModel().endUpdate();
         }
