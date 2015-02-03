@@ -27,6 +27,7 @@ import de.dwslab.risk.gui.jgraphx.EditorMenuBar;
 import de.dwslab.risk.gui.jgraphx.EditorPalette;
 import de.dwslab.risk.gui.model.BackgroundKnowledge;
 import de.dwslab.risk.gui.model.Grounding;
+import de.dwslab.risk.gui.model.Predicate;
 
 public class RoCA extends BasicGraphEditor {
 
@@ -190,14 +191,6 @@ public class RoCA extends BasicGraphEditor {
                 cellMap.put(infra, cell);
             }
 
-            // connect the entities with edges
-            Set<Grounding> dependsOns = knowledge.getGroundings().get("dependsOn");
-            for (Grounding literal : dependsOns) {
-                String source = literal.getValues().get(0);
-                String target = literal.getValues().get(1);
-                insertDependsOn(cellMap.get(source), cellMap.get(target), graph);
-            }
-
             // add the risks
             Set<String> risks = knowledge.getEntities().get("risk");
             for (String risk : risks) {
@@ -205,7 +198,17 @@ public class RoCA extends BasicGraphEditor {
                 cellMap.put(risk, cell);
             }
 
-            Set<Grounding> hasRisks = knowledge.getGroundings().get("hasRiskDegree");
+            Map<Predicate, Set<Grounding>> groundings = knowledge.getGroundings();
+
+            // connect the entities with edges
+            Set<Grounding> dependsOns = groundings.get(new Predicate("dependsOn"));
+            for (Grounding literal : dependsOns) {
+                String source = literal.getValues().get(0);
+                String target = literal.getValues().get(1);
+                insertDependsOn(cellMap.get(source), cellMap.get(target), graph);
+            }
+
+            Set<Grounding> hasRisks = groundings.get(new Predicate("hasRiskDegree"));
             for (Grounding literal : hasRisks) {
                 String source = literal.getValues().get(0);
                 String target = literal.getValues().get(1);
@@ -214,7 +217,7 @@ public class RoCA extends BasicGraphEditor {
                 insertHasRisk(cellMap.get(source), cellMap.get(target), weight, graph);
             }
 
-            Set<Grounding> offlines = knowledge.getGroundings().get("offline");
+            Set<Grounding> offlines = groundings.get(new Predicate("offline"));
             for (Grounding literal : offlines) {
                 // TODO if predicate is negated ... literal.getPredicate()
                 String infra = literal.getValues().get(0);
