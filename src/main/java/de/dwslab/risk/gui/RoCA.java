@@ -219,10 +219,16 @@ public class RoCA extends BasicGraphEditor {
 
             Set<Grounding> offlines = groundings.get(new Predicate("offline"));
             for (Grounding literal : offlines) {
-                // TODO if predicate is negated ... literal.getPredicate()
                 String infra = literal.getValues().get(0);
                 mxCell cell = cellMap.get(infra);
                 graph.getModel().setStyle(cell, "fillColor=#FF2222");
+            }
+
+            Set<Grounding> notOfflines = groundings.get(new Predicate(true, "offline"));
+            for (Grounding literal : notOfflines) {
+                String infra = literal.getValues().get(0);
+                mxCell cell = cellMap.get(infra);
+                graph.getModel().setStyle(cell, "fillColor=#22FF22");
             }
         } finally {
             graph.getModel().endUpdate();
