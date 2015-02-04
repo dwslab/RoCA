@@ -17,8 +17,8 @@ public interface BackgroundKnowledge {
 
     public static BackgroundKnowledge aggregate(Collection<BackgroundKnowledge> knowledgeBases) {
         Map<String, Predicate> predicates = new HashMap<>();
-        Set<String> types = new HashSet<>();
-        Map<String, Set<String>> entities = new HashMap<>();
+        Set<Type> types = new HashSet<>();
+        Map<Type, Set<Entity>> entities = new HashMap<>();
         Map<Predicate, Set<Grounding>> groundings = new HashMap<>();
 
         for (BackgroundKnowledge knowledge : knowledgeBases) {
@@ -28,8 +28,8 @@ public interface BackgroundKnowledge {
                 }
             }
             types.addAll(knowledge.getTypes());
-            for (Entry<String, Set<String>> entry : knowledge.getEntities().entrySet()) {
-                Set<String> set = entities.get(entry.getKey());
+            for (Entry<Type, Set<Entity>> entry : knowledge.getEntities().entrySet()) {
+                Set<Entity> set = entities.get(entry.getKey());
                 if (set == null) {
                     set = new HashSet<>();
                     entities.put(entry.getKey(), set);
@@ -56,12 +56,12 @@ public interface BackgroundKnowledge {
     /**
      * @return the types
      */
-    public Set<String> getTypes();
+    public Set<Type> getTypes();
 
     /**
      * @return the entities
      */
-    public Map<String, Set<String>> getEntities();
+    public Map<Type, Set<Entity>> getEntities();
 
     /**
      * @return the groundings

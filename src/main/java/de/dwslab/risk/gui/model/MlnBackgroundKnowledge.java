@@ -3,6 +3,7 @@ package de.dwslab.risk.gui.model;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,10 +16,10 @@ import de.dwslab.risk.gui.exception.RoCAException;
 public class MlnBackgroundKnowledge implements BackgroundKnowledge {
 
     private final Map<String, Predicate> predicates;
-    private final Map<String, Set<String>> entities;
+    private final Map<Type, Set<Entity>> entities;
     private final Map<Predicate, Set<Grounding>> groundings;
 
-    private final Map<Predicate, List<String>> predicateTypes;
+    private final Map<Predicate, List<Type>> predicateTypes;
 
     public MlnBackgroundKnowledge(Path mln, Path evidence) {
         try {
@@ -41,18 +42,22 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
                 .map(str -> (str.startsWith("*") ? str.substring(1) : str))
                 .forEach(str -> {
                     String name = str.substring(0, str.indexOf('('));
-                    String[] types = str.substring(str.indexOf('(') + 1, str.indexOf(')'))
+                    String[] typesStr = str.substring(str.indexOf('(') + 1, str.indexOf(')'))
                             .split("\\s*,\\s*");
+                    List<Type> types = new ArrayList<>();
+                    for (String type : typesStr) {
+                        types.add(new Type(type));
+                    }
                     Predicate pred = new Predicate(false, name);
-                    predicateTypes.put(pred, Arrays.asList(types));
+                    predicateTypes.put(pred, types);
                     map.put(name, pred);
                 });
 
         return map;
     }
 
-    private Map<String, Set<String>> parseEntities(Path evidence) throws IOException {
-        Map<String, Set<String>> entities = new HashMap<>();
+    private Map<Type, Set<Entity>> parseEntities(Path evidence) throws IOException {
+        Map<Type, Set<Entity>> entities = new HashMap<>();
 
         Files.lines(evidence)
                 .filter(str -> !str.isEmpty() && !str.startsWith("//"))
@@ -63,16 +68,16 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
                     String entitiesString = str.substring(str.indexOf('(') + 1, str.indexOf(')'));
                     String[] entititesArr = entitiesString.split("\\s*,\\s*");
 
-                    List<String> types = predicateTypes.get(new Predicate(predicate));
+                    List<Type> types = predicateTypes.get(new Predicate(predicate));
                     for (int i = 0; i < types.size(); i++) {
-                        String type = types.get(i);
+                        Type type = types.get(i);
                         String entity = entititesArr[i];
-                        Set<String> entitySet = entities.get(type);
+                        Set<Entity> entitySet = entities.get(type);
                         if (entitySet == null) {
                             entitySet = new HashSet<>();
                             entities.put(type, entitySet);
                         }
-                        entitySet.add(entity);
+                        entitySet.add(new Entity(entity, type));
                     }
                 });
 
@@ -113,12 +118,12 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
-    public Set<String> getTypes() {
+    public Set<Type> getTypes() {
         return entities.keySet();
     }
 
     @Override
-    public Map<String, Set<String>> getEntities() {
+    public Map<Type, Set<Entity>> getEntities() {
         return entities;
     }
 

@@ -9,9 +9,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.dwslab.risk.gui.model.BackgroundKnowledge;
+import de.dwslab.risk.gui.model.Entity;
 import de.dwslab.risk.gui.model.Grounding;
 import de.dwslab.risk.gui.model.OntologyBackgroundKnowledge;
 import de.dwslab.risk.gui.model.Predicate;
+import de.dwslab.risk.gui.model.Type;
 
 public class OntologyBackgroundKnowledgeTest {
 
@@ -30,8 +32,8 @@ public class OntologyBackgroundKnowledgeTest {
     @Test
     public void testGetTypes() {
         BackgroundKnowledge kb = new OntologyBackgroundKnowledge(ontology);
-        Set<String> types = kb.getTypes();
-        for (String name : types) {
+        Set<Type> types = kb.getTypes();
+        for (Type name : types) {
             System.out.println(name);
         }
         Assert.assertEquals("Wrong number of types", 3, types.size());
@@ -40,9 +42,9 @@ public class OntologyBackgroundKnowledgeTest {
     @Test
     public void testGetEntities() {
         BackgroundKnowledge kb = new OntologyBackgroundKnowledge(ontology);
-        Map<String, Set<String>> entities = kb.getEntities();
+        Map<Type, Set<Entity>> entities = kb.getEntities();
         int size = 0;
-        for (Set<String> names : entities.values()) {
+        for (Set<Entity> names : entities.values()) {
             System.out.println(names);
             size += names.size();
         }

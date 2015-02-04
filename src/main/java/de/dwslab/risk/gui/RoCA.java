@@ -26,8 +26,10 @@ import de.dwslab.risk.gui.jgraphx.BasicGraphEditor;
 import de.dwslab.risk.gui.jgraphx.EditorMenuBar;
 import de.dwslab.risk.gui.jgraphx.EditorPalette;
 import de.dwslab.risk.gui.model.BackgroundKnowledge;
+import de.dwslab.risk.gui.model.Entity;
 import de.dwslab.risk.gui.model.Grounding;
 import de.dwslab.risk.gui.model.Predicate;
+import de.dwslab.risk.gui.model.Type;
 
 public class RoCA extends BasicGraphEditor {
 
@@ -184,16 +186,16 @@ public class RoCA extends BasicGraphEditor {
             graph.removeCells();
 
             // add the new entities
-            Map<String, mxCell> cellMap = new HashMap<>();
-            Set<String> infras = knowledge.getEntities().get("infra");
-            for (String infra : infras) {
+            Map<Entity, mxCell> cellMap = new HashMap<>();
+            Set<Entity> infras = knowledge.getEntities().get(new Type("infra"));
+            for (Entity infra : infras) {
                 mxCell cell = insertEntity(infra, graph);
                 cellMap.put(infra, cell);
             }
 
             // add the risks
-            Set<String> risks = knowledge.getEntities().get("risk");
-            for (String risk : risks) {
+            Set<Entity> risks = knowledge.getEntities().get(new Type("risk"));
+            for (Entity risk : risks) {
                 mxCell cell = insertRisk(risk, graph);
                 cellMap.put(risk, cell);
             }
@@ -245,22 +247,23 @@ public class RoCA extends BasicGraphEditor {
         }
     }
 
-    private mxCell insertEntity(String entity, mxGraph graph) {
+    private mxCell insertEntity(Entity entity, mxGraph graph) {
         Object parent = graph.getDefaultParent();
         int x = 100;
         int y = 100;
         int width = 160;
         int height = 120;
-        return (mxCell) graph.insertVertex(parent, entity, entity, x, y, width, height);
+        return (mxCell) graph.insertVertex(parent, entity.getName(), entity, x, y, width, height);
     }
 
-    private mxCell insertRisk(String risk, mxGraph graph) {
+    private mxCell insertRisk(Entity risk, mxGraph graph) {
         Object parent = graph.getDefaultParent();
         int x = 100;
         int y = 100;
         int width = 160;
         int height = 120;
-        return (mxCell) graph.insertVertex(parent, risk, risk, x, y, width, height, "rounded=1");
+        return (mxCell) graph.insertVertex(parent, risk.getName(), risk, x, y, width, height,
+                "rounded=1");
     }
 
     private mxCell insertDependsOn(mxCell source, mxCell target, mxGraph graph) {

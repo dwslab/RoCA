@@ -10,12 +10,12 @@ import java.util.Set;
 class AggregatedBackgroundKnowledge implements BackgroundKnowledge {
 
     private final Map<String, Predicate> predicates;
-    private final Set<String> types;
-    private final Map<String, Set<String>> entities;
+    private final Set<Type> types;
+    private final Map<Type, Set<Entity>> entities;
     private final Map<Predicate, Set<Grounding>> groundings;
 
-    AggregatedBackgroundKnowledge(Map<String, Predicate> predicates, Set<String> types,
-            Map<String, Set<String>> entities, Map<Predicate, Set<Grounding>> groundings) {
+    AggregatedBackgroundKnowledge(Map<String, Predicate> predicates, Set<Type> types,
+            Map<Type, Set<Entity>> entities, Map<Predicate, Set<Grounding>> groundings) {
         this.predicates = predicates;
         this.types = types;
         this.entities = entities;
@@ -28,12 +28,12 @@ class AggregatedBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
-    public Set<String> getTypes() {
+    public Set<Type> getTypes() {
         return Collections.unmodifiableSet(types);
     }
 
     @Override
-    public Map<String, Set<String>> getEntities() {
+    public Map<Type, Set<Entity>> getEntities() {
         return Collections.unmodifiableMap(entities);
     }
 

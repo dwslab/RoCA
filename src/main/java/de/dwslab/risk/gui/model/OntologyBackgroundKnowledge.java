@@ -35,8 +35,8 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
             IRI.create("http://dwslab.de/riskmanagement/usecase-printer.owl#hasMlnWeight");
 
     private final Map<String, Predicate> predicates;
-    private final Set<String> types;
-    private final Map<String, Set<String>> entities;
+    private final Set<Type> types;
+    private final Map<Type, Set<Entity>> entities;
     private final Map<Predicate, Set<Grounding>> groundings;
 
     public OntologyBackgroundKnowledge(Path ontology) {
@@ -62,12 +62,12 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
-    public Set<String> getTypes() {
+    public Set<Type> getTypes() {
         return types;
     }
 
     @Override
-    public Map<String, Set<String>> getEntities() {
+    public Map<Type, Set<Entity>> getEntities() {
         return entities;
     }
 
@@ -79,12 +79,12 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
     private static class BackgroundKnowledgeVisitor extends OWLObjectVisitorAdapter {
 
         private final Map<String, Predicate> predicates;
-        private final Set<String> types;
-        private final Map<String, Set<String>> entities;
+        private final Set<Type> types;
+        private final Map<Type, Set<Entity>> entities;
         private final Map<Predicate, Set<Grounding>> groundings;
 
-        public BackgroundKnowledgeVisitor(Map<String, Predicate> predicates, Set<String> types,
-                Map<String, Set<String>> entities, Map<Predicate, Set<Grounding>> groundings) {
+        public BackgroundKnowledgeVisitor(Map<String, Predicate> predicates, Set<Type> types,
+                Map<Type, Set<Entity>> entities, Map<Predicate, Set<Grounding>> groundings) {
             this.predicates = predicates;
             this.types = types;
             this.entities = entities;
@@ -209,7 +209,7 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
         @Override
         public void visit(OWLClass ce) {
             String name = getName(ce.getIRI());
-            types.add(name);
+            types.add(new Type(name));
         }
 
         @Override
