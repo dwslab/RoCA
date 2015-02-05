@@ -214,9 +214,7 @@ public class RoCA extends BasicGraphEditor {
             for (Grounding literal : hasRisks) {
                 String source = literal.getValues().get(0);
                 String target = literal.getValues().get(1);
-                String weightStr = literal.getValues().get(2);
-                double weight = Double.parseDouble(weightStr);
-                insertHasRisk(literal, cellMap.get(source), cellMap.get(target), weight, graph);
+                insertHasRisk(literal, cellMap.get(source), cellMap.get(target), graph);
             }
 
             Set<Grounding> offlines = groundings.get(new Predicate("offline"));
@@ -274,8 +272,7 @@ public class RoCA extends BasicGraphEditor {
         return (mxCell) graph.insertEdge(parent, id, grounding, source, target);
     }
 
-    private mxCell insertHasRisk(Grounding grounding, mxCell source, mxCell target, double weight,
-            mxGraph graph) {
+    private mxCell insertHasRisk(Grounding grounding, mxCell source, mxCell target, mxGraph graph) {
         Object parent = graph.getDefaultParent();
         String id = "hasRisk(" + source.getValue() + "," + target.getValue() + ")";
         return (mxCell) graph.insertEdge(parent, id, grounding, source, target);
