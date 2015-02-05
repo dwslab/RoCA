@@ -186,18 +186,18 @@ public class RoCA extends BasicGraphEditor {
             graph.removeCells();
 
             // add the new entities
-            Map<Entity, mxCell> cellMap = new HashMap<>();
+            Map<String, mxCell> cellMap = new HashMap<>();
             Set<Entity> infras = knowledge.getEntities().get(new Type("infra"));
             for (Entity infra : infras) {
                 mxCell cell = insertEntity(infra, graph);
-                cellMap.put(infra, cell);
+                cellMap.put(infra.getName(), cell);
             }
 
             // add the risks
             Set<Entity> risks = knowledge.getEntities().get(new Type("risk"));
             for (Entity risk : risks) {
                 mxCell cell = insertRisk(risk, graph);
-                cellMap.put(risk, cell);
+                cellMap.put(risk.getName(), cell);
             }
 
             Map<Predicate, Set<Grounding>> groundings = knowledge.getGroundings();
@@ -207,7 +207,7 @@ public class RoCA extends BasicGraphEditor {
             for (Grounding literal : dependsOns) {
                 String source = literal.getValues().get(0);
                 String target = literal.getValues().get(1);
-                insertDependsOn(cellMap.get(source), cellMap.get(target), graph);
+                insertDependsOn(literal, cellMap.get(source), cellMap.get(target), graph);
             }
 
             Set<Grounding> hasRisks = groundings.get(new Predicate("hasRiskDegree"));
@@ -216,7 +216,7 @@ public class RoCA extends BasicGraphEditor {
                 String target = literal.getValues().get(1);
                 String weightStr = literal.getValues().get(2);
                 double weight = Double.parseDouble(weightStr);
-                insertHasRisk(cellMap.get(source), cellMap.get(target), weight, graph);
+                insertHasRisk(literal, cellMap.get(source), cellMap.get(target), weight, graph);
             }
 
             Set<Grounding> offlines = groundings.get(new Predicate("offline"));
@@ -266,18 +266,17 @@ public class RoCA extends BasicGraphEditor {
                 "rounded=1");
     }
 
-    private mxCell insertDependsOn(mxCell source, mxCell target, mxGraph graph) {
+    private mxCell insertDependsOn(Grounding grounding, mxCell source, mxCell target, mxGraph graph) {
         Object parent = graph.getDefaultParent();
         String id = "dependsOn(" + source.getValue() + "," + target.getValue() + ")";
-        Object value = "dependsOn";
-        return (mxCell) graph.insertEdge(parent, id, value, source, target);
+        return (mxCell) graph.insertEdge(parent, id, grounding, source, target);
     }
 
-    private mxCell insertHasRisk(mxCell source, mxCell target, double weight, mxGraph graph) {
+    private mxCell insertHasRisk(Grounding grounding, mxCell source, mxCell target, double weight,
+            mxGraph graph) {
         Object parent = graph.getDefaultParent();
         String id = "hasRisk(" + source.getValue() + "," + target.getValue() + ")";
-        Object value = "hasRisk: " + weight;
-        return (mxCell) graph.insertEdge(parent, id, value, source, target);
+        return (mxCell) graph.insertEdge(parent, id, grounding, source, target);
     }
 
     /**
