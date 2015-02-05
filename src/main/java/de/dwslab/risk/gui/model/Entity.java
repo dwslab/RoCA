@@ -3,14 +3,14 @@ package de.dwslab.risk.gui.model;
 public class Entity {
 
     private final String name;
-    private final boolean offline;
+    private Boolean offline;
     private final Type type;
 
     public Entity(String name, Type type) {
-        this(name, type, false);
+        this(name, type, null);
     }
 
-    public Entity(String name, Type type, boolean offline) {
+    public Entity(String name, Type type, Boolean offline) {
         this.name = name;
         this.type = type;
         this.offline = offline;
@@ -24,8 +24,12 @@ public class Entity {
         return type;
     }
 
-    public boolean isOffline() {
+    public Boolean isOffline() {
         return offline;
+    }
+
+    public void setOffline(Boolean offline) {
+        this.offline = offline;
     }
 
     @Override
@@ -33,7 +37,7 @@ public class Entity {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + (offline ? 1231 : 1237);
+        result = prime * result + ((offline == null) ? 0 : offline.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
@@ -57,7 +61,18 @@ public class Entity {
         } else if (!name.equals(other.name)) {
             return false;
         }
-        if (offline != other.offline) {
+        if (offline == null) {
+            if (other.offline != null) {
+                return false;
+            }
+        } else if (!offline.equals(other.offline)) {
+            return false;
+        }
+        if (type == null) {
+            if (other.type != null) {
+                return false;
+            }
+        } else if (!type.equals(other.type)) {
             return false;
         }
         return true;

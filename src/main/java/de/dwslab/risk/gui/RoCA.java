@@ -223,6 +223,7 @@ public class RoCA extends BasicGraphEditor {
             for (Grounding literal : offlines) {
                 String infra = literal.getValues().get(0);
                 mxCell cell = cellMap.get(infra);
+                ((Entity) cell.getValue()).setOffline(Boolean.TRUE);
                 graph.getModel().setStyle(cell, "fillColor=#FF2222");
             }
 
@@ -230,6 +231,7 @@ public class RoCA extends BasicGraphEditor {
             for (Grounding literal : notOfflines) {
                 String infra = literal.getValues().get(0);
                 mxCell cell = cellMap.get(infra);
+                ((Entity) cell.getValue()).setOffline(Boolean.FALSE);
                 graph.getModel().setStyle(cell, "fillColor=#22FF22");
             }
         } finally {
