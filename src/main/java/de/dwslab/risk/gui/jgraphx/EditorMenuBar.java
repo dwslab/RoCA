@@ -69,6 +69,7 @@ import de.dwslab.risk.gui.jgraphx.EditorActions.ToggleRulersItem;
 import de.dwslab.risk.gui.jgraphx.EditorActions.WarningAction;
 import de.dwslab.risk.gui.jgraphx.EditorActions.ZoomPolicyAction;
 import de.dwslab.risk.gui.jgraphx.actions.LoadBackgroundKnowledgeAction;
+import de.dwslab.risk.gui.jgraphx.actions.RootCauseAnalysisAction;
 
 public class EditorMenuBar extends JMenuBar {
 
@@ -423,6 +424,8 @@ public class EditorMenuBar extends JMenuBar {
                 editor)));
         menu.add(editor.bind("Load Ontology...", new LoadBackgroundKnowledgeAction(ONTOLOGY,
                 editor)));
+        menu.addSeparator();
+        menu.add(editor.bind("Run Root Cause Analysis", new RootCauseAnalysisAction(editor)));
 
         // Creates a analyze menu
         menu = add(new JMenu("Analyze"));
