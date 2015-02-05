@@ -60,19 +60,12 @@ public class Entity {
         if (offline != other.offline) {
             return false;
         }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "Entity [name=" + name + ", offline=" + offline + ", type=" + type + "]";
+        return type.getName() + "(" + name + ")";
     }
 
 }
