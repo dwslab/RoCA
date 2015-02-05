@@ -42,4 +42,9 @@ public class Type {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Type [name=" + name + "]";
+    }
+
 }

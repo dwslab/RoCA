@@ -70,4 +70,9 @@ public class Entity {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Entity [name=" + name + ", offline=" + offline + ", type=" + type + "]";
+    }
+
 }
