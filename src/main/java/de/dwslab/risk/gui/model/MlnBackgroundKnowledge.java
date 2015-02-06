@@ -39,16 +39,23 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
                 .filter(str -> !str.isEmpty() && !str.startsWith("//") && !str.contains("v")
                         && !str.contains("\""))
                 .map(String::trim)
-                .map(str -> (str.startsWith("*") ? str.substring(1) : str))
                 .forEach(str -> {
-                    String name = str.substring(0, str.indexOf('('));
+                    String name;
+                    boolean observed;
+                    if (str.startsWith("*")) {
+                        name = str.substring(1, str.indexOf('('));
+                        observed = true;
+                    } else {
+                        name = str.substring(0, str.indexOf('('));
+                        observed = false;
+                    }
                     String[] typesStr = str.substring(str.indexOf('(') + 1, str.indexOf(')'))
                             .split("\\s*,\\s*");
                     List<Type> types = new ArrayList<>();
                     for (String type : typesStr) {
                         types.add(new Type(type));
                     }
-                    Predicate pred = new Predicate(name, false);
+                    Predicate pred = new Predicate(name, observed);
                     predicateTypes.put(pred, types);
                     map.put(name, pred);
                 });
