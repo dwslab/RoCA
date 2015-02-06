@@ -15,27 +15,29 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>net.sourceforge.owlapi</groupId>
-			<artifactId>owlapi-distribution</artifactId>
-			<version>4.0.1</version>
-		</dependency>
-
-		<dependency>
 			<groupId>de.dwslab</groupId>
 			<artifactId>ai_utils</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
+			<!-- https://code.google.com/p/rockit/ -->
 			<groupId>com.googlecode.rockit</groupId>
 			<artifactId>rockit</artifactId>
 			<version>[0.5.276,)</version>
 		</dependency>
 
 		<dependency>
+			<!-- https://github.com/jgraph/jgraphx -->
 			<groupId>com.mxgraph</groupId>
 			<artifactId>jgraphx</artifactId>
 			<version>3.1.2.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sourceforge.owlapi</groupId>
+			<artifactId>owlapi-distribution</artifactId>
+			<version>4.0.1</version>
 		</dependency>
 
 		<dependency>
