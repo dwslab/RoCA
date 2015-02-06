@@ -4,14 +4,24 @@ public class Predicate {
 
     private final boolean negated;
     private final String name;
+    private final boolean observed;
 
     public Predicate(String name) {
-        this(false, name);
+        this(false, name, false);
     }
 
     public Predicate(boolean negated, String name) {
+        this(negated, name, true);
+    }
+
+    public Predicate(String name, boolean observed) {
+        this(false, name, observed);
+    }
+
+    private Predicate(boolean negated, String name, boolean observed) {
         this.negated = negated;
         this.name = name;
+        this.observed = observed;
     }
 
     public boolean isNegated() {
@@ -20,6 +30,10 @@ public class Predicate {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isObserved() {
+        return observed;
     }
 
     @Override

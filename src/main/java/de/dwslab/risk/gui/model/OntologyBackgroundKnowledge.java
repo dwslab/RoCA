@@ -215,21 +215,21 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
         @Override
         public void visit(OWLObjectProperty property) {
             String name = getName(property.getIRI());
-            Predicate predicate = new Predicate(false, name);
+            Predicate predicate = new Predicate(name);
             predicates.put(name, predicate);
         }
 
         @Override
         public void visit(OWLDataProperty property) {
             String name = getName(property.getIRI());
-            Predicate predicate = new Predicate(false, name);
+            Predicate predicate = new Predicate(name);
             predicates.put(name, predicate);
         }
 
         @Override
         public void visit(OWLAnnotationProperty property) {
             String name = getName(property.getIRI());
-            Predicate predicate = new Predicate(false, name);
+            Predicate predicate = new Predicate(name);
             predicates.put(name, predicate);
         }
 

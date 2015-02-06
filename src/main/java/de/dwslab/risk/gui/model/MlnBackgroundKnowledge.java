@@ -48,7 +48,7 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
                     for (String type : typesStr) {
                         types.add(new Type(type));
                     }
-                    Predicate pred = new Predicate(false, name);
+                    Predicate pred = new Predicate(name, false);
                     predicateTypes.put(pred, types);
                     map.put(name, pred);
                 });
