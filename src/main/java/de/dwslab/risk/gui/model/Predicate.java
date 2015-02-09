@@ -1,27 +1,32 @@
 package de.dwslab.risk.gui.model;
 
+import java.util.Collections;
+import java.util.List;
+
 public class Predicate {
 
     private final boolean negated;
     private final String name;
     private final boolean observed;
+    private final List<Type> types;
 
     public Predicate(String name) {
-        this(false, name, false);
+        this(false, name, false, Collections.emptyList());
     }
 
     public Predicate(boolean negated, String name) {
-        this(negated, name, true);
+        this(negated, name, true, Collections.emptyList());
     }
 
-    public Predicate(String name, boolean observed) {
-        this(false, name, observed);
+    public Predicate(String name, boolean observed, List<Type> types) {
+        this(false, name, observed, types);
     }
 
-    private Predicate(boolean negated, String name, boolean observed) {
+    private Predicate(boolean negated, String name, boolean observed, List<Type> types) {
         this.negated = negated;
         this.name = name;
         this.observed = observed;
+        this.types = types;
     }
 
     public boolean isNegated() {
@@ -34,6 +39,10 @@ public class Predicate {
 
     public boolean isObserved() {
         return observed;
+    }
+
+    public List<Type> getTypes() {
+        return types;
     }
 
     @Override
