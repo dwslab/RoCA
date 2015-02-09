@@ -20,11 +20,13 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
     private final Map<Predicate, Set<Grounding>> groundings;
 
     private final Map<Predicate, List<Type>> predicateTypes;
+    private final List<Formula> formulas;
 
     public MlnBackgroundKnowledge(Path mln, Path evidence) {
         try {
             predicateTypes = new HashMap<>();
             predicates = parsePredicates(mln);
+            formulas = parseFormulas(mln);
             entities = parseEntities(evidence);
             groundings = parseGroundings(evidence);
         } catch (Exception e) {
@@ -61,6 +63,16 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
                 });
 
         return map;
+    }
+
+    private List<Formula> parseFormulas(Path mln) throws IOException {
+        List<Formula> formulas = new ArrayList<>();
+        Files.lines(mln)
+                .filter(str -> !str.isEmpty() && (str.startsWith("// ?") || str.contains(" v ")))
+                .forEach(str -> {
+                    formulas.add(new Formula(str));
+                });
+        return formulas;
     }
 
     private Map<Type, Set<Entity>> parseEntities(Path evidence) throws IOException {
