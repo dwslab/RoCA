@@ -43,6 +43,8 @@ public class RoCA extends BasicGraphEditor {
      */
     public static final NumberFormat numberFormat = NumberFormat.getInstance();
 
+    private BackgroundKnowledge knowledge;
+
     public RoCA() {
         super("RoCA", new CustomGraphComponent(new CustomGraph()));
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
@@ -174,7 +176,12 @@ public class RoCA extends BasicGraphEditor {
                 120, 120, "");
     }
 
+    public BackgroundKnowledge getBackgroundKnowledge() {
+        return knowledge;
+    }
+
     public void handleKnowledgeUpdate(BackgroundKnowledge knowledge) {
+        this.knowledge = knowledge;
         logger.debug("Updating background knowledge");
         mxGraph graph = graphComponent.getGraph();
 

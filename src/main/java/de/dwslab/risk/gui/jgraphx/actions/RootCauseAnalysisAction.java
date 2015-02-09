@@ -1,11 +1,18 @@
 package de.dwslab.risk.gui.jgraphx.actions;
 
+import static de.dwslab.ai.util.Utils.createTempFile;
+
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+
+import com.googlecode.rockit.app.RockItAPI;
+import com.googlecode.rockit.app.result.RockItResult;
 
 import de.dwslab.risk.gui.RoCA;
 
@@ -20,6 +27,7 @@ public class RootCauseAnalysisAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.err.println("action performed");
 
         ProgressMonitor monitor = new ProgressMonitor(
                 SwingUtilities.getWindowAncestor(roca),
@@ -31,15 +39,20 @@ public class RootCauseAnalysisAction extends AbstractAction {
 
             @Override
             protected Void doInBackground() throws Exception {
-                // TODO convert the internal graph model to a rockit model
+                System.err.println("doing in background");
 
-                // TODO extend the model for abductive reasoning
+                File mlnFile = createTempFile("mln-", ".mln");
+                File evidenceFile = createTempFile("evidence-", ".db");
 
-                // TODO call the rockit API
+                roca.getBackgroundKnowledge().exportAsMln(mlnFile.toPath(), evidenceFile.toPath());
 
-                // TODO retrieve the result
+                RockItAPI rockit = new RockItAPI("src/main/resources/rockit.properties");
+                List<RockItResult> mapState = rockit.doMapState(mlnFile.getAbsolutePath(),
+                        evidenceFile.getAbsolutePath());
 
-                // TODO diff the result and show the root cause
+                mapState.forEach(m -> System.err.println(m));
+
+                System.err.println(mapState.size());
 
                 return null;
             }
@@ -52,5 +65,4 @@ public class RootCauseAnalysisAction extends AbstractAction {
 
         sw.execute();
     }
-
 }

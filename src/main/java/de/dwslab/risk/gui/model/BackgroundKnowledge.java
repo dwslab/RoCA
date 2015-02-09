@@ -85,7 +85,7 @@ public interface BackgroundKnowledge {
                 mlnWriter.write(formula.getFormula());
                 mlnWriter.newLine();
             }
-
+            mlnWriter.flush();
         } catch (IOException e) {
             throw new RoCAException("Cannot write model file.", e);
         }
@@ -111,6 +111,7 @@ public interface BackgroundKnowledge {
                         evidenceWriter.write(')');
                         evidenceWriter.newLine();
                     }));
+            evidenceWriter.flush();
         } catch (IOException e) {
             throw new RoCAException("Cannot write evidence file.", e);
         }
