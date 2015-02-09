@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ public interface BackgroundKnowledge {
     public static BackgroundKnowledge aggregate(Collection<BackgroundKnowledge> knowledgeBases) {
         Map<String, Predicate> predicates = new HashMap<>();
         Set<Type> types = new HashSet<>();
+        List<Formula> formulas = new ArrayList<>();
         Map<Type, Set<Entity>> entities = new HashMap<>();
         Map<Predicate, Set<Grounding>> groundings = new HashMap<>();
 
@@ -45,6 +47,9 @@ public interface BackgroundKnowledge {
                 }
                 set.addAll(entry.getValue());
             }
+            for (Formula formula : knowledge.getFormulas()) {
+                formulas.add(formula);
+            }
             for (Entry<Predicate, Set<Grounding>> entry : knowledge.getGroundings().entrySet()) {
                 Set<Grounding> set = groundings.get(entry.getKey());
                 if (set == null) {
@@ -54,7 +59,7 @@ public interface BackgroundKnowledge {
                 set.addAll(entry.getValue());
             }
         }
-        return new AggregatedBackgroundKnowledge(predicates, types, entities, groundings);
+        return new AggregatedBackgroundKnowledge(predicates, types, formulas, entities, groundings);
     }
 
     public default void exportAsMln(Path mln, Path evidence) {
@@ -75,8 +80,11 @@ public interface BackgroundKnowledge {
                 mlnWriter.write(')');
                 mlnWriter.newLine();
             }
-
-            // TODO write formulas
+            mlnWriter.newLine();
+            for (Formula formula : getFormulas()) {
+                mlnWriter.write(formula.getFormula());
+                mlnWriter.newLine();
+            }
 
         } catch (IOException e) {
             throw new RoCAException("Cannot write model file.", e);
@@ -121,6 +129,11 @@ public interface BackgroundKnowledge {
      * @return the types
      */
     public Set<Type> getTypes();
+
+    /**
+     * @return the formulas
+     */
+    public List<Formula> getFormulas();
 
     /**
      * @return the entities

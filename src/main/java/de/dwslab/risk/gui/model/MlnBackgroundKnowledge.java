@@ -142,6 +142,11 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
+    public List<Formula> getFormulas() {
+        return formulas;
+    }
+
+    @Override
     public Map<Type, Set<Entity>> getEntities() {
         return entities;
     }

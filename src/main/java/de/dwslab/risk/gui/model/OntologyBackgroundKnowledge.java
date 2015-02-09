@@ -67,6 +67,11 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
+    public List<Formula> getFormulas() {
+        return null;
+    }
+
+    @Override
     public Map<Type, Set<Entity>> getEntities() {
         return entities;
     }

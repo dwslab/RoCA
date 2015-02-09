@@ -1,6 +1,7 @@
 package de.dwslab.risk.gui.model;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,11 +14,14 @@ class AggregatedBackgroundKnowledge implements BackgroundKnowledge {
     private final Set<Type> types;
     private final Map<Type, Set<Entity>> entities;
     private final Map<Predicate, Set<Grounding>> groundings;
+    private List<Formula> formulas;
 
     AggregatedBackgroundKnowledge(Map<String, Predicate> predicates, Set<Type> types,
-            Map<Type, Set<Entity>> entities, Map<Predicate, Set<Grounding>> groundings) {
+            List<Formula> formulas, Map<Type, Set<Entity>> entities,
+            Map<Predicate, Set<Grounding>> groundings) {
         this.predicates = predicates;
         this.types = types;
+        this.formulas = formulas;
         this.entities = entities;
         this.groundings = groundings;
     }
@@ -30,6 +34,11 @@ class AggregatedBackgroundKnowledge implements BackgroundKnowledge {
     @Override
     public Set<Type> getTypes() {
         return Collections.unmodifiableSet(types);
+    }
+
+    @Override
+    public List<Formula> getFormulas() {
+        return formulas;
     }
 
     @Override
