@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import com.googlecode.rockit.app.RockItAPI;
 import com.googlecode.rockit.app.result.RockItResult;
 
+import de.dwslab.ai.riskmanagement.abduction.existential.ExistentialApi;
 import de.dwslab.risk.gui.RoCA;
 
 public class RootCauseAnalysisAction extends AbstractAction {
@@ -58,11 +59,16 @@ public class RootCauseAnalysisAction extends AbstractAction {
             roca.getBackgroundKnowledge().exportAsMln(mlnFile.toPath(), evidenceFile.toPath());
 
             // Extend the MLN for abductive reasoning
+            ExistentialApi api = new ExistentialApi();
+            File mlnExtFile = createTempFile("mln-", ".mln");
+            File evidenceExtFile = createTempFile("evidence-", ".db");
+            api.existenitalApi(mlnFile.getAbsolutePath(), evidenceFile.getAbsolutePath(),
+                    mlnExtFile.getAbsolutePath(), evidenceExtFile.getAbsolutePath());
 
             // Run RockIt
             RockItAPI rockit = new RockItAPI("src/main/resources/rockit.properties");
-            List<RockItResult> mapState = rockit.doMapState(mlnFile.getAbsolutePath(),
-                    evidenceFile.getAbsolutePath());
+            List<RockItResult> mapState = rockit.doMapState(mlnExtFile.getAbsolutePath(),
+                    evidenceExtFile.getAbsolutePath());
 
             // Process the result
             mapState.forEach(m -> System.err.println(m));
