@@ -232,7 +232,7 @@ public class RoCA extends BasicGraphEditor {
                 graph.getModel().setStyle(cell, "fillColor=#FF2222");
             }
 
-            Set<Grounding> notOfflines = groundings.get(new Predicate("offline"));
+            Set<Grounding> notOfflines = groundings.get(new Predicate(true, "offline"));
             for (Grounding literal : notOfflines) {
                 String infra = literal.getValues().get(0);
                 mxCell cell = cellMap.get(infra);
