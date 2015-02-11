@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -109,6 +110,13 @@ public class RootCauseAnalysisAction extends AbstractAction {
             monitor.close();
             if (e != null) {
                 throw new RoCAException("Exception during root cause analysis", e);
+            } else {
+                try {
+                    Set<Grounding> rootCause = get();
+                    JOptionPane.showMessageDialog(roca, "Proposed root cause:\n" + rootCause);
+                } catch (Exception e) {
+                    throw new RoCAException("Should Not Happen™", e);
+                }
             }
         }
 
