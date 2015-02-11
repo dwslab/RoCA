@@ -1,6 +1,10 @@
 package de.dwslab.risk.gui.model;
 
-public class Entity {
+import java.io.Serializable;
+
+public class Entity implements Serializable {
+
+    private static final long serialVersionUID = -566950411586680045L;
 
     private final String name;
     private Boolean offline;

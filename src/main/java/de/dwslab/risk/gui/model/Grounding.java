@@ -1,8 +1,11 @@
 package de.dwslab.risk.gui.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Grounding {
+public class Grounding implements Serializable {
+
+    private static final long serialVersionUID = 4692532312791603293L;
 
     private final Predicate predicate;
     private final List<String> values;
@@ -18,6 +21,44 @@ public class Grounding {
 
     public List<String> getValues() {
         return values;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((predicate == null) ? 0 : predicate.hashCode());
+        result = prime * result + ((values == null) ? 0 : values.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Grounding other = (Grounding) obj;
+        if (predicate == null) {
+            if (other.predicate != null) {
+                return false;
+            }
+        } else if (!predicate.equals(other.predicate)) {
+            return false;
+        }
+        if (values == null) {
+            if (other.values != null) {
+                return false;
+            }
+        } else if (!values.equals(other.values)) {
+            return false;
+        }
+        return true;
     }
 
     public String valuesToString() {

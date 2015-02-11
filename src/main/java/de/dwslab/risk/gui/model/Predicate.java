@@ -1,9 +1,12 @@
 package de.dwslab.risk.gui.model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-public class Predicate {
+public class Predicate implements Serializable {
+
+    private static final long serialVersionUID = -5665299561795081532L;
 
     private final boolean negated;
     private final String name;

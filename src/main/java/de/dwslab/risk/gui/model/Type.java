@@ -1,6 +1,10 @@
 package de.dwslab.risk.gui.model;
 
-public class Type {
+import java.io.Serializable;
+
+public class Type implements Serializable {
+
+    private static final long serialVersionUID = -4714484350120480342L;
 
     private final String name;
 
