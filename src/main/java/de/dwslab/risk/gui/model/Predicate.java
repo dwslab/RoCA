@@ -1,10 +1,9 @@
 package de.dwslab.risk.gui.model;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-public class Predicate implements Serializable {
+public class Predicate implements UserObject {
 
     private static final long serialVersionUID = -5665299561795081532L;
 
@@ -46,6 +45,11 @@ public class Predicate implements Serializable {
 
     public List<Type> getTypes() {
         return types;
+    }
+
+    @Override
+    public void accept(UserObjectVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override

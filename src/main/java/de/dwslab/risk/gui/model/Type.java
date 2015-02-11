@@ -1,8 +1,6 @@
 package de.dwslab.risk.gui.model;
 
-import java.io.Serializable;
-
-public class Type implements Serializable {
+public class Type implements UserObject {
 
     private static final long serialVersionUID = -4714484350120480342L;
 
@@ -14,6 +12,11 @@ public class Type implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void accept(UserObjectVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override

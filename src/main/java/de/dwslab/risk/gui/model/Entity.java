@@ -1,8 +1,6 @@
 package de.dwslab.risk.gui.model;
 
-import java.io.Serializable;
-
-public class Entity implements Serializable {
+public class Entity implements UserObject {
 
     private static final long serialVersionUID = -566950411586680045L;
 
@@ -34,6 +32,11 @@ public class Entity implements Serializable {
 
     public void setOffline(Boolean offline) {
         this.offline = offline;
+    }
+
+    @Override
+    public void accept(UserObjectVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override

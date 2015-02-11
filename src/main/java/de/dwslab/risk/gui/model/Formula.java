@@ -1,6 +1,8 @@
 package de.dwslab.risk.gui.model;
 
-public class Formula {
+public class Formula implements UserObject {
+
+    private static final long serialVersionUID = -5227362420903849668L;
 
     private final String formula;
 
@@ -10,6 +12,11 @@ public class Formula {
 
     public String getFormula() {
         return formula;
+    }
+
+    @Override
+    public void accept(UserObjectVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override

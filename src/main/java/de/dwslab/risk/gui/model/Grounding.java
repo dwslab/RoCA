@@ -1,9 +1,8 @@
 package de.dwslab.risk.gui.model;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class Grounding implements Serializable {
+public class Grounding implements UserObject {
 
     private static final long serialVersionUID = 4692532312791603293L;
 
@@ -21,6 +20,11 @@ public class Grounding implements Serializable {
 
     public List<String> getValues() {
         return values;
+    }
+
+    @Override
+    public void accept(UserObjectVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override
