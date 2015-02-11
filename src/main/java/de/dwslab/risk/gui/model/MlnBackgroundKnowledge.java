@@ -6,25 +6,26 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 
 import de.dwslab.risk.gui.exception.RoCAException;
 
 public class MlnBackgroundKnowledge implements BackgroundKnowledge {
 
     private final Map<String, Predicate> predicates;
-    private final Map<Type, Set<Entity>> entities;
-    private final Map<Predicate, Set<Grounding>> groundings;
-
-    private final Map<Predicate, List<Type>> predicateTypes;
+    private final HashMultimap<Type, Entity> entities;
+    private final HashMultimap<Predicate, Grounding> groundings;
     private final List<Formula> formulas;
+    private final ArrayListMultimap<Predicate, Type> predicateTypes;
 
     public MlnBackgroundKnowledge(Path mln, Path evidence) {
         try {
-            predicateTypes = new HashMap<>();
+            predicateTypes = ArrayListMultimap.create();
             predicates = parsePredicates(mln);
             formulas = parseFormulas(mln);
             entities = parseEntities(evidence);
@@ -58,7 +59,7 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
                         types.add(new Type(type));
                     }
                     Predicate pred = new Predicate(name, observed, types);
-                    predicateTypes.put(pred, types);
+                    predicateTypes.putAll(pred, types);
                     map.put(name, pred);
                 });
 
@@ -75,8 +76,8 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
         return formulas;
     }
 
-    private Map<Type, Set<Entity>> parseEntities(Path evidence) throws IOException {
-        Map<Type, Set<Entity>> entities = new HashMap<>();
+    private HashMultimap<Type, Entity> parseEntities(Path evidence) throws IOException {
+        HashMultimap<Type, Entity> entities = HashMultimap.create();
 
         Files.lines(evidence)
                 .filter(str -> !str.isEmpty() && !str.startsWith("//"))
@@ -91,20 +92,15 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
                     for (int i = 0; i < types.size(); i++) {
                         Type type = types.get(i);
                         String entity = entititesArr[i];
-                        Set<Entity> entitySet = entities.get(type);
-                        if (entitySet == null) {
-                            entitySet = new HashSet<>();
-                            entities.put(type, entitySet);
-                        }
-                        entitySet.add(new Entity(entity, type));
+                        entities.put(type, new Entity(entity, type));
                     }
                 });
 
         return entities;
     }
 
-    private Map<Predicate, Set<Grounding>> parseGroundings(Path evidence) throws Exception {
-        Map<Predicate, Set<Grounding>> groundings = new HashMap<>();
+    private HashMultimap<Predicate, Grounding> parseGroundings(Path evidence) throws Exception {
+        HashMultimap<Predicate, Grounding> groundings = HashMultimap.create();
 
         Files.lines(evidence)
                 .filter(str -> !str.isEmpty() && !str.startsWith("//"))
@@ -120,12 +116,7 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
                     String[] entititesArr = entitiesString.split("\\s*,\\s*");
 
                     Grounding literal = new Grounding(predicate, Arrays.asList(entititesArr));
-                    Set<Grounding> groundingsSet = groundings.get(predicate);
-                    if (groundingsSet == null) {
-                        groundingsSet = new HashSet<>();
-                        groundings.put(predicate, groundingsSet);
-                    }
-                    groundingsSet.add(literal);
+                    groundings.put(predicate, literal);
                 });
 
         return groundings;
@@ -147,12 +138,12 @@ public class MlnBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
-    public Map<Type, Set<Entity>> getEntities() {
+    public HashMultimap<Type, Entity> getEntities() {
         return entities;
     }
 
     @Override
-    public Map<Predicate, Set<Grounding>> getGroundings() {
+    public HashMultimap<Predicate, Grounding> getGroundings() {
         return groundings;
     }
 

@@ -8,12 +8,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.dwslab.risk.gui.model.BackgroundKnowledge;
-import de.dwslab.risk.gui.model.Entity;
-import de.dwslab.risk.gui.model.Grounding;
-import de.dwslab.risk.gui.model.MlnBackgroundKnowledge;
-import de.dwslab.risk.gui.model.Predicate;
-import de.dwslab.risk.gui.model.Type;
+import com.google.common.collect.HashMultimap;
 
 public class MlnBackgroundKnowledgeTest {
 
@@ -43,25 +38,15 @@ public class MlnBackgroundKnowledgeTest {
     @Test
     public void testGetEntities() {
         BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln, evidence);
-        Map<Type, Set<Entity>> entities = kb.getEntities();
-        int size = 0;
-        for (Set<Entity> names : entities.values()) {
-            System.out.println(names);
-            size += names.size();
-        }
-        Assert.assertEquals("Wrong number of entities", 11, size);
+        HashMultimap<Type, Entity> entities = kb.getEntities();
+        Assert.assertEquals("Wrong number of entities", 11, entities.size());
     }
 
     @Test
     public void testGetGroundings() {
         BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln, evidence);
-        Map<Predicate, Set<Grounding>> groundings = kb.getGroundings();
-        int size = 0;
-        for (Set<Grounding> names : groundings.values()) {
-            System.out.println(names);
-            size += names.size();
-        }
-        Assert.assertEquals("Wrong number of groundings", 8, size);
+        HashMultimap<Predicate, Grounding> groundings = kb.getGroundings();
+        Assert.assertEquals("Wrong number of groundings", 8, groundings.size());
     }
 
 }

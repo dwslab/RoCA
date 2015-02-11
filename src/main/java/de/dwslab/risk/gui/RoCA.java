@@ -13,6 +13,7 @@ import javax.swing.UIManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.collect.HashMultimap;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.util.mxGraphTransferable;
@@ -207,7 +208,7 @@ public class RoCA extends BasicGraphEditor {
                 cellMap.put(risk.getName(), cell);
             }
 
-            Map<Predicate, Set<Grounding>> groundings = knowledge.getGroundings();
+            HashMultimap<Predicate, Grounding> groundings = knowledge.getGroundings();
 
             // connect the entities with edges
             Set<Grounding> dependsOns = groundings.get(new Predicate("dependsOn"));

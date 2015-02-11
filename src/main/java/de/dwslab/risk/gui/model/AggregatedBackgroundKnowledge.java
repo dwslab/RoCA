@@ -1,9 +1,10 @@
 package de.dwslab.risk.gui.model;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.common.collect.HashMultimap;
 
 /**
  * @author Joerg Schoenfisch
@@ -12,13 +13,13 @@ class AggregatedBackgroundKnowledge implements BackgroundKnowledge {
 
     private final Map<String, Predicate> predicates;
     private final Set<Type> types;
-    private final Map<Type, Set<Entity>> entities;
-    private final Map<Predicate, Set<Grounding>> groundings;
-    private List<Formula> formulas;
+    private final HashMultimap<Type, Entity> entities;
+    private final HashMultimap<Predicate, Grounding> groundings;
+    private final List<Formula> formulas;
 
     AggregatedBackgroundKnowledge(Map<String, Predicate> predicates, Set<Type> types,
-            List<Formula> formulas, Map<Type, Set<Entity>> entities,
-            Map<Predicate, Set<Grounding>> groundings) {
+            List<Formula> formulas, HashMultimap<Type, Entity> entities,
+            HashMultimap<Predicate, Grounding> groundings) {
         this.predicates = predicates;
         this.types = types;
         this.formulas = formulas;
@@ -28,12 +29,12 @@ class AggregatedBackgroundKnowledge implements BackgroundKnowledge {
 
     @Override
     public Map<String, Predicate> getPredicates() {
-        return Collections.unmodifiableMap(predicates);
+        return predicates;
     }
 
     @Override
     public Set<Type> getTypes() {
-        return Collections.unmodifiableSet(types);
+        return types;
     }
 
     @Override
@@ -42,13 +43,13 @@ class AggregatedBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
-    public Map<Type, Set<Entity>> getEntities() {
-        return Collections.unmodifiableMap(entities);
+    public HashMultimap<Type, Entity> getEntities() {
+        return entities;
     }
 
     @Override
-    public Map<Predicate, Set<Grounding>> getGroundings() {
-        return Collections.unmodifiableMap(groundings);
+    public HashMultimap<Predicate, Grounding> getGroundings() {
+        return groundings;
     }
 
 }

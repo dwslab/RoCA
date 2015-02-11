@@ -13,8 +13,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 import de.dwslab.risk.gui.exception.RoCAException;
 
@@ -29,35 +31,15 @@ public interface BackgroundKnowledge {
         Map<String, Predicate> predicates = new HashMap<>();
         Set<Type> types = new HashSet<>();
         List<Formula> formulas = new ArrayList<>();
-        Map<Type, Set<Entity>> entities = new HashMap<>();
-        Map<Predicate, Set<Grounding>> groundings = new HashMap<>();
+        HashMultimap<Type, Entity> entities = HashMultimap.create();
+        HashMultimap<Predicate, Grounding> groundings = HashMultimap.create();
 
         for (BackgroundKnowledge knowledge : knowledgeBases) {
-            for (Entry<String, Predicate> entry : knowledge.getPredicates().entrySet()) {
-                if (!predicates.containsKey(entry.getKey())) {
-                    predicates.put(entry.getKey(), entry.getValue());
-                }
-            }
+            predicates.putAll(knowledge.getPredicates());
             types.addAll(knowledge.getTypes());
-            for (Entry<Type, Set<Entity>> entry : knowledge.getEntities().entrySet()) {
-                Set<Entity> set = entities.get(entry.getKey());
-                if (set == null) {
-                    set = new HashSet<>();
-                    entities.put(entry.getKey(), set);
-                }
-                set.addAll(entry.getValue());
-            }
-            for (Formula formula : knowledge.getFormulas()) {
-                formulas.add(formula);
-            }
-            for (Entry<Predicate, Set<Grounding>> entry : knowledge.getGroundings().entrySet()) {
-                Set<Grounding> set = groundings.get(entry.getKey());
-                if (set == null) {
-                    set = new HashSet<>();
-                    groundings.put(entry.getKey(), set);
-                }
-                set.addAll(entry.getValue());
-            }
+            entities.putAll(knowledge.getEntities());
+            formulas.addAll(knowledge.getFormulas());
+            groundings.putAll(knowledge.getGroundings());
         }
         return new AggregatedBackgroundKnowledge(predicates, types, formulas, entities, groundings);
     }
@@ -91,9 +73,8 @@ public interface BackgroundKnowledge {
         }
 
         try (BufferedWriter evidenceWriter = Files.newBufferedWriter(evidence)) {
-            Map<Predicate, Set<Grounding>> groundings = getGroundings();
+            Multimap<Predicate, Grounding> groundings = getGroundings();
             groundings.values().stream()
-                    .flatMap(g -> g.stream())
                     .forEach(consumer(g -> {
                         Predicate predicate = g.getPredicate();
                         if (predicate.isNegated()) {
@@ -139,11 +120,11 @@ public interface BackgroundKnowledge {
     /**
      * @return the entities
      */
-    public Map<Type, Set<Entity>> getEntities();
+    public HashMultimap<Type, Entity> getEntities();
 
     /**
      * @return the groundings
      */
-    public Map<Predicate, Set<Grounding>> getGroundings();
+    public HashMultimap<Predicate, Grounding> getGroundings();
 
 }

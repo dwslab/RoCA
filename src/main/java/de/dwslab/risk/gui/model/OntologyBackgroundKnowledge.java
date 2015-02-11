@@ -27,6 +27,8 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.util.OWLObjectVisitorAdapter;
 import org.semanticweb.owlapi.util.OWLOntologyWalker;
 
+import com.google.common.collect.HashMultimap;
+
 import de.dwslab.risk.gui.exception.RoCAException;
 
 public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
@@ -36,8 +38,8 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
 
     private final Map<String, Predicate> predicates;
     private final Set<Type> types;
-    private final Map<Type, Set<Entity>> entities;
-    private final Map<Predicate, Set<Grounding>> groundings;
+    private final HashMultimap<Type, Entity> entities;
+    private final HashMultimap<Predicate, Grounding> groundings;
 
     public OntologyBackgroundKnowledge(Path ontology) {
         try {
@@ -46,8 +48,8 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
             OWLOntologyWalker walker = new OWLOntologyWalker(Collections.singleton(owlOntology));
             predicates = new HashMap<>();
             types = new HashSet<>();
-            entities = new HashMap<>();
-            groundings = new HashMap<>();
+            entities = HashMultimap.create();
+            groundings = HashMultimap.create();
             BackgroundKnowledgeVisitor visitor =
                     new BackgroundKnowledgeVisitor(predicates, types, entities, groundings);
             walker.walkStructure(visitor);
@@ -72,12 +74,12 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
     }
 
     @Override
-    public Map<Type, Set<Entity>> getEntities() {
+    public HashMultimap<Type, Entity> getEntities() {
         return entities;
     }
 
     @Override
-    public Map<Predicate, Set<Grounding>> getGroundings() {
+    public HashMultimap<Predicate, Grounding> getGroundings() {
         return groundings;
     }
 
@@ -85,11 +87,11 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
 
         private final Map<String, Predicate> predicates;
         private final Set<Type> types;
-        private final Map<Type, Set<Entity>> entities;
-        private final Map<Predicate, Set<Grounding>> groundings;
+        private final HashMultimap<Type, Entity> entities;
+        private final HashMultimap<Predicate, Grounding> groundings;
 
         public BackgroundKnowledgeVisitor(Map<String, Predicate> predicates, Set<Type> types,
-                Map<Type, Set<Entity>> entities, Map<Predicate, Set<Grounding>> groundings) {
+                HashMultimap<Type, Entity> entities, HashMultimap<Predicate, Grounding> groundings) {
             this.predicates = predicates;
             this.types = types;
             this.entities = entities;
@@ -140,12 +142,7 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
 
             Predicate predicate = new Predicate(property);
             Grounding literal = new Grounding(predicate, values);
-            Set<Grounding> literals = groundings.get(property);
-            if (literals == null) {
-                literals = new HashSet<>();
-                groundings.put(predicate, literals);
-            }
-            literals.add(literal);
+            groundings.put(predicate, literal);
         }
 
         @Override
@@ -170,12 +167,7 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
 
             Predicate predicate = new Predicate(theClass);
             Grounding literal = new Grounding(predicate, values);
-            Set<Grounding> literals = groundings.get(theClass);
-            if (literals == null) {
-                literals = new HashSet<>();
-                groundings.put(predicate, literals);
-            }
-            literals.add(literal);
+            groundings.put(predicate, literal);
         }
 
         @Override
@@ -203,12 +195,7 @@ public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
 
             Predicate predicate = new Predicate(property);
             Grounding literal = new Grounding(predicate, values);
-            Set<Grounding> literals = groundings.get(property);
-            if (literals == null) {
-                literals = new HashSet<>();
-                groundings.put(predicate, literals);
-            }
-            literals.add(literal);
+            groundings.put(predicate, literal);
         }
 
         @Override
