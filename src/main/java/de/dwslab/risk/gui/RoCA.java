@@ -29,6 +29,7 @@ import de.dwslab.risk.gui.jgraphx.EditorPalette;
 import de.dwslab.risk.gui.model.BackgroundKnowledge;
 import de.dwslab.risk.gui.model.Entity;
 import de.dwslab.risk.gui.model.Grounding;
+import de.dwslab.risk.gui.model.GuiBackgroundKnowledge;
 import de.dwslab.risk.gui.model.Predicate;
 import de.dwslab.risk.gui.model.Type;
 
@@ -178,7 +179,7 @@ public class RoCA extends BasicGraphEditor {
     }
 
     public BackgroundKnowledge getBackgroundKnowledge() {
-        return knowledge;
+        return new GuiBackgroundKnowledge(graphComponent.getGraph());
     }
 
     public void handleKnowledgeUpdate(BackgroundKnowledge knowledge) {
