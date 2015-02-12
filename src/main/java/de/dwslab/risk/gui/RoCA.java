@@ -38,14 +38,14 @@ public class RoCA extends BasicGraphEditor {
     private static final long serialVersionUID = -4601740824088314699L;
     private static final Logger logger = LogManager.getLogger();
 
+    private BackgroundKnowledge knowledge;
+
     /**
      * Holds the shared number formatter.
      *
      * @see NumberFormat#getInstance()
      */
     public static final NumberFormat numberFormat = NumberFormat.getInstance();
-
-    private BackgroundKnowledge knowledge;
 
     public RoCA() {
         super("RoCA", new CustomGraphComponent(new CustomGraph()));
@@ -179,12 +179,12 @@ public class RoCA extends BasicGraphEditor {
     }
 
     public BackgroundKnowledge getBackgroundKnowledge() {
-        return new GuiBackgroundKnowledge(graphComponent.getGraph());
+        return new GuiBackgroundKnowledge(graphComponent.getGraph(), knowledge);
     }
 
     public void handleKnowledgeUpdate(BackgroundKnowledge knowledge) {
-        this.knowledge = knowledge;
         logger.debug("Updating background knowledge");
+        this.knowledge = knowledge;
         mxGraph graph = graphComponent.getGraph();
 
         try {

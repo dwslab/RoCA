@@ -1,8 +1,5 @@
 package de.dwslab.risk.gui.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,15 +16,15 @@ public class GuiBackgroundKnowledge implements BackgroundKnowledge {
     private final HashMultimap<Predicate, Grounding> groundings;
     private final List<Formula> formulas;
 
-    public GuiBackgroundKnowledge(mxGraph graph) {
-        predicates = new HashMap<>();
-        types = new HashSet<>();
+    public GuiBackgroundKnowledge(mxGraph graph, BackgroundKnowledge knowledge) {
+        predicates = knowledge.getPredicates();
+        types = knowledge.getTypes();
+        formulas = knowledge.getFormulas();
+
         entities = HashMultimap.create();
         groundings = HashMultimap.create();
-        formulas = new ArrayList<>();
 
-        KnowledgeGraphVisitor visitor = new KnowledgeGraphVisitor(predicates, types, formulas,
-                entities, groundings);
+        KnowledgeGraphVisitor visitor = new KnowledgeGraphVisitor(entities, groundings);
         mxCell parent = (mxCell) graph.getDefaultParent();
         for (int i = 0; i < parent.getChildCount(); i++) {
             mxCell cell = (mxCell) parent.getChildAt(i);
@@ -63,18 +60,11 @@ public class GuiBackgroundKnowledge implements BackgroundKnowledge {
 
     private static class KnowledgeGraphVisitor implements UserObjectVisitor {
 
-        private final Map<String, Predicate> predicates;
-        private final Set<Type> types;
         private final HashMultimap<Type, Entity> entities;
         private final HashMultimap<Predicate, Grounding> groundings;
-        private final List<Formula> formulas;
 
-        public KnowledgeGraphVisitor(Map<String, Predicate> predicates, Set<Type> types,
-                List<Formula> formulas, HashMultimap<Type, Entity> entities,
+        public KnowledgeGraphVisitor(HashMultimap<Type, Entity> entities,
                 HashMultimap<Predicate, Grounding> groundings) {
-            this.predicates = predicates;
-            this.types = types;
-            this.formulas = formulas;
             this.entities = entities;
             this.groundings = groundings;
         }
@@ -86,7 +76,7 @@ public class GuiBackgroundKnowledge implements BackgroundKnowledge {
 
         @Override
         public void visit(Formula formula) {
-            formulas.add(formula);
+            // ignore
         }
 
         @Override
@@ -96,12 +86,12 @@ public class GuiBackgroundKnowledge implements BackgroundKnowledge {
 
         @Override
         public void visit(Predicate predicate) {
-            predicates.put(predicate.getName(), predicate);
+            // ignore
         }
 
         @Override
         public void visit(Type type) {
-            types.add(type);
+            // ignore
         }
 
     }
