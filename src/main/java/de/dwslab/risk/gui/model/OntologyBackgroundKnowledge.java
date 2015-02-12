@@ -31,7 +31,7 @@ import com.google.common.collect.HashMultimap;
 
 import de.dwslab.risk.gui.exception.RoCAException;
 
-public class OntologyBackgroundKnowledge implements BackgroundKnowledge {
+public class OntologyBackgroundKnowledge extends AbstractBackgroundKnowledge {
 
     private static final IRI hasWeight =
             IRI.create("http://dwslab.de/riskmanagement/usecase-printer.owl#hasMlnWeight");

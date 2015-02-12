@@ -15,7 +15,7 @@ import com.google.common.collect.HashMultimap;
 
 import de.dwslab.risk.gui.exception.RoCAException;
 
-public class MlnBackgroundKnowledge implements BackgroundKnowledge {
+public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
 
     private final Map<String, Predicate> predicates;
     private final HashMultimap<Type, Entity> entities;

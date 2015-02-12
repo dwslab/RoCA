@@ -9,7 +9,7 @@ import com.google.common.collect.HashMultimap;
 /**
  * @author Joerg Schoenfisch
  */
-class AggregatedBackgroundKnowledge implements BackgroundKnowledge {
+class AggregatedBackgroundKnowledge extends AbstractBackgroundKnowledge {
 
     private final Map<String, Predicate> predicates;
     private final Set<Type> types;

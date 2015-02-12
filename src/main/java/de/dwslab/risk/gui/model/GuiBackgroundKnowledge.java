@@ -8,7 +8,7 @@ import com.google.common.collect.HashMultimap;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.view.mxGraph;
 
-public class GuiBackgroundKnowledge implements BackgroundKnowledge {
+public class GuiBackgroundKnowledge extends AbstractBackgroundKnowledge {
 
     private final Map<String, Predicate> predicates;
     private final Set<Type> types;
