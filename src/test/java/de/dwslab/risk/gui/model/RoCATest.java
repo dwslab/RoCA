@@ -22,12 +22,10 @@ public class RoCATest {
         roca.handleKnowledgeUpdate(kb);
         BackgroundKnowledge graphKb = roca.getBackgroundKnowledge();
 
-        System.out.println(kb.getTypes());
-
         assertEquals("Predicates do not match", kb.getPredicates(), graphKb.getPredicates());
         assertEquals("Types do not match", kb.getTypes(), graphKb.getTypes());
         assertEquals("Formulas do not match", kb.getFormulas(), graphKb.getFormulas());
-        // assertEquals("Entities do not match", kb.getEntities(), graphKb.getEntities());
+        assertEquals("Entities do not match", kb.getEntities(), graphKb.getEntities());
         assertEquals("Groundings do not match", kb.getGroundings(), graphKb.getGroundings());
 
         assertEquals("Knowledge bases do not match", kb, graphKb);
