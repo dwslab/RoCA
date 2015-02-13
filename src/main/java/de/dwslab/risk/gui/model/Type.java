@@ -35,7 +35,7 @@ public class Type implements UserObject {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof Type)) {
             return false;
         }
         Type other = (Type) obj;

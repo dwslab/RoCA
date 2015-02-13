@@ -57,7 +57,7 @@ public class Entity implements UserObject {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof Entity)) {
             return false;
         }
         Entity other = (Entity) obj;
@@ -87,7 +87,9 @@ public class Entity implements UserObject {
 
     @Override
     public String toString() {
-        return type.getName() + "(" + name + ")";
+        return type.getName() + "("
+                + (Boolean.TRUE.equals(offline) ? "!" : "")
+                + (offline == null ? "?" : "")
+                + name + ")";
     }
-
 }
