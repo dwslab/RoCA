@@ -1,5 +1,9 @@
 package de.dwslab.risk.gui.model;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+import static java.util.Collections.singletonList;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,6 +64,9 @@ public class GuiBackgroundKnowledge extends AbstractBackgroundKnowledge {
 
     private static class KnowledgeGraphVisitor implements UserObjectVisitor {
 
+        private final Predicate offline = new Predicate("offline");
+        private final Predicate notOffline = new Predicate(true, "offline");
+
         private final HashMultimap<Type, Entity> entities;
         private final HashMultimap<Predicate, Grounding> groundings;
 
@@ -71,6 +78,12 @@ public class GuiBackgroundKnowledge extends AbstractBackgroundKnowledge {
 
         @Override
         public void visit(Entity entity) {
+            if (TRUE.equals(entity.isOffline())) {
+                groundings.put(offline, new Grounding(offline, singletonList(entity.getName())));
+            } else if (FALSE.equals(entity.isOffline())) {
+                groundings.put(notOffline, new Grounding(notOffline,
+                        singletonList(entity.getName())));
+            }
             entities.put(entity.getType(), entity);
         }
 
