@@ -2,6 +2,7 @@ package de.dwslab.risk.gui;
 
 import java.awt.Color;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.HashMultimap;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.model.mxCell;
-import com.mxgraph.swing.util.mxGraphTransferable;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxEvent;
@@ -54,128 +54,54 @@ public class RoCA extends BasicGraphEditor {
             logger.error("Unhandeled exception", e);
         });
 
+        // mxCodecRegistry.addPackage("de.dwslab.risk.gui.model");
+        // mxCodecRegistry.register(new UserObjectCodec(new Entity("", null)));
+
         final mxGraph graph = graphComponent.getGraph();
+
+        graph.addListener(
+                mxEvent.CELLS_ADDED,
+                (sender, event) -> {
+                    Object[] cells = (Object[]) event.getProperties().get("cells");
+                    for (Object obj : cells) {
+                        mxCell cell = (mxCell) obj;
+                        if (cell.isVertex()) {
+                            Entity entity = (Entity) cell.getValue();
+                            cell.setValue(new Entity(entity.getName(), entity.getType()));
+                        } else {
+                            Entity source = (Entity) cell.getSource().getValue();
+                            Entity target = (Entity) cell.getTarget().getValue();
+                            if (source.getType().getName().equals("risk")) {
+                                Grounding grounding = new Grounding(new Predicate("hasRiskDegree"),
+                                        Arrays.asList(source.getName(), target.getName()));
+                                cell.setValue(grounding);
+                            } else {
+                                Grounding grounding = new Grounding(new Predicate("dependsOn"),
+                                        Arrays.asList(source.getName(), target.getName()));
+                                cell.setValue(grounding);
+                            }
+                        }
+                    }
+                });
+
+        // set default edge template and insert grounding
 
         // Creates the shapes palette
         EditorPalette shapesPalette = insertPalette(mxResources.get("shapes"));
 
-        // Sets the edge template to be used for creating new edges if an edge
-        // is clicked in the shape palette
-        shapesPalette.addListener(mxEvent.SELECT, (sender, evt) -> {
-            Object tmp = evt.getProperty("transferable");
-
-            if (tmp instanceof mxGraphTransferable) {
-                mxGraphTransferable t = (mxGraphTransferable) tmp;
-                Object cell = t.getCells()[0];
-
-                if (graph.getModel().isEdge(cell)) {
-                    ((CustomGraph) graph).setEdgeTemplate(cell);
-                }
-            }
-        });
-
         // Adds some template cells for dropping into the graph
-        shapesPalette.addTemplate(
-                "Container",
+        shapesPalette.addTemplate("Component",
                 new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/swimlane.png")),
-                "swimlane", 280, 280, "Container");
-        shapesPalette.addTemplate(
-                "Icon",
+                        .getResource("/com/mxgraph/examples/swing/images/rectangle.png")),
+                null, 160, 120, new Entity("New Component", new Type("infra")));
+        // shapesPalette.addTemplate("Service",
+        // new ImageIcon(RoCA.class
+        // .getResource("/com/mxgraph/examples/swing/images/rounded.png")),
+        // "rounded=1", 160, 120, new Entity("", new Type("infra")));
+        shapesPalette.addTemplate("Risk",
                 new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/rounded.png")),
-                "icon;image=/com/mxgraph/examples/swing/images/wrench.png", 70, 70, "Icon");
-        shapesPalette.addTemplate(
-                "Label",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/rounded.png")),
-                "label;image=/com/mxgraph/examples/swing/images/gear.png", 130, 50, "Label");
-        shapesPalette.addTemplate(
-                "Rectangle",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/rectangle.png")), null,
-                160, 120, "");
-        shapesPalette.addTemplate(
-                "Rounded Rectangle",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/rounded.png")),
-                "rounded=1", 160, 120, "");
-        shapesPalette.addTemplate(
-                "Double Rectangle",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/doublerectangle.png")),
-                "rectangle;shape=doubleRectangle", 160, 120, "");
-        shapesPalette.addTemplate(
-                "Ellipse",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/ellipse.png")), "ellipse",
-                160, 160, "");
-        shapesPalette.addTemplate(
-                "Double Ellipse",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/doubleellipse.png")),
-                "ellipse;shape=doubleEllipse", 160, 160, "");
-        shapesPalette.addTemplate(
-                "Triangle",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/triangle.png")),
-                "triangle", 120, 160, "");
-        shapesPalette.addTemplate(
-                "Rhombus",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/rhombus.png")), "rhombus",
-                160, 160, "");
-        shapesPalette.addTemplate(
-                "Horizontal Line",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/hline.png")), "line", 160,
-                10, "");
-        shapesPalette.addTemplate(
-                "Hexagon",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/hexagon.png")),
-                "shape=hexagon", 160, 120, "");
-        shapesPalette.addTemplate(
-                "Cylinder",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/cylinder.png")),
-                "shape=cylinder", 120, 160, "");
-        shapesPalette.addTemplate(
-                "Actor",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/actor.png")),
-                "shape=actor", 120, 160, "");
-        shapesPalette.addTemplate(
-                "Cloud",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/cloud.png")),
-                "ellipse;shape=cloud", 160, 120, "");
-
-        shapesPalette.addEdgeTemplate(
-                "Straight",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/straight.png")),
-                "straight", 120, 120, "");
-        shapesPalette.addEdgeTemplate(
-                "Horizontal Connector",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/connect.png")), null, 100,
-                100, "");
-        shapesPalette.addEdgeTemplate(
-                "Vertical Connector",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/vertical.png")),
-                "vertical", 100, 100, "");
-        shapesPalette.addEdgeTemplate(
-                "Entity Relation",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/entity.png")), "entity",
-                100, 100, "");
-        shapesPalette.addEdgeTemplate(
-                "Arrow",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/arrow.png")), "arrow",
-                120, 120, "");
+                        .getResource("/com/mxgraph/examples/swing/images/ellipse.png")),
+                "ellipse", 160, 120, new Entity("New Risk", new Type("risk")));
     }
 
     public BackgroundKnowledge getBackgroundKnowledge() {
