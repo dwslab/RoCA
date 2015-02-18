@@ -9,6 +9,7 @@ import com.mxgraph.io.mxCodec;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.swing.view.mxICellEditor;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxGraph;
 
@@ -66,6 +67,11 @@ public class CustomGraphComponent extends mxGraphComponent {
         }
 
         return super.importCells(cells, dx, dy, target, location);
+    }
+
+    @Override
+    protected mxICellEditor createCellEditor() {
+        return new CustomCellEditor(this);
     }
 
 }
