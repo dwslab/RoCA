@@ -4,9 +4,9 @@ public class Entity implements UserObject {
 
     private static final long serialVersionUID = -566950411586680045L;
 
-    private final String name;
+    private String name;
     private Boolean offline;
-    private final Type type;
+    private Type type;
 
     public Entity(String name, Type type) {
         this(name, type, null);
@@ -22,16 +22,24 @@ public class Entity implements UserObject {
         return name;
     }
 
-    public Type getType() {
-        return type;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Boolean isOffline() {
+    public Boolean getOffline() {
         return offline;
     }
 
     public void setOffline(Boolean offline) {
         this.offline = offline;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     @Override

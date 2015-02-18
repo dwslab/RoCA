@@ -96,9 +96,9 @@ public class CustomCellEditor implements mxICellEditor {
             c.gridx = 1;
             String[] values = { "online", "unbekannt", "offline" };
             JComboBox<String> comboOffline = new JComboBox<>(values);
-            if (TRUE.equals(entity.isOffline())) {
+            if (TRUE.equals(entity.getOffline())) {
                 comboOffline.setSelectedIndex(0);
-            } else if (FALSE.equals(entity.isOffline())) {
+            } else if (FALSE.equals(entity.getOffline())) {
                 comboOffline.setSelectedIndex(2);
             } else {
                 comboOffline.setSelectedIndex(1);
@@ -111,9 +111,21 @@ public class CustomCellEditor implements mxICellEditor {
             JButton buttonOk = new JButton("OK");
             buttonOk.addActionListener(l -> {
                 setVisible(false);
-                new Thread(() -> {
+                entity.setName(textFieldName.getText());
+                switch (comboOffline.getSelectedIndex()) {
+                case 0:
+                    entity.setOffline(FALSE);
+                    break;
+                case 1:
+                    entity.setOffline(null);
+                    break;
+                case 2:
+                    entity.setOffline(TRUE);
+                    break;
+                }
 
-                }).start();
+                // TODO issue an update/repaint
+
             });
             getRootPane().setDefaultButton(buttonOk);
             panel.add(buttonOk, c);
@@ -144,11 +156,13 @@ public class CustomCellEditor implements mxICellEditor {
             c.gridx = 0;
             c.gridy = 1;
             JButton buttonOk = new JButton("OK");
+
             buttonOk.addActionListener(l -> {
                 setVisible(false);
-                new Thread(() -> {
+                grounding.getValues().set(2, textFieldName.getText());
 
-                }).start();
+                // TODO issue an update/repaint
+
             });
             getRootPane().setDefaultButton(buttonOk);
             panel.add(buttonOk, c);
