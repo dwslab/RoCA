@@ -9,6 +9,9 @@ import com.mxgraph.util.mxPoint;
 import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
 
+import de.dwslab.risk.gui.model.Entity;
+import de.dwslab.risk.gui.model.Grounding;
+
 /**
  * A graph that creates new edges from a given template edge.
  */
@@ -102,8 +105,11 @@ public class CustomGraph extends mxGraph {
 
         mxPoint trans = getView().getTranslate();
 
-        tip += "<br>scale=" + RoCA.numberFormat.format(getView().getScale()) + ", translate=[x="
-                + RoCA.numberFormat.format(trans.getX()) + ",y=" + RoCA.numberFormat.format(trans.getY())
+        tip += "<br>scale=" + RoCA.numberFormat.format(getView().getScale()) 
+                + ", translate=[x="
+                + RoCA.numberFormat.format(trans.getX()) 
+                + ",y="
+                + RoCA.numberFormat.format(trans.getY())
                 + "]";
         tip += "</html>";
 
@@ -124,16 +130,36 @@ public class CustomGraph extends mxGraph {
      * @return
      */
     @Override
-    public Object createEdge(Object parent, String id, Object value, Object source,
-            Object target, String style) {
+    public Object createEdge(Object parent, String id, Object value, Object source, Object target,
+            String style) {
         if (edgeTemplate != null) {
             mxCell edge = (mxCell) cloneCells(new Object[] { edgeTemplate })[0];
             edge.setId(id);
 
             return edge;
         }
-
         return super.createEdge(parent, id, value, source, target, style);
+    }
+
+    @Override
+    public String convertValueToString(Object cell) {
+        if (((mxCell) cell).getValue() instanceof Entity) {
+            Entity entity = (Entity) ((mxCell) cell).getValue();
+            return entity.getName();
+        } else if (((mxCell) cell).getValue() instanceof Grounding) {
+            Grounding grounding = (Grounding) ((mxCell) cell).getValue();
+            StringBuilder builder = new StringBuilder();
+            builder.append(grounding.getPredicate().getName());
+            builder.append('(');
+            for (String value : grounding.getValues()) {
+                builder.append(value);
+                builder.append(", ");
+            }
+            builder.delete(builder.length() - 2, builder.length());
+            builder.append(')');
+            return builder.toString();
+        }
+        return super.convertValueToString(cell);
     }
 
 }
