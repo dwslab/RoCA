@@ -73,7 +73,8 @@ public class RoCA extends BasicGraphEditor {
                             Entity target = (Entity) cell.getTarget().getValue();
                             if (source.getType().getName().equals("risk")) {
                                 Grounding grounding = new Grounding(new Predicate("hasRiskDegree"),
-                                        Arrays.asList(source.getName(), target.getName()));
+                                        Arrays.asList(source.getName(), target.getName(),
+                                                String.valueOf(0d)));
                                 cell.setValue(grounding);
                             } else {
                                 Grounding grounding = new Grounding(new Predicate("dependsOn"),
