@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.view.mxICellEditor;
+import com.mxgraph.view.mxCellState;
 
 import de.dwslab.risk.gui.exception.RoCAException;
 import de.dwslab.risk.gui.model.Entity;
@@ -30,6 +31,7 @@ public class CustomCellEditor implements mxICellEditor {
 
     private mxGraphComponent graphComponent;
     private Object editingCell;
+    private EventObject trigger;
 
     public CustomCellEditor(mxGraphComponent graphComponent) {
         this.graphComponent = graphComponent;
@@ -41,19 +43,26 @@ public class CustomCellEditor implements mxICellEditor {
     }
 
     @Override
-    public void startEditing(Object cell, EventObject trigger) {
+    public void startEditing(Object cell, EventObject event) {
         editingCell = cell;
+        trigger = event;
+
         UserObjectEditDialog dialog = new UserObjectEditDialog(cell,
                 SwingUtilities.getWindowAncestor(graphComponent));
         dialog.pack();
         dialog.setModalityType(APPLICATION_MODAL);
         dialog.setLocationRelativeTo(graphComponent);
         dialog.setVisible(true);
+
+        mxCellState state = graphComponent.getGraph().getView().getState(cell);
+        graphComponent.redraw(state);
+        graphComponent.labelChanged(editingCell, ((mxCell) cell).getValue(), trigger);
+        editingCell = null;
     }
 
     @Override
     public void stopEditing(boolean cancel) {
-        editingCell = null;
+        // what to do here?!
     }
 
     private static class UserObjectEditDialog extends JDialog {
@@ -69,7 +78,8 @@ public class CustomCellEditor implements mxICellEditor {
             } else if (cell.getValue() instanceof Grounding) {
                 createDialog((Grounding) cell.getValue());
             } else {
-                throw new RoCAException("Unknown graph UserObject: " + cell.getValue());
+                throw new RoCAException("Unknown graph UserObject: " + cell.getValue() + " "
+                        + cell.getValue().getClass());
             }
 
             add(panel);
