@@ -7,7 +7,6 @@ import static java.lang.Boolean.TRUE;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Window;
 import java.util.EventObject;
 
 import javax.swing.JButton;
@@ -47,16 +46,12 @@ public class CustomCellEditor implements mxICellEditor {
         editingCell = cell;
         trigger = event;
 
-        UserObjectEditDialog dialog = new UserObjectEditDialog(cell,
-                SwingUtilities.getWindowAncestor(graphComponent));
+        UserObjectEditDialog dialog = new UserObjectEditDialog((mxCell) cell, event, graphComponent);
         dialog.pack();
         dialog.setModalityType(APPLICATION_MODAL);
         dialog.setLocationRelativeTo(graphComponent);
         dialog.setVisible(true);
 
-        mxCellState state = graphComponent.getGraph().getView().getState(cell);
-        graphComponent.redraw(state);
-        graphComponent.labelChanged(editingCell, ((mxCell) cell).getValue(), trigger);
         editingCell = null;
     }
 
@@ -67,11 +62,16 @@ public class CustomCellEditor implements mxICellEditor {
 
     private static class UserObjectEditDialog extends JDialog {
 
-        private JPanel panel;
+        private final JPanel panel;
+        private final mxGraphComponent graphComponent;
+        private final mxCell cell;
+        private EventObject event;
 
-        public UserObjectEditDialog(Object object, Window parent) {
-            super(parent, "Eigenschaften");
-            mxCell cell = (mxCell) object;
+        public UserObjectEditDialog(mxCell cell, EventObject event, mxGraphComponent graphComponent) {
+            super(SwingUtilities.getWindowAncestor(graphComponent), "Eigenschaften");
+            this.cell = cell;
+            this.event = event;
+            this.graphComponent = graphComponent;
             panel = new JPanel(new GridBagLayout());
             if (cell.getValue() instanceof Entity) {
                 createDialog((Entity) cell.getValue());
@@ -107,9 +107,9 @@ public class CustomCellEditor implements mxICellEditor {
             String[] values = { "online", "unbekannt", "offline" };
             JComboBox<String> comboOffline = new JComboBox<>(values);
             if (TRUE.equals(entity.getOffline())) {
-                comboOffline.setSelectedIndex(0);
-            } else if (FALSE.equals(entity.getOffline())) {
                 comboOffline.setSelectedIndex(2);
+            } else if (FALSE.equals(entity.getOffline())) {
+                comboOffline.setSelectedIndex(0);
             } else {
                 comboOffline.setSelectedIndex(1);
             }
@@ -122,20 +122,43 @@ public class CustomCellEditor implements mxICellEditor {
             buttonOk.addActionListener(l -> {
                 setVisible(false);
                 entity.setName(textFieldName.getText());
+                mxCellState state = graphComponent.getGraph().getView().getState(cell);
+                String style = cell.getStyle();
+                int fillIndex = style.indexOf("fillColor");
                 switch (comboOffline.getSelectedIndex()) {
                 case 0:
                     entity.setOffline(FALSE);
+                    if (fillIndex < 0) {
+                        cell.setStyle(style + ";fillColor=#22ff22");
+                    } else {
+                        StringBuilder str = new StringBuilder(style);
+                        str.replace(fillIndex + 11, fillIndex + 17, "22ff22");
+                        cell.setStyle(str.toString());
+                    }
                     break;
                 case 1:
                     entity.setOffline(null);
+                    if (fillIndex < 0) {
+                        cell.setStyle(style + ";fillColor=#adc5ff");
+                    } else {
+                        StringBuilder str = new StringBuilder(style);
+                        str.replace(fillIndex + 11, fillIndex + 17, "adc5ff");
+                        cell.setStyle(str.toString());
+                    }
                     break;
                 case 2:
                     entity.setOffline(TRUE);
+                    if (fillIndex < 0) {
+                        cell.setStyle(style + ";fillColor=#ff2222");
+                    } else {
+                        StringBuilder str = new StringBuilder(style);
+                        str.replace(fillIndex + 11, fillIndex + 17, "ff2222");
+                        cell.setStyle(str.toString());
+                    }
                     break;
                 }
-
-                // TODO issue an update/repaint
-
+                graphComponent.redraw(state);
+                graphComponent.labelChanged(cell, cell.getValue(), event);
             });
             getRootPane().setDefaultButton(buttonOk);
             panel.add(buttonOk, c);
@@ -171,8 +194,9 @@ public class CustomCellEditor implements mxICellEditor {
                 setVisible(false);
                 grounding.getValues().set(2, textFieldName.getText());
 
-                // TODO issue an update/repaint
-
+                mxCellState state = graphComponent.getGraph().getView().getState(cell);
+                graphComponent.redraw(state);
+                graphComponent.labelChanged(cell, cell.getValue(), event);
             });
             getRootPane().setDefaultButton(buttonOk);
             panel.add(buttonOk, c);
