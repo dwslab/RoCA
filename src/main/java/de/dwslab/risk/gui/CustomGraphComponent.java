@@ -48,25 +48,26 @@ public class CustomGraphComponent extends mxGraphComponent {
     @Override
     public Object[] importCells(Object[] cells, double dx, double dy, Object target,
             Point location) {
+        Object newTarget = null;
         if (target == null && cells.length == 1 && location != null) {
-            target = getCellAt(location.x, location.y);
+            newTarget = getCellAt(location.x, location.y);
 
-            if (target instanceof mxICell && cells[0] instanceof mxICell) {
-                mxICell targetCell = (mxICell) target;
+            if (newTarget instanceof mxICell && cells[0] instanceof mxICell) {
+                mxICell targetCell = (mxICell) newTarget;
                 mxICell dropCell = (mxICell) cells[0];
 
                 if (targetCell.isVertex() == dropCell.isVertex()
                         || targetCell.isEdge() == dropCell.isEdge()) {
                     mxIGraphModel model = graph.getModel();
-                    model.setStyle(target, model.getStyle(cells[0]));
-                    graph.setSelectionCell(target);
+                    model.setStyle(newTarget, model.getStyle(cells[0]));
+                    graph.setSelectionCell(newTarget);
 
                     return null;
                 }
             }
         }
 
-        return super.importCells(cells, dx, dy, target, location);
+        return super.importCells(cells, dx, dy, newTarget, location);
     }
 
     @Override
