@@ -70,14 +70,14 @@ public class CustomCellEditor extends mxCellEditor {
                 if (entity.getType().getName().equals("infra")) {
                     createDialogInfra(entity);
                 } else {
-                    createDialogRisk();
+                    createDialogRisk(entity);
                 }
             } else if (cell.getValue() instanceof Grounding) {
                 Grounding grounding = (Grounding) cell.getValue();
                 if (grounding.getPredicate().getName().equals("hasRiskDegree")) {
                     createDialogHasRiskDegree(grounding);
                 } else {
-                    createDialogDependsOn();
+                    createDialogDependsOn(grounding);
                 }
             } else {
                 throw new RoCAException("Unknown graph UserObject: " + cell.getValue() + " "
@@ -124,21 +124,18 @@ public class CustomCellEditor extends mxCellEditor {
             buttonOk.addActionListener(l -> {
                 setVisible(false);
                 entity.setName(textFieldName.getText());
-                graphComponent.validateGraph();
-                graphComponent.getGraph().validateCell(c, null);
                 mxCellState state = graphComponent.getGraph().getView().getState(cell, true);
                 String style = cell.getStyle();
                 int fillIndex = -1;
                 if (style != null) {
                     fillIndex = style.indexOf("fillColor");
-                } else {
-                    style = "";
                 }
                 switch (comboOffline.getSelectedIndex()) {
                 case 0:
                     entity.setOffline(FALSE);
                     if (fillIndex < 0) {
-                        cell.setStyle(style + ";fillColor=#22ff22");
+
+                        cell.setStyle((style == null ? "" : style + ";") + "fillColor=#22ff22");
                     } else {
                         StringBuilder str = new StringBuilder(style);
                         str.replace(fillIndex + 11, fillIndex + 17, "22ff22");
@@ -148,7 +145,7 @@ public class CustomCellEditor extends mxCellEditor {
                 case 1:
                     entity.setOffline(null);
                     if (fillIndex < 0) {
-                        cell.setStyle(style + ";fillColor=#adc5ff");
+                        cell.setStyle((style == null ? "" : style + ";") + "fillColor=#adc5ff");
                     } else {
                         StringBuilder str = new StringBuilder(style);
                         str.replace(fillIndex + 11, fillIndex + 17, "adc5ff");
@@ -158,7 +155,7 @@ public class CustomCellEditor extends mxCellEditor {
                 case 2:
                     entity.setOffline(TRUE);
                     if (fillIndex < 0) {
-                        cell.setStyle(style + ";fillColor=#ff2222");
+                        cell.setStyle((style == null ? "" : style + ";") + "fillColor=#ff2222");
                     } else {
                         StringBuilder str = new StringBuilder(style);
                         str.replace(fillIndex + 11, fillIndex + 17, "ff2222");
@@ -182,12 +179,65 @@ public class CustomCellEditor extends mxCellEditor {
             panel.add(buttonCancel, c);
         }
 
-        private void createDialogRisk() {
+        private void createDialogRisk(Entity entity) {
+            GridBagConstraints c = new GridBagConstraints();
 
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.insets = new Insets(10, 10, 0, 10);
+            c.gridx = 0;
+            c.gridy = 0;
+            panel.add(new JLabel("Name"), c);
+
+            c.gridx = 1;
+            JTextField textFieldName = new JTextField(15);
+            textFieldName.setText(entity.getName());
+            panel.add(textFieldName, c);
+
+            c.insets = new Insets(30, 10, 10, 10);
+            c.gridx = 0;
+            c.gridy = 1;
+            JButton buttonOk = new JButton("OK");
+            buttonOk.addActionListener(l -> {
+                setVisible(false);
+                entity.setName(textFieldName.getText());
+                mxCellState state = graphComponent.getGraph().getView().getState(cell, true);
+                graphComponent.redraw(state);
+                graphComponent.labelChanged(cell, cell.getValue(), event);
+            });
+            getRootPane().setDefaultButton(buttonOk);
+            panel.add(buttonOk, c);
+
+            c.gridx = 1;
+            JButton buttonCancel = new JButton("Abbrechen");
+            buttonCancel.addActionListener(l -> {
+                setVisible(false);
+            });
+            panel.add(buttonCancel, c);
         }
 
-        private void createDialogDependsOn() {
+        private void createDialogDependsOn(Grounding grounding) {
+            GridBagConstraints c = new GridBagConstraints();
 
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.insets = new Insets(10, 10, 0, 10);
+            c.gridx = 0;
+            c.gridy = 0;
+            panel.add(new JLabel("Relation:"), c);
+
+            c.gridx = 1;
+            JLabel labelName = new JLabel(grounding.toString());
+            panel.add(labelName, c);
+
+            c.insets = new Insets(30, 10, 10, 10);
+            c.gridx = 0;
+            c.gridy = 1;
+            c.gridwidth = 2;
+            JButton buttonOk = new JButton("OK");
+            buttonOk.addActionListener(l -> {
+                setVisible(false);
+            });
+            getRootPane().setDefaultButton(buttonOk);
+            panel.add(buttonOk, c);
         }
 
         private void createDialogHasRiskDegree(Grounding grounding) {
@@ -200,9 +250,9 @@ public class CustomCellEditor extends mxCellEditor {
             panel.add(new JLabel("Gewicht"), c);
 
             c.gridx = 1;
-            JTextField textFieldName = new JTextField(15);
-            textFieldName.setText(grounding.getValues().get(2));
-            panel.add(textFieldName, c);
+            JTextField textFieldWeight = new JTextField(15);
+            textFieldWeight.setText(grounding.getValues().get(2));
+            panel.add(textFieldWeight, c);
 
             c.insets = new Insets(30, 10, 10, 10);
             c.gridx = 0;
@@ -211,7 +261,7 @@ public class CustomCellEditor extends mxCellEditor {
 
             buttonOk.addActionListener(l -> {
                 setVisible(false);
-                grounding.getValues().set(2, textFieldName.getText());
+                grounding.getValues().set(2, textFieldWeight.getText());
 
                 mxCellState state = graphComponent.getGraph().getView().getState(cell);
                 graphComponent.redraw(state);
