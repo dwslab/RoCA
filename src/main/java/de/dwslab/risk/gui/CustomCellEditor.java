@@ -19,32 +19,22 @@ import javax.swing.SwingUtilities;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.swing.view.mxICellEditor;
+import com.mxgraph.swing.view.mxCellEditor;
 import com.mxgraph.view.mxCellState;
 
 import de.dwslab.risk.gui.exception.RoCAException;
 import de.dwslab.risk.gui.model.Entity;
 import de.dwslab.risk.gui.model.Grounding;
 
-public class CustomCellEditor implements mxICellEditor {
-
-    private mxGraphComponent graphComponent;
-    private Object editingCell;
-    private EventObject trigger;
+public class CustomCellEditor extends mxCellEditor {
 
     public CustomCellEditor(mxGraphComponent graphComponent) {
-        this.graphComponent = graphComponent;
-    }
-
-    @Override
-    public Object getEditingCell() {
-        return editingCell;
+        super(graphComponent);
     }
 
     @Override
     public void startEditing(Object cell, EventObject event) {
         editingCell = cell;
-        trigger = event;
 
         UserObjectEditDialog dialog = new UserObjectEditDialog((mxCell) cell, event, graphComponent);
         dialog.pack();
@@ -57,7 +47,8 @@ public class CustomCellEditor implements mxICellEditor {
 
     @Override
     public void stopEditing(boolean cancel) {
-        // what to do here?!
+        // calling super causes false labels
+        // super.stopEditing(cancel);
     }
 
     private static class UserObjectEditDialog extends JDialog {
@@ -73,10 +64,21 @@ public class CustomCellEditor implements mxICellEditor {
             this.event = event;
             this.graphComponent = graphComponent;
             panel = new JPanel(new GridBagLayout());
+
             if (cell.getValue() instanceof Entity) {
-                createDialog((Entity) cell.getValue());
+                Entity entity = (Entity) cell.getValue();
+                if (entity.getType().getName().equals("infra")) {
+                    createDialogInfra(entity);
+                } else {
+                    createDialogRisk();
+                }
             } else if (cell.getValue() instanceof Grounding) {
-                createDialog((Grounding) cell.getValue());
+                Grounding grounding = (Grounding) cell.getValue();
+                if (grounding.getPredicate().getName().equals("hasRiskDegree")) {
+                    createDialogHasRiskDegree(grounding);
+                } else {
+                    createDialogDependsOn();
+                }
             } else {
                 throw new RoCAException("Unknown graph UserObject: " + cell.getValue() + " "
                         + cell.getValue().getClass());
@@ -85,7 +87,7 @@ public class CustomCellEditor implements mxICellEditor {
             add(panel);
         }
 
-        private void createDialog(Entity entity) {
+        private void createDialogInfra(Entity entity) {
             GridBagConstraints c = new GridBagConstraints();
 
             c.fill = GridBagConstraints.HORIZONTAL;
@@ -122,9 +124,16 @@ public class CustomCellEditor implements mxICellEditor {
             buttonOk.addActionListener(l -> {
                 setVisible(false);
                 entity.setName(textFieldName.getText());
-                mxCellState state = graphComponent.getGraph().getView().getState(cell);
+                graphComponent.validateGraph();
+                graphComponent.getGraph().validateCell(c, null);
+                mxCellState state = graphComponent.getGraph().getView().getState(cell, true);
                 String style = cell.getStyle();
-                int fillIndex = style.indexOf("fillColor");
+                int fillIndex = -1;
+                if (style != null) {
+                    fillIndex = style.indexOf("fillColor");
+                } else {
+                    style = "";
+                }
                 switch (comboOffline.getSelectedIndex()) {
                 case 0:
                     entity.setOffline(FALSE);
@@ -156,6 +165,8 @@ public class CustomCellEditor implements mxICellEditor {
                         cell.setStyle(str.toString());
                     }
                     break;
+                default:
+                    throw new RoCAException("Unknown ComboBox index");
                 }
                 graphComponent.redraw(state);
                 graphComponent.labelChanged(cell, cell.getValue(), event);
@@ -171,7 +182,15 @@ public class CustomCellEditor implements mxICellEditor {
             panel.add(buttonCancel, c);
         }
 
-        private void createDialog(Grounding grounding) {
+        private void createDialogRisk() {
+
+        }
+
+        private void createDialogDependsOn() {
+
+        }
+
+        private void createDialogHasRiskDegree(Grounding grounding) {
             GridBagConstraints c = new GridBagConstraints();
 
             c.fill = GridBagConstraints.HORIZONTAL;
