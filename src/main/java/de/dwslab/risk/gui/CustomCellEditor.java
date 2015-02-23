@@ -47,7 +47,7 @@ public class CustomCellEditor extends mxCellEditor {
 
     @Override
     public void stopEditing(boolean cancel) {
-        // calling super causes false labels
+        // calling super(cancel) causes false labels
         // super.stopEditing(cancel);
     }
 
