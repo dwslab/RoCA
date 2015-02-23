@@ -23,6 +23,7 @@ import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxResources;
 import com.mxgraph.view.mxGraph;
 
+import de.dwslab.risk.gui.exception.RoCAException;
 import de.dwslab.risk.gui.jgraphx.BasicGraphEditor;
 import de.dwslab.risk.gui.jgraphx.EditorMenuBar;
 import de.dwslab.risk.gui.jgraphx.EditorPalette;
@@ -71,15 +72,18 @@ public class RoCA extends BasicGraphEditor {
                         } else {
                             Entity source = (Entity) cell.getSource().getValue();
                             Entity target = (Entity) cell.getTarget().getValue();
-                            if (source.getType().getName().equals("risk")) {
+                            if (target.getType().getName().equals("risk")) {
                                 Grounding grounding = new Grounding(new Predicate("hasRiskDegree"),
                                         Arrays.asList(source.getName(), target.getName(),
                                                 String.valueOf(0d)));
                                 cell.setValue(grounding);
-                            } else {
+                            } else if (target.getType().getName().equals("infra")) {
                                 Grounding grounding = new Grounding(new Predicate("dependsOn"),
                                         Arrays.asList(source.getName(), target.getName()));
                                 cell.setValue(grounding);
+                            } else {
+                                throw new RoCAException("Unknown edge type: "
+                                        + source.getType().getName());
                             }
                         }
                     }
@@ -220,7 +224,7 @@ public class RoCA extends BasicGraphEditor {
 
     private mxCell insertHasRisk(Grounding grounding, mxCell source, mxCell target, mxGraph graph) {
         Object parent = graph.getDefaultParent();
-        String id = "hasRisk(" + source.getValue() + "," + target.getValue() + ")";
+        String id = "hasRiskDegree(" + source.getValue() + "," + target.getValue() + ")";
         return (mxCell) graph.insertEdge(parent, id, grounding, source, target);
     }
 
