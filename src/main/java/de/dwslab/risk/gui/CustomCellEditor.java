@@ -87,6 +87,21 @@ public class CustomCellEditor extends mxCellEditor {
             add(panel);
         }
 
+        private void updateEdgeLabels() {
+            for (int i = 0; i < cell.getEdgeCount(); i++) {
+                mxCell edge = (mxCell) cell.getEdgeAt(i);
+                Entity entity = (Entity) cell.getValue();
+                Grounding grounding = (Grounding) edge.getValue();
+                if (edge.getSource() == cell) {
+                    grounding.getValues().set(0, entity.getName());
+                } else if (edge.getTarget() == cell) {
+                    grounding.getValues().set(1, entity.getName());
+                } else {
+                    throw new RoCAException("Something went wrong");
+                }
+            }
+        }
+
         private void createDialogInfra(Entity entity) {
             GridBagConstraints c = new GridBagConstraints();
 
@@ -165,6 +180,7 @@ public class CustomCellEditor extends mxCellEditor {
                 default:
                     throw new RoCAException("Unknown ComboBox index");
                 }
+                updateEdgeLabels();
                 graphComponent.redraw(state);
                 graphComponent.labelChanged(cell, cell.getValue(), event);
             });
@@ -201,6 +217,7 @@ public class CustomCellEditor extends mxCellEditor {
                 setVisible(false);
                 entity.setName(textFieldName.getText());
                 mxCellState state = graphComponent.getGraph().getView().getState(cell, true);
+                updateEdgeLabels();
                 graphComponent.redraw(state);
                 graphComponent.labelChanged(cell, cell.getValue(), event);
             });
