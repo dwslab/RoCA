@@ -140,9 +140,9 @@ public class OntologyBackgroundKnowledge extends AbstractBackgroundKnowledge {
             // TODO types in der predicates map updaten
             // TODO entities updaten
 
-            Predicate predicate = new Predicate(property);
-            Grounding literal = new Grounding(predicate, values);
-            groundings.put(predicate, literal);
+            // Predicate predicate = new Predicate(property);
+            // Grounding literal = new Grounding(predicate, values);
+            // groundings.put(predicate, literal);
         }
 
         @Override
@@ -165,9 +165,9 @@ public class OntologyBackgroundKnowledge extends AbstractBackgroundKnowledge {
             // TODO types in der predicates map updaten
             // TODO entities updaten
 
-            Predicate predicate = new Predicate(theClass);
-            Grounding literal = new Grounding(predicate, values);
-            groundings.put(predicate, literal);
+            // Predicate predicate = new Predicate(theClass);
+            // Grounding literal = new Grounding(predicate, values);
+            // groundings.put(predicate, literal);
         }
 
         @Override
@@ -193,9 +193,9 @@ public class OntologyBackgroundKnowledge extends AbstractBackgroundKnowledge {
             // TODO types in der predicates map updaten
             // TODO entities updaten
 
-            Predicate predicate = new Predicate(property);
-            Grounding literal = new Grounding(predicate, values);
-            groundings.put(predicate, literal);
+            // Predicate predicate = new Predicate(property);
+            // Grounding literal = new Grounding(predicate, values);
+            // groundings.put(predicate, literal);
         }
 
         @Override

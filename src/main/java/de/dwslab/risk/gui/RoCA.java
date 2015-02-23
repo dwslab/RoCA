@@ -91,8 +91,6 @@ public class RoCA extends BasicGraphEditor {
                     }
                 });
 
-        // set default edge template and insert grounding
-
         // Creates the shapes palette
         EditorPalette shapesPalette = insertPalette(mxResources.get("shapes"));
 

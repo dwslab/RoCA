@@ -105,9 +105,9 @@ public class CustomGraph extends mxGraph {
 
         mxPoint trans = getView().getTranslate();
 
-        tip += "<br>scale=" + RoCA.numberFormat.format(getView().getScale()) 
+        tip += "<br>scale=" + RoCA.numberFormat.format(getView().getScale())
                 + ", translate=[x="
-                + RoCA.numberFormat.format(trans.getX()) 
+                + RoCA.numberFormat.format(trans.getX())
                 + ",y="
                 + RoCA.numberFormat.format(trans.getY())
                 + "]";
