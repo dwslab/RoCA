@@ -1,3 +1,14 @@
 /gurobi.log
 /model.lp
 /model.mps
+.metadata/
+bin/
+target/
+.settings/
+*.aux
+*.bbl
+*.blg
+*.synctex
+*.synctex.gz
+*.tps
+.svn/
