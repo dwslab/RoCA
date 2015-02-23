@@ -148,7 +148,7 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
             panel.add(buttonCancel, c);
 
             getRootPane().getInputMap()
-                    .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "foo_CANCEL");
+                    .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "CANCEL");
             getRootPane().getActionMap().put("foo_CANCEL", new AbstractAction() {
 
                 private static final long serialVersionUID = -5058924623712220514L;
