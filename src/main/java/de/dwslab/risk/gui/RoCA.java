@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +24,6 @@ import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxResources;
 import com.mxgraph.view.mxGraph;
 
-import de.dwslab.risk.gui.exception.RoCAException;
 import de.dwslab.risk.gui.jgraphx.BasicGraphEditor;
 import de.dwslab.risk.gui.jgraphx.EditorMenuBar;
 import de.dwslab.risk.gui.jgraphx.EditorPalette;
@@ -59,7 +59,6 @@ public class RoCA extends BasicGraphEditor {
         graph.addListener(
                 mxEvent.CELLS_ADDED,
                 (sender, event) -> {
-                    System.err.println(sender);
                     Object[] cells = (Object[]) event.getProperties().get("cells");
                     for (Object obj : cells) {
                         mxCell cell = (mxCell) obj;
@@ -81,8 +80,12 @@ public class RoCA extends BasicGraphEditor {
                                         Arrays.asList(source.getName(), target.getName()));
                                 cell.setValue(grounding);
                             } else {
-                                throw new RoCAException("Unknown edge type: "
-                                        + source.getType().getName());
+                                event.consume();
+                                graph.removeCells(new Object[] { cell });
+                                JOptionPane.showMessageDialog(
+                                        SwingUtilities.getWindowAncestor(graphComponent),
+                                        "Relation wird nicht unterstützt: " + source + " --> "
+                                                + target);
                             }
                         }
                     }
