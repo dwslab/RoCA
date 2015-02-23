@@ -69,12 +69,14 @@ public class RoCA extends BasicGraphEditor {
                         } else {
                             Entity source = (Entity) cell.getSource().getValue();
                             Entity target = (Entity) cell.getTarget().getValue();
-                            if (target.getType().getName().equals("risk")) {
+                            String sourceName = source.getType().getName();
+                            String targetName = target.getType().getName();
+                            if (targetName.equals("risk") && sourceName.equals("infra")) {
                                 Grounding grounding = new Grounding(new Predicate("hasRiskDegree"),
                                         Arrays.asList(source.getName(), target.getName(),
                                                 String.valueOf(0d)));
                                 cell.setValue(grounding);
-                            } else if (target.getType().getName().equals("infra")) {
+                            } else if (targetName.equals("infra") && sourceName.equals("infra")) {
                                 Grounding grounding = new Grounding(new Predicate("dependsOn"),
                                         Arrays.asList(source.getName(), target.getName()));
                                 cell.setValue(grounding);
