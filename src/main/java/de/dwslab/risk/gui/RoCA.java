@@ -55,14 +55,11 @@ public class RoCA extends BasicGraphEditor {
             logger.error("Unhandeled exception", e);
         });
 
-        // mxCodecRegistry.addPackage("de.dwslab.risk.gui.model");
-        // mxCodecRegistry.register(new UserObjectCodec(new Entity("", null)));
-
         final mxGraph graph = graphComponent.getGraph();
-
         graph.addListener(
                 mxEvent.CELLS_ADDED,
                 (sender, event) -> {
+                    System.err.println(sender);
                     Object[] cells = (Object[]) event.getProperties().get("cells");
                     for (Object obj : cells) {
                         mxCell cell = (mxCell) obj;
@@ -117,8 +114,8 @@ public class RoCA extends BasicGraphEditor {
         logger.debug("Updating background knowledge");
         this.knowledge = knowledge;
         mxGraph graph = graphComponent.getGraph();
-
         try {
+            graph.setEventsEnabled(false);
             graph.getModel().beginUpdate();
 
             // clear the current graph
@@ -183,6 +180,7 @@ public class RoCA extends BasicGraphEditor {
                 graph.getModel().setStyle(cell, "fillColor=#22FF22");
             }
         } finally {
+            graph.setEventsEnabled(true);
             graph.getModel().endUpdate();
         }
 
