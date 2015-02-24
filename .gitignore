@@ -11,4 +11,6 @@ target/
 *.synctex
 *.synctex.gz
 *.tps
-.svn/
+.svn//pom.xml.releaseBackup
+/pom.xml.tag
+/pom.xml.releaseBackup
