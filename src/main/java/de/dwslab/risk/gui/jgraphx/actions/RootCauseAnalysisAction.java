@@ -84,7 +84,7 @@ public class RootCauseAnalysisAction extends AbstractAction {
                 // Run RockIt
                 logger.log(INFO, "running map inference");
                 monitor.setNote("Executing MAP inference...");
-                RockItAPI rockit = new RockItAPI("src/main/resources/rockit.properties");
+                RockItAPI rockit = new RockItAPI();
                 List<RockItResult> mapState = rockit.doMapState(mlnExtFile.getAbsolutePath(),
                         evidenceExtFile.getAbsolutePath());
                 monitor.setProgress(90);
