@@ -4,12 +4,13 @@
 
 ### Prerequisites
 RoCA requires the following software to be installed to run:
-* Java Runtime Environment (JRE) 1.8
-* Gurobi
-* MySQL
+* [Java Runtime Environment (JRE) 1.8](http://java.com/inc/BrowserRedirect1.jsp?locale=en) 
+* [Gurobi](http://www.gurobi.com/) (free academic license available)
+* [MySQL]
 
 ### Starting RoCA
-The RoCA GUI can be started by either double-clicking on the JAR-file or by 
+A binary to run RoCA can be downloaded from the [project homepage](http://dwslab.github.io/RoCA).
+To start the  either double-clicking on the JAR-file or by 
 executing `java -jar roca-XXX.jar`. Your PATH variable has to include the path
 to the JRE 1.8 `bin` folder.
 
@@ -22,6 +23,8 @@ to the JRE 1.8 `bin` folder.
 ### Running the Root Cause Analysis
 
 ## Publications
+* Schoenfisch, J., von Stülpnagel, J., Ortmann, J., Meilicke, C., Stuckenschmidt, H.: *Root Cause Analysis through Abduction in
+Markov Logic Networks*, 2015, to appear ([download](http://dwslab.de))
 
 ## Acknowledgements
 This work has been partially supported by the German Federal Ministry of 
