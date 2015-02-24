@@ -6,7 +6,7 @@
 RoCA requires the following software to be installed to run:
 * [Java Runtime Environment (JRE) 1.8](http://java.com/inc/BrowserRedirect1.jsp?locale=en) 
 * [Gurobi](http://www.gurobi.com/) (free academic license available)
-* [MySQL]
+* [MySQL](http://www.mysql.com/downloads/)
 
 ### Starting RoCA
 A binary to run RoCA can be downloaded from the [project homepage](http://dwslab.github.io/RoCA).
@@ -24,7 +24,7 @@ to the JRE 1.8 `bin` folder.
 
 ## Publications
 * Schoenfisch, J., von Stülpnagel, J., Ortmann, J., Meilicke, C., Stuckenschmidt, H.: *Root Cause Analysis through Abduction in
-Markov Logic Networks*, 2015, to appear ([download](http://dwslab.de))
+Markov Logic Networks*, 2015, to appear ([download](http://web.informatik.uni-mannheim.de/risk/Schoenfisch2015.pdf))
 
 ## Acknowledgements
 This work has been partially supported by the German Federal Ministry of 
