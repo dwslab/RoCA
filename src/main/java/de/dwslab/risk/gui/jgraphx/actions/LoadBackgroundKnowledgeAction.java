@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 import java.nio.file.Paths;
 
 import javax.swing.AbstractAction;
@@ -75,26 +76,26 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
             c.gridx = 0;
             c.gridy = 0;
             c.gridwidth = 2;
-            panel.add(new JLabel("MLN file:"), c);
-
-            c.gridx = 2;
-            JTextField textFieldMln = new JTextField(50);
-            textFieldMln
-                    .setText("D:\\Documents\\3000 Projekte\\2013 Risikomanagement\\workspace\\RoCA\\src\\test\\resources\\test4_2.mln");
-            panel.add(textFieldMln, c);
-
-            JButton buttonMln = new JButton("Durchsuchen...");
-            buttonMln.addActionListener(l -> {
-                JFileChooser fileChooser = new JFileChooser("src/test/resources/");
-                fileChooser.setFileFilter(new FileNameExtensionFilter("MLN Files", "mln"));
-                int returnVal = fileChooser.showOpenDialog(MlnFileChooserDialog.this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    textFieldMln.setText(fileChooser.getSelectedFile().getPath());
-                }
-            });
-            c.gridx = 4;
-            c.gridwidth = 2;
-            panel.add(buttonMln, c);
+            // panel.add(new JLabel("MLN file:"), c);
+            //
+            // c.gridx = 2;
+            // JTextField textFieldMln = new JTextField(50);
+            // textFieldMln
+            // .setText("D:\\Documents\\3000 Projekte\\2013 Risikomanagement\\workspace\\RoCA\\src\\test\\resources\\test4_2.mln");
+            // panel.add(textFieldMln, c);
+            //
+            // JButton buttonMln = new JButton("Durchsuchen...");
+            // buttonMln.addActionListener(l -> {
+            // JFileChooser fileChooser = new JFileChooser("src/test/resources/");
+            // fileChooser.setFileFilter(new FileNameExtensionFilter("MLN Files", "mln"));
+            // int returnVal = fileChooser.showOpenDialog(MlnFileChooserDialog.this);
+            // if (returnVal == JFileChooser.APPROVE_OPTION) {
+            // textFieldMln.setText(fileChooser.getSelectedFile().getPath());
+            // }
+            // });
+            // c.gridx = 4;
+            // c.gridwidth = 2;
+            // panel.add(buttonMln, c);
 
             c.gridx = 0;
             c.gridy = 1;
@@ -127,12 +128,13 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
             c.gridx = 2;
             c.gridy = 2;
             JButton buttonOk = new JButton("OK");
+
             buttonOk.addActionListener(l -> {
                 setVisible(false);
                 new Thread(() -> {
+                    URL mln = MlnFileChooserDialog.class.getResource("/default.mln");
                     BackgroundKnowledge knowledge = new MlnBackgroundKnowledge(
-                            Paths.get(textFieldMln.getText()),
-                            Paths.get(textFieldEvidence.getText()));
+                            mln, Paths.get(textFieldEvidence.getText()));
                     roca.handleKnowledgeUpdate(knowledge);
                 }).start();
             });

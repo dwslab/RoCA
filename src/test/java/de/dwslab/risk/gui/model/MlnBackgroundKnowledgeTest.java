@@ -1,5 +1,6 @@
 package de.dwslab.risk.gui.model;
 
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -16,8 +17,8 @@ public class MlnBackgroundKnowledgeTest {
     private static final Path evidence = Paths.get("src/test/resources/test4_2.db");
 
     @Test
-    public void testGetPredicates() {
-        BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln, evidence);
+    public void testGetPredicates() throws Exception {
+        BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln.toUri().toURL(), evidence);
         Map<String, Predicate> predicates = kb.getPredicates();
         for (String name : predicates.keySet()) {
             System.out.println(name);
@@ -26,8 +27,8 @@ public class MlnBackgroundKnowledgeTest {
     }
 
     @Test
-    public void testGetTypes() {
-        BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln, evidence);
+    public void testGetTypes() throws Exception {
+        BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln.toUri().toURL(), evidence);
         Set<Type> types = kb.getTypes();
         for (Type name : types) {
             System.out.println(name);
@@ -36,15 +37,15 @@ public class MlnBackgroundKnowledgeTest {
     }
 
     @Test
-    public void testGetEntities() {
-        BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln, evidence);
+    public void testGetEntities() throws Exception {
+        BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln.toUri().toURL(), evidence);
         HashMultimap<Type, Entity> entities = kb.getEntities();
         Assert.assertEquals("Wrong number of entities", 11, entities.size());
     }
 
     @Test
-    public void testGetGroundings() {
-        BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln, evidence);
+    public void testGetGroundings() throws Exception {
+        BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln.toUri().toURL(), evidence);
         HashMultimap<Predicate, Grounding> groundings = kb.getGroundings();
         Assert.assertEquals("Wrong number of groundings", 8, groundings.size());
     }

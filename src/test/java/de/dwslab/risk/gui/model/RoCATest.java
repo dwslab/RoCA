@@ -15,8 +15,8 @@ public class RoCATest {
     private static final Path evidence = Paths.get("src/test/resources/test4_2.db");
 
     @Test
-    public void testGetBackgroundKnowledge() {
-        BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln, evidence);
+    public void testGetBackgroundKnowledge() throws Exception {
+        BackgroundKnowledge kb = new MlnBackgroundKnowledge(mln.toUri().toURL(), evidence);
         RoCA roca = new RoCA();
 
         roca.handleKnowledgeUpdate(kb);

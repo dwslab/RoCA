@@ -1,6 +1,9 @@
 package de.dwslab.risk.gui.model;
 
+import static de.dwslab.ai.util.Utils.lines;
+
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -23,7 +26,7 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
     private final List<Formula> formulas;
     private final ArrayListMultimap<Predicate, Type> predicateTypes;
 
-    public MlnBackgroundKnowledge(Path mln, Path evidence) {
+    public MlnBackgroundKnowledge(URL mln, Path evidence) {
         try {
             predicateTypes = ArrayListMultimap.create();
             predicates = parsePredicates(mln);
@@ -35,10 +38,10 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
         }
     }
 
-    private Map<String, Predicate> parsePredicates(Path mln) throws IOException {
+    private Map<String, Predicate> parsePredicates(URL mln) throws IOException {
         Map<String, Predicate> map = new HashMap<>();
 
-        Files.lines(mln)
+        lines(mln.openStream())
                 .filter(str -> !str.isEmpty() && !str.startsWith("//") && !str.contains("v")
                         && !str.contains("\""))
                 .map(String::trim)
@@ -66,9 +69,9 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
         return map;
     }
 
-    private List<Formula> parseFormulas(Path mln) throws IOException {
+    private List<Formula> parseFormulas(URL mln) throws IOException {
         List<Formula> formulas = new ArrayList<>();
-        Files.lines(mln)
+        lines(mln.openStream())
                 .filter(str -> !str.isEmpty() && (str.startsWith("// ?") || str.contains(" v ")))
                 .forEach(str -> {
                     formulas.add(new Formula(str));

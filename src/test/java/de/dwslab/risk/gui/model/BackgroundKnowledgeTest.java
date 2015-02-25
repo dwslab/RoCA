@@ -14,7 +14,7 @@ public class BackgroundKnowledgeTest {
 
     @Test
     public void testExportAsMln() throws Exception {
-        BackgroundKnowledge knowledge = new MlnBackgroundKnowledge(mln, evidence);
+        BackgroundKnowledge knowledge = new MlnBackgroundKnowledge(mln.toUri().toURL(), evidence);
 
         Path tempMln = Utils.createTempPath("mln-", ".mln");
         Path tempEvidence = Utils.createTempPath("evidence-", ".db");
