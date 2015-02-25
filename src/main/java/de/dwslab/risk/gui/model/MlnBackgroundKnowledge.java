@@ -86,16 +86,20 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
                 .filter(str -> !str.isEmpty() && !str.startsWith("//"))
                 .map(String::trim)
                 .map(str -> (str.startsWith("!") ? str.substring(1) : str))
-                .forEach(str -> {
-                    String predicate = str.substring(0, str.indexOf('('));
-                    String entitiesString = str.substring(str.indexOf('(') + 1, str.indexOf(')'));
-                    String[] entititesArr = entitiesString.split("\\s*,\\s*");
+                .forEach(
+                        str -> {
+                            String predicate = str.substring(0, str.indexOf('('));
+                            String entitiesString = str.substring(str.indexOf('(') + 1,
+                                    str.indexOf(')')).replaceAll("\"", "");
+                            String[] entititesArr = entitiesString.split("\\s*,\\s*");
 
-                    List<Type> types = predicateTypes.get(new Predicate(predicate));
-                    for (int i = 0; i < types.size(); i++) {
-                        Type type = types.get(i);
+                            List<Type> types = predicateTypes.get(new Predicate(predicate));
+                            for (int i = 0; i < types.size(); i++) {
+                                Type type = types.get(i);
+                                // if (!"float_".equals(type.getName())) {
                         String entity = entititesArr[i];
                         entities.put(type, new Entity(entity, type));
+                        // }
                     }
                 });
 
@@ -108,19 +112,22 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
         Files.lines(evidence)
                 .filter(str -> !str.isEmpty() && !str.startsWith("//"))
                 .map(String::trim)
-                .forEach(str -> {
-                    Predicate predicate;
-                    if (str.startsWith("!")) {
-                        predicate = new Predicate(true, str.substring(1, str.indexOf('(')));
-                    } else {
-                        predicate = new Predicate(false, str.substring(0, str.indexOf('(')));
-                    }
-                    String entitiesString = str.substring(str.indexOf('(') + 1, str.indexOf(')'));
-                    String[] entititesArr = entitiesString.split("\\s*,\\s*");
+                .forEach(
+                        str -> {
+                            Predicate predicate;
+                            if (str.startsWith("!")) {
+                                predicate = new Predicate(true, str.substring(1, str.indexOf('(')));
+                            } else {
+                                predicate = new Predicate(false, str.substring(0, str.indexOf('(')));
+                            }
+                            String entitiesString = str.substring(str.indexOf('(') + 1,
+                                    str.indexOf(')')).replaceAll("\"", "");
+                            String[] entititesArr = entitiesString.split("\\s*,\\s*");
 
-                    Grounding literal = new Grounding(predicate, Arrays.asList(entititesArr));
-                    groundings.put(predicate, literal);
-                });
+                            Grounding literal = new Grounding(predicate, Arrays
+                                    .asList(entititesArr));
+                            groundings.put(predicate, literal);
+                        });
 
         return groundings;
     }
