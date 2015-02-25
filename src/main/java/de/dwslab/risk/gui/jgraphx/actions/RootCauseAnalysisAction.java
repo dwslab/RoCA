@@ -75,8 +75,8 @@ public class RootCauseAnalysisAction extends AbstractAction {
                 logger.log(INFO, "extending MLN");
                 monitor.setNote("Extending MLN for root cause analysis...");
                 ExistentialApi api = new ExistentialApi();
-                File mlnExtFile = createTempFile("mln-", ".mln");
-                File evidenceExtFile = createTempFile("evidence-", ".db");
+                File mlnExtFile = createTempFile("existential-mln-", ".mln");
+                File evidenceExtFile = createTempFile("existential-evidence-", ".db");
                 api.existentialApi(mlnFile.getAbsolutePath(), evidenceFile.getAbsolutePath(),
                         mlnExtFile.getAbsolutePath(), evidenceExtFile.getAbsolutePath());
                 monitor.setProgress(20);
