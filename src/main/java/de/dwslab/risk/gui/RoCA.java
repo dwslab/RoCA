@@ -1,6 +1,7 @@
 package de.dwslab.risk.gui;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxResources;
 import com.mxgraph.view.mxGraph;
 
+import de.dwslab.ai.util.Utils;
 import de.dwslab.risk.gui.jgraphx.BasicGraphEditor;
 import de.dwslab.risk.gui.jgraphx.EditorMenuBar;
 import de.dwslab.risk.gui.jgraphx.EditorPalette;
@@ -31,6 +33,7 @@ import de.dwslab.risk.gui.model.BackgroundKnowledge;
 import de.dwslab.risk.gui.model.Entity;
 import de.dwslab.risk.gui.model.Grounding;
 import de.dwslab.risk.gui.model.GuiBackgroundKnowledge;
+import de.dwslab.risk.gui.model.MlnBackgroundKnowledge;
 import de.dwslab.risk.gui.model.Predicate;
 import de.dwslab.risk.gui.model.Type;
 
@@ -48,12 +51,15 @@ public class RoCA extends BasicGraphEditor {
      */
     public static final NumberFormat numberFormat = NumberFormat.getInstance();
 
-    public RoCA() {
+    public RoCA() throws IOException {
         super("RoCA", new CustomGraphComponent(new CustomGraph()));
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
             JOptionPane.showMessageDialog(RoCA.this, e.getMessage());
             logger.error("Unhandeled exception", e);
         });
+
+        knowledge = new MlnBackgroundKnowledge(RoCA.class.getResource("/default.mln"),
+                Utils.createTempPath("dummy", ".db"));
 
         final mxGraph graph = graphComponent.getGraph();
         graph.addListener(
@@ -230,10 +236,10 @@ public class RoCA extends BasicGraphEditor {
     }
 
     /**
-     *
      * @param args
+     * @throws Exception
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e1) {
