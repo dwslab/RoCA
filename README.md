@@ -18,26 +18,44 @@ RoCA requires the following software to be installed to run:
   Needed by RockIt. By default, it uses the following user account:
   * `sql_username = root`
   * `sql_password = mannheim1234` 
-  
+
+### Verifying the installation
+You can verify from the console that all environment variables are set correctly: 
+* Run the command `java -version`. The first line should show something like `java version "1.8.0_XX"`.
+* Run `echo %PATH%` (Windows) or `echo $PATH` (Linux). The output must contain the `bin` folder of your Gurobi installation (and the path to the JRE 1.8).
+* Run `echo %GUROBI_HOME%` or `echo $GUROBI_HOME`. It should point to root of your Gurobi installation.
 
 ### Starting RoCA
-A binary to run RoCA can be downloaded from the [project homepage](http://dwslab.github.io/RoCA).
-To start the GUI either double-click on the JAR-file or
-execute `java -jar roca-XXX.jar` from the console. Your PATH variable has to include the path
-to the JRE 1.8 `bin` folder.
-
+A binary to run RoCA can be [downloaded here](http://web.informatik.uni-mannheim.de/risk/).
+To start the GUI either double-click on the JAR-file or execute the command `java -jar roca-XXX.jar` from a console in the folder where you put the binary.
+<img src="http://web.informatik.uni-mannheim.de/risk/new.png" width="400px">
 
 ## Usage
+RoCA comes with a default MLN and a default background ontology to get you started. After starting the application an empty model is presented. You can either load information about your infrastructure from an MLN evidence file or an ontology, or start from scratch. When your model is finished and contains all necessary or available information, you can start RockIt to run the root cause analysis.
 
 ### Loading a Model
 loading the default MLN
 
+<img src="http://web.informatik.uni-mannheim.de/risk/menu.png">
+
+<img src="http://web.informatik.uni-mannheim.de/risk/dialog.png">
+
+
 ### Editing a Model
+<img src="http://web.informatik.uni-mannheim.de/risk/model.png" width="400px">
+
+<img src="http://web.informatik.uni-mannheim.de/risk/properties.png">
+
 providing evidence
 edges typed automatically
 
 ### Running the Root Cause Analysis
 run, wait, popup showing results
+
+<img src="http://web.informatik.uni-mannheim.de/risk/inference.png">
+
+<img src="http://web.informatik.uni-mannheim.de/risk/cause.png">
+
 
 - - -
 
