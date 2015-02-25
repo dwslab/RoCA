@@ -94,10 +94,8 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
                     List<Type> types = predicateTypes.get(new Predicate(predicate));
                     for (int i = 0; i < types.size(); i++) {
                         Type type = types.get(i);
-                        if (!"float_".equals(type.getName())) {
-                            String entity = entititesArr[i];
-                            entities.put(type, new Entity(entity, type));
-                        }
+                        String entity = entititesArr[i];
+                        entities.put(type, new Entity(entity, type));
                     }
                 });
 
