@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -80,15 +82,30 @@ public interface BackgroundKnowledge {
                         if (predicate.isNegated()) {
                             evidenceWriter.write('!');
                         }
+
                         evidenceWriter.write(predicate.getName());
                         evidenceWriter.write('(');
                         List<String> values = g.getValues();
                         for (int i = 0; i < values.size() - 1; i++) {
                             String value = values.get(i);
-                            evidenceWriter.write(value);
+                            if (!NumberUtils.isNumber(value)) {
+                                evidenceWriter.write('"');
+                                evidenceWriter.write(value);
+                                evidenceWriter.write('"');
+                            } else {
+                                evidenceWriter.write(value);
+                            }
                             evidenceWriter.write(',');
                         }
-                        evidenceWriter.write(values.get(values.size() - 1));
+                        String value = values.get(values.size() - 1);
+                        if (!NumberUtils.isNumber(value)) {
+                            evidenceWriter.write('"');
+                            evidenceWriter.write(value);
+                            evidenceWriter.write('"');
+                        } else {
+                            evidenceWriter.write(value);
+                        }
+
                         evidenceWriter.write(')');
                         evidenceWriter.newLine();
                     }));
