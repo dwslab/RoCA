@@ -2,8 +2,6 @@ package de.dwslab.risk.gui.jgraphx;
 
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +16,6 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.util.mxGraphActions;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxEvent;
-import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.util.mxResources;
 import com.mxgraph.view.mxGraph;
@@ -41,7 +38,7 @@ public class EditorToolBar extends JToolBar {
     private static final long serialVersionUID = -8015443128436394471L;
 
     /**
-     * 
+     *
      * @param frame
      * @param orientation
      */
@@ -103,19 +100,12 @@ public class EditorToolBar extends JToolBar {
         fontCombo.setMaximumSize(new Dimension(120, 100));
         add(fontCombo);
 
-        fontCombo.addActionListener(new ActionListener() {
+        fontCombo.addActionListener(e -> {
+            String font = fontCombo.getSelectedItem().toString();
 
-            /**
-             *
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String font = fontCombo.getSelectedItem().toString();
-
-                if (font != null && !font.equals("-")) {
-                    mxGraph graph = editor.getGraphComponent().getGraph();
-                    graph.setCellStyles(mxConstants.STYLE_FONTFAMILY, font);
-                }
+            if (font != null && !font.equals("-")) {
+                mxGraph graph = editor.getGraphComponent().getGraph();
+                graph.setCellStyles(mxConstants.STYLE_FONTFAMILY, font);
             }
         });
 
@@ -125,19 +115,13 @@ public class EditorToolBar extends JToolBar {
         sizeCombo.setMinimumSize(new Dimension(65, 0));
         sizeCombo.setPreferredSize(new Dimension(65, 0));
         sizeCombo.setMaximumSize(new Dimension(65, 100));
+        sizeCombo.setSelectedIndex(6);
         add(sizeCombo);
 
-        sizeCombo.addActionListener(new ActionListener() {
-
-            /**
-             *
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mxGraph graph = editor.getGraphComponent().getGraph();
-                graph.setCellStyles(mxConstants.STYLE_FONTSIZE, sizeCombo.getSelectedItem()
-                        .toString().replace("pt", ""));
-            }
+        sizeCombo.addActionListener(e -> {
+            mxGraph graph = editor.getGraphComponent().getGraph();
+            graph.setCellStyles(mxConstants.STYLE_FONTSIZE, sizeCombo.getSelectedItem()
+                    .toString().replace("pt", ""));
         });
 
         addSeparator();
@@ -180,20 +164,13 @@ public class EditorToolBar extends JToolBar {
         add(zoomCombo);
 
         // Sets the zoom in the zoom combo the current value
-        mxIEventListener scaleTracker = new mxIEventListener() {
+        mxIEventListener scaleTracker = (sender, evt) -> {
+            ignoreZoomChange = true;
 
-            /**
-             *
-             */
-            @Override
-            public void invoke(Object sender, mxEventObject evt) {
-                ignoreZoomChange = true;
-
-                try {
-                    zoomCombo.setSelectedItem((int) Math.round(100 * view.getScale()) + "%");
-                } finally {
-                    ignoreZoomChange = false;
-                }
+            try {
+                zoomCombo.setSelectedItem((int) Math.round(100 * view.getScale()) + "%");
+            } finally {
+                ignoreZoomChange = false;
             }
         };
 
@@ -205,17 +182,11 @@ public class EditorToolBar extends JToolBar {
         // Invokes once to sync with the actual zoom value
         scaleTracker.invoke(null, null);
 
-        zoomCombo.addActionListener(new ActionListener() {
+        zoomCombo.addActionListener(e -> {
+            mxGraphComponent graphComponent = editor.getGraphComponent();
 
-            /**
-             *
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mxGraphComponent graphComponent = editor.getGraphComponent();
-
-                // Zoomcombo is changed when the scale is changed in the diagram
-                // but the change is ignored here
+            // Zoomcombo is changed when the scale is changed in the diagram
+            // but the change is ignored here
                 if (!ignoreZoomChange) {
                     String zoom = zoomCombo.getSelectedItem().toString();
 
@@ -238,7 +209,6 @@ public class EditorToolBar extends JToolBar {
                         }
                     }
                 }
-            }
-        });
+            });
     }
 }
