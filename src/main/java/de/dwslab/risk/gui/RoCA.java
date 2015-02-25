@@ -2,6 +2,9 @@ package de.dwslab.risk.gui;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -58,8 +61,9 @@ public class RoCA extends BasicGraphEditor {
             logger.error("Unhandeled exception", e);
         });
 
-        knowledge = new MlnBackgroundKnowledge(RoCA.class.getResource("/default.mln"),
-                Utils.createTempPath("dummy", ".db"));
+        Path dummy = Utils.createTempPath("dummy", ".db");
+        knowledge = new MlnBackgroundKnowledge(RoCA.class.getResource("/default.mln"), dummy);
+        Files.delete(dummy);
 
         final mxGraph graph = graphComponent.getGraph();
         graph.addListener(
