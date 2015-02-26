@@ -1,21 +1,59 @@
 package de.dwslab.risk.gui.model;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 public class Entity implements UserObject {
 
     private static final long serialVersionUID = -566950411586680045L;
+
+    private static final AtomicInteger NEXT_ID = new AtomicInteger();
+    private static final Cache<String, Entity> ENTITIES =
+            CacheBuilder.newBuilder().weakValues().build();
+    private final int id = NEXT_ID.getAndIncrement();
 
     private String name;
     private Boolean offline;
     private Type type;
 
-    public Entity(String name, Type type) {
+    private Entity(String name, Type type) {
         this(name, type, null);
     }
 
-    public Entity(String name, Type type, Boolean offline) {
+    private Entity(String name, Type type, Boolean offline) {
         this.name = name;
         this.type = type;
         this.offline = offline;
+    }
+
+    public static Entity get(String name, Type type) {
+        Entity entity = ENTITIES.getIfPresent(name);
+        if (entity == null) {
+            entity = create(name, type);
+        }
+        return entity;
+    }
+
+    public static Entity get(String name, Type type, Boolean offline) {
+        Entity entity = ENTITIES.getIfPresent(name);
+        if (entity == null) {
+            entity = create(name, type, offline);
+        }
+        return entity;
+    }
+
+    public static Entity create(String name, Type type) {
+        return new Entity(name, type);
+    }
+
+    public static Entity create(String name, Type type, Boolean offline) {
+        return new Entity(name, type, offline);
+    }
+
+    protected int getId() {
+        return id;
     }
 
     public String getName() {

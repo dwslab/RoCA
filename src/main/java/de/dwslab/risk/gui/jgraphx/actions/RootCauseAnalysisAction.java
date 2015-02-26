@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 import com.googlecode.rockit.app.RockItAPI;
 import com.googlecode.rockit.app.result.RockItResult;
 
-import de.dwslab.ai.riskmanagement.abduction.existential.ExistentialApi;
+import de.dwslab.ai.riskmanagement.existential.ExistentialApi;
 import de.dwslab.risk.gui.RoCA;
 import de.dwslab.risk.gui.exception.RoCAException;
 import de.dwslab.risk.gui.model.Grounding;

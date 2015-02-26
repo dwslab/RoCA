@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -74,7 +73,7 @@ public class RoCA extends BasicGraphEditor {
                         mxCell cell = (mxCell) obj;
                         if (cell.isVertex()) {
                             Entity entity = (Entity) cell.getValue();
-                            cell.setValue(new Entity(entity.getName(), entity.getType()));
+                            cell.setValue(Entity.create(entity.getName(), entity.getType()));
                         } else {
                             Entity source = (Entity) cell.getSource().getValue();
                             Entity target = (Entity) cell.getTarget().getValue();
@@ -108,7 +107,7 @@ public class RoCA extends BasicGraphEditor {
         shapesPalette.addTemplate("Component",
                 new ImageIcon(RoCA.class
                         .getResource("/com/mxgraph/examples/swing/images/rectangle.png")),
-                null, 160, 120, new Entity("New Component", new Type("infra")));
+                null, 160, 120, Entity.create("New Component", new Type("infra")));
         // shapesPalette.addTemplate("Service",
         // new ImageIcon(RoCA.class
         // .getResource("/com/mxgraph/examples/swing/images/rounded.png")),
@@ -116,7 +115,7 @@ public class RoCA extends BasicGraphEditor {
         shapesPalette.addTemplate("Risk",
                 new ImageIcon(RoCA.class
                         .getResource("/com/mxgraph/examples/swing/images/ellipse.png")),
-                "ellipse", 160, 120, new Entity("New Risk", new Type("risk")));
+                "ellipse", 160, 120, Entity.create("New Risk", new Type("risk")));
     }
 
     public BackgroundKnowledge getBackgroundKnowledge() {

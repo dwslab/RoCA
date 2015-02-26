@@ -85,25 +85,29 @@ public interface BackgroundKnowledge {
 
                         evidenceWriter.write(predicate.getName());
                         evidenceWriter.write('(');
-                        List<String> values = g.getValues();
+                        List<Entity> values = g.getValues();
                         for (int i = 0; i < values.size() - 1; i++) {
-                            String value = values.get(i);
-                            if (!NumberUtils.isNumber(value)) {
+                            Entity value = values.get(i);
+                            if (!NumberUtils.isNumber(value.getName())) {
                                 evidenceWriter.write('"');
-                                evidenceWriter.write(value);
+                                evidenceWriter.write(value.getName());
+                                evidenceWriter.write('_');
+                                evidenceWriter.write(value.getId());
                                 evidenceWriter.write('"');
                             } else {
-                                evidenceWriter.write(value);
+                                evidenceWriter.write(value.getName());
                             }
                             evidenceWriter.write(',');
                         }
-                        String value = values.get(values.size() - 1);
-                        if (!NumberUtils.isNumber(value)) {
+                        Entity value = values.get(values.size() - 1);
+                        if (!NumberUtils.isNumber(value.getName())) {
                             evidenceWriter.write('"');
-                            evidenceWriter.write(value);
+                            evidenceWriter.write(value.getName());
+                            evidenceWriter.write('_');
+                            evidenceWriter.write(value.getId());
                             evidenceWriter.write('"');
                         } else {
-                            evidenceWriter.write(value);
+                            evidenceWriter.write(value.getName());
                         }
 
                         evidenceWriter.write(')');

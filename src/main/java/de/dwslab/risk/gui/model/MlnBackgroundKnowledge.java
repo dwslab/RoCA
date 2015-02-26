@@ -98,7 +98,7 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
                                 Type type = types.get(i);
                                 // if (!"float_".equals(type.getName())) {
                         String entity = entititesArr[i];
-                        entities.put(type, new Entity(entity, type));
+                        entities.put(type, Entity.get(entity, type));
                         // }
                     }
                 });
