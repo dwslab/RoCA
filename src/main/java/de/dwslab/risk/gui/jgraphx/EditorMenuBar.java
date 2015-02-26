@@ -420,7 +420,7 @@ public class EditorMenuBar extends JMenuBar {
 
         // Creates the Root Cause Analysis menu
         menu = add(new JMenu("Root Cause Analyse"));
-        menu.add(editor.bind("Load MLN & Evidence...", new LoadBackgroundKnowledgeAction(MLN,
+        menu.add(editor.bind("Load Evidence...", new LoadBackgroundKnowledgeAction(MLN,
                 editor)));
         menu.add(editor.bind("Load Ontology...", new LoadBackgroundKnowledgeAction(ONTOLOGY,
                 editor)));

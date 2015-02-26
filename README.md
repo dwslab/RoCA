@@ -33,10 +33,12 @@ To start the GUI either double-click on the JAR-file or execute the command `jav
 ## Usage
 RoCA comes with a default MLN and a default background ontology to get you started. After starting the application an empty model is presented. You can either load information about your infrastructure from an MLN evidence file or an ontology, or start from scratch. When your model is finished and contains all necessary or available information, you can start RockIt to run the root cause analysis.
 
-### Loading a Model
-loading the default MLN
+### Loading Evidence
+Evidence can be loaded form the menu *Root Cause Analysis* with the menu point *Load Evidence...*. 
 
 <img src="http://web.informatik.uni-mannheim.de/risk/menu.png">
+
+After selecting a file and loading it, the graph of the model is displayed an can than be edited.
 
 <img src="http://web.informatik.uni-mannheim.de/risk/dialog.png">
 
@@ -44,15 +46,17 @@ loading the default MLN
 ### Editing a Model
 <img src="http://web.informatik.uni-mannheim.de/risk/model.png" width="400px">
 
+You can edit the model by either drag&drop of new elements from the palette on the left side, or draw new edges between already placed components. RoCA automatically determines the type of an edge (*dependsOn* between components, *hasRiskDegree* between a components and risks). By double-clicking on a component or an edge you can edit its properties: *name* and *state* for componentes, and *weight* for relations.  
+
 <img src="http://web.informatik.uni-mannheim.de/risk/properties.png">
 
-providing evidence
-edges typed automatically
 
 ### Running the Root Cause Analysis
-run, wait, popup showing results
+The root cause analyis can also be started from the menu. A dialog is shown that updates with the current progress.
 
 <img src="http://web.informatik.uni-mannheim.de/risk/inference.png">
+
+When the root cause analysis is finished, a popup with the proposed most probable cause is displayed.
 
 <img src="http://web.informatik.uni-mannheim.de/risk/cause.png">
 
@@ -71,4 +75,3 @@ This work has been partially supported by the German Federal Ministry of
 Economics and Technology (BMWI) in the framework of the Central Innovation 
 Program SME (Zentrales Innovationsprogramm Mittelstand - ZIM) within the project 
 "Risk management tool for complex IT infrastructures".
-
