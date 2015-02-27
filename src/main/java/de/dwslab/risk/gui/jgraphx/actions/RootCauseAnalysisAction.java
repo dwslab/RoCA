@@ -102,11 +102,9 @@ public class RootCauseAnalysisAction extends AbstractAction {
                             List<Entity> e = m
                                     .getObjects()
                                     .stream()
-                                    .map(s -> {
-                                        System.err.println(s);
-                                        return Entity.get(Integer.valueOf(s.substring(s
-                                                .lastIndexOf('_') + 1)));
-                                    }).collect(toList());
+                                    .map(s -> Entity.get(Integer.valueOf(s.substring(s
+                                            .lastIndexOf('_') + 1)))
+                                    ).collect(toList());
                             return new Grounding(p, e);
                         }).collect(toSet());
                 monitor.setProgress(100);
