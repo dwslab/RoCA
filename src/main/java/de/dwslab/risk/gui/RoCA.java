@@ -77,16 +77,17 @@ public class RoCA extends BasicGraphEditor {
                         } else {
                             Entity source = (Entity) cell.getSource().getValue();
                             Entity target = (Entity) cell.getTarget().getValue();
-                            String sourceName = source.getType().getName();
-                            String targetName = target.getType().getName();
-                            if (targetName.equals("risk") && sourceName.equals("infra")) {
+                            String sourceType = source.getType().getName();
+                            String targetType = target.getType().getName();
+                            if (targetType.equals("risk") && sourceType.equals("infra")) {
+                                Entity weight = Entity.create(String.valueOf(0d),
+                                        new Type("_float"));
                                 Grounding grounding = new Grounding(new Predicate("hasRiskDegree"),
-                                        Arrays.asList(source.getName(), target.getName(),
-                                                String.valueOf(0d)));
+                                        Arrays.asList(source, target, weight));
                                 cell.setValue(grounding);
-                            } else if (targetName.equals("infra") && sourceName.equals("infra")) {
+                            } else if (targetType.equals("infra") && sourceType.equals("infra")) {
                                 Grounding grounding = new Grounding(new Predicate("dependsOn"),
-                                        Arrays.asList(source.getName(), target.getName()));
+                                        Arrays.asList(source, target));
                                 cell.setValue(grounding);
                             } else {
                                 event.consume();
@@ -135,18 +136,18 @@ public class RoCA extends BasicGraphEditor {
             graph.removeCells();
 
             // add the new entities
-            Map<String, mxCell> cellMap = new HashMap<>();
+            Map<Entity, mxCell> cellMap = new HashMap<>();
             Set<Entity> infras = knowledge.getEntities().get(new Type("infra"));
             for (Entity infra : infras) {
                 mxCell cell = insertEntity(infra, graph);
-                cellMap.put(infra.getName(), cell);
+                cellMap.put(infra, cell);
             }
 
             // add the risks
             Set<Entity> risks = knowledge.getEntities().get(new Type("risk"));
             for (Entity risk : risks) {
                 mxCell cell = insertRisk(risk, graph);
-                cellMap.put(risk.getName(), cell);
+                cellMap.put(risk, cell);
             }
 
             HashMultimap<Predicate, Grounding> groundings = knowledge.getGroundings();
@@ -154,21 +155,21 @@ public class RoCA extends BasicGraphEditor {
             // connect the entities with edges
             Set<Grounding> dependsOns = groundings.get(new Predicate("dependsOn"));
             for (Grounding literal : dependsOns) {
-                String source = literal.getValues().get(0);
-                String target = literal.getValues().get(1);
+                Entity source = literal.getValues().get(0);
+                Entity target = literal.getValues().get(1);
                 insertDependsOn(literal, cellMap.get(source), cellMap.get(target), graph);
             }
 
             Set<Grounding> hasRisks = groundings.get(new Predicate("hasRiskDegree"));
             for (Grounding literal : hasRisks) {
-                String source = literal.getValues().get(0);
-                String target = literal.getValues().get(1);
+                Entity source = literal.getValues().get(0);
+                Entity target = literal.getValues().get(1);
                 insertHasRisk(literal, cellMap.get(source), cellMap.get(target), graph);
             }
 
             Set<Grounding> offlines = groundings.get(new Predicate("offline"));
             for (Grounding literal : offlines) {
-                String infra = literal.getValues().get(0);
+                Entity infra = literal.getValues().get(0);
                 mxCell cell = cellMap.get(infra);
 
                 Entity value = (Entity) cell.getValue();
@@ -181,7 +182,7 @@ public class RoCA extends BasicGraphEditor {
 
             Set<Grounding> notOfflines = groundings.get(new Predicate(true, "offline"));
             for (Grounding literal : notOfflines) {
-                String infra = literal.getValues().get(0);
+                Entity infra = literal.getValues().get(0);
                 mxCell cell = cellMap.get(infra);
 
                 Entity value = (Entity) cell.getValue();

@@ -92,7 +92,7 @@ public interface BackgroundKnowledge {
                                 evidenceWriter.write('"');
                                 evidenceWriter.write(value.getName());
                                 evidenceWriter.write('_');
-                                evidenceWriter.write(value.getId());
+                                evidenceWriter.write(Integer.toString(value.getId()));
                                 evidenceWriter.write('"');
                             } else {
                                 evidenceWriter.write(value.getName());
@@ -104,7 +104,7 @@ public interface BackgroundKnowledge {
                             evidenceWriter.write('"');
                             evidenceWriter.write(value.getName());
                             evidenceWriter.write('_');
-                            evidenceWriter.write(value.getId());
+                            evidenceWriter.write(Integer.toString(value.getId()));
                             evidenceWriter.write('"');
                         } else {
                             evidenceWriter.write(value.getName());

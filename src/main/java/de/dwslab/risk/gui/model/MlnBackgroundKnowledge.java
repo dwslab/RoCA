@@ -1,6 +1,7 @@
 package de.dwslab.risk.gui.model;
 
 import static de.dwslab.ai.util.Utils.lines;
+import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.net.URL;
@@ -123,9 +124,9 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
                             String entitiesString = str.substring(str.indexOf('(') + 1,
                                     str.indexOf(')')).replaceAll("\"", "");
                             String[] entititesArr = entitiesString.split("\\s*,\\s*");
-
-                            Grounding literal = new Grounding(predicate, Arrays
-                                    .asList(entititesArr));
+                            List<Entity> entities = Arrays.stream(entititesArr)
+                                    .map(e -> Entity.get(e)).collect(toList());
+                            Grounding literal = new Grounding(predicate, entities);
                             groundings.put(predicate, literal);
                         });
 

@@ -93,9 +93,9 @@ public class CustomCellEditor extends mxCellEditor {
                 Entity entity = (Entity) cell.getValue();
                 Grounding grounding = (Grounding) edge.getValue();
                 if (edge.getSource() == cell) {
-                    grounding.getValues().set(0, entity.getName());
+                    grounding.getValues().set(0, entity);
                 } else if (edge.getTarget() == cell) {
-                    grounding.getValues().set(1, entity.getName());
+                    grounding.getValues().set(1, entity);
                 } else {
                     throw new RoCAException("Something went wrong");
                 }
@@ -268,7 +268,7 @@ public class CustomCellEditor extends mxCellEditor {
 
             c.gridx = 1;
             JTextField textFieldWeight = new JTextField(15);
-            textFieldWeight.setText(grounding.getValues().get(2));
+            textFieldWeight.setText(grounding.getValues().get(2).getName());
             panel.add(textFieldWeight, c);
 
             c.insets = new Insets(30, 10, 10, 10);
@@ -278,7 +278,9 @@ public class CustomCellEditor extends mxCellEditor {
 
             buttonOk.addActionListener(l -> {
                 setVisible(false);
-                grounding.getValues().set(2, textFieldWeight.getText());
+                grounding.getValues().set(
+                        2, Entity.get(textFieldWeight.getText(), new de.dwslab.risk.gui.model.Type(
+                                "_float")));
 
                 mxCellState state = graphComponent.getGraph().getView().getState(cell);
                 graphComponent.redraw(state);
@@ -294,7 +296,6 @@ public class CustomCellEditor extends mxCellEditor {
             });
             panel.add(buttonCancel, c);
         }
-
     }
 
 }

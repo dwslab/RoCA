@@ -5,12 +5,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import de.dwslab.risk.gui.exception.RoCAException;
+
 public class Entity implements UserObject {
 
     private static final long serialVersionUID = -566950411586680045L;
 
     private static final AtomicInteger NEXT_ID = new AtomicInteger();
-    private static final Cache<String, Entity> ENTITIES =
+    private static final Cache<Integer, Entity> BY_ID =
+            CacheBuilder.newBuilder().weakValues().build();
+    private static final Cache<String, Entity> BY_NAME =
             CacheBuilder.newBuilder().weakValues().build();
     private final int id = NEXT_ID.getAndIncrement();
 
@@ -28,8 +32,33 @@ public class Entity implements UserObject {
         this.offline = offline;
     }
 
+    public static Entity get(int id) {
+        Entity entity = BY_ID.getIfPresent(id);
+        if (entity == null) {
+            throw new RoCAException("Entity not found: ID " + id);
+        }
+        return entity;
+    }
+
+    /**
+     * Get the entity with the specified name if it exists, throw an exception otherwise. Beware
+     * that this method returns the last created entity with that name. There might be additional
+     * entities with the same name but a different ID.
+     *
+     * @param name
+     * @return
+     * @throws RoCAException
+     */
+    public static Entity get(String name) throws RoCAException {
+        Entity entity = BY_NAME.getIfPresent(name);
+        if (entity == null) {
+            throw new RoCAException("Entity not found: " + name);
+        }
+        return entity;
+    }
+
     public static Entity get(String name, Type type) {
-        Entity entity = ENTITIES.getIfPresent(name);
+        Entity entity = BY_NAME.getIfPresent(name);
         if (entity == null) {
             entity = create(name, type);
         }
@@ -37,7 +66,7 @@ public class Entity implements UserObject {
     }
 
     public static Entity get(String name, Type type, Boolean offline) {
-        Entity entity = ENTITIES.getIfPresent(name);
+        Entity entity = BY_NAME.getIfPresent(name);
         if (entity == null) {
             entity = create(name, type, offline);
         }
@@ -45,11 +74,17 @@ public class Entity implements UserObject {
     }
 
     public static Entity create(String name, Type type) {
-        return new Entity(name, type);
+        Entity entity = new Entity(name, type);
+        BY_NAME.put(name, entity);
+        BY_ID.put(entity.getId(), entity);
+        return entity;
     }
 
     public static Entity create(String name, Type type, Boolean offline) {
-        return new Entity(name, type, offline);
+        Entity entity = new Entity(name, type, offline);
+        BY_NAME.put(name, entity);
+        BY_ID.put(entity.getId(), entity);
+        return entity;
     }
 
     protected int getId() {
@@ -89,9 +124,9 @@ public class Entity implements UserObject {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + id;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((offline == null) ? 0 : offline.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
 
@@ -107,6 +142,9 @@ public class Entity implements UserObject {
             return false;
         }
         Entity other = (Entity) obj;
+        if (id != other.id) {
+            return false;
+        }
         if (name == null) {
             if (other.name != null) {
                 return false;
@@ -121,13 +159,6 @@ public class Entity implements UserObject {
         } else if (!offline.equals(other.offline)) {
             return false;
         }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
         return true;
     }
 
@@ -136,6 +167,6 @@ public class Entity implements UserObject {
         return type.getName() + "("
                 + (Boolean.TRUE.equals(offline) ? "!" : "")
                 + (offline == null ? "?" : "")
-                + name + ")";
+                + name + "_" + id + ")";
     }
 }

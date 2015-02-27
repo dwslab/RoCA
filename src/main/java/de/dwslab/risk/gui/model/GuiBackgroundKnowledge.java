@@ -79,10 +79,9 @@ public class GuiBackgroundKnowledge extends AbstractBackgroundKnowledge {
         @Override
         public void visit(Entity entity) {
             if (TRUE.equals(entity.getOffline())) {
-                groundings.put(offline, new Grounding(offline, singletonList(entity.getName())));
+                groundings.put(offline, new Grounding(offline, singletonList(entity)));
             } else if (FALSE.equals(entity.getOffline())) {
-                groundings.put(notOffline, new Grounding(notOffline,
-                        singletonList(entity.getName())));
+                groundings.put(notOffline, new Grounding(notOffline, singletonList(entity)));
             }
             entities.put(entity.getType(), entity);
         }

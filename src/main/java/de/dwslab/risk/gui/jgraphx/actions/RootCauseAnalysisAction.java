@@ -1,6 +1,7 @@
 package de.dwslab.risk.gui.jgraphx.actions;
 
 import static de.dwslab.ai.util.Utils.createTempFile;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.logging.log4j.Level.INFO;
 
@@ -24,6 +25,7 @@ import com.googlecode.rockit.app.result.RockItResult;
 import de.dwslab.ai.riskmanagement.existential.ExistentialApi;
 import de.dwslab.risk.gui.RoCA;
 import de.dwslab.risk.gui.exception.RoCAException;
+import de.dwslab.risk.gui.model.Entity;
 import de.dwslab.risk.gui.model.Grounding;
 import de.dwslab.risk.gui.model.Predicate;
 
@@ -92,10 +94,21 @@ public class RootCauseAnalysisAction extends AbstractAction {
                 // Process the result
                 logger.log(INFO, "processing result");
                 monitor.setNote("Processing MAP result...");
-                Set<Grounding> rootCause = mapState.stream()
+                Set<Grounding> rootCause = mapState
+                        .stream()
                         .filter(m -> "hasRisk".equals(m.getPredicate()))
-                        .map(m -> new Grounding(new Predicate(m.getPredicate()), m.getObjects()))
-                        .collect(toSet());
+                        .map(m -> {
+                            Predicate p = new Predicate(m.getPredicate());
+                            List<Entity> e = m
+                                    .getObjects()
+                                    .stream()
+                                    .map(s -> {
+                                        System.err.println(s);
+                                        return Entity.get(Integer.valueOf(s.substring(s
+                                                .lastIndexOf('_') + 1)));
+                                    }).collect(toList());
+                            return new Grounding(p, e);
+                        }).collect(toSet());
                 monitor.setProgress(100);
 
                 return rootCause;

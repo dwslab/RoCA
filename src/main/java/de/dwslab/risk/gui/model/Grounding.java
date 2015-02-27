@@ -7,9 +7,9 @@ public class Grounding implements UserObject {
     private static final long serialVersionUID = 4692532312791603293L;
 
     private final Predicate predicate;
-    private final List<String> values;
+    private final List<Entity> values;
 
-    public Grounding(Predicate predicate, List<String> values) {
+    public Grounding(Predicate predicate, List<Entity> values) {
         this.predicate = predicate;
         this.values = values;
     }
@@ -18,7 +18,7 @@ public class Grounding implements UserObject {
         return predicate;
     }
 
-    public List<String> getValues() {
+    public List<Entity> getValues() {
         return values;
     }
 
