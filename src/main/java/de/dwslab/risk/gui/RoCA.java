@@ -56,6 +56,10 @@ public class RoCA extends BasicGraphEditor {
     public RoCA() throws IOException {
         super("RoCA", new CustomGraphComponent(new CustomGraph()));
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            String message = e.getMessage();
+            if (message.trim().isEmpty()) {
+                message = "Unhandeled exception: " + e.getClass();
+            }
             JOptionPane.showMessageDialog(RoCA.this, e.getMessage());
             logger.error("Unhandeled exception", e);
         });
