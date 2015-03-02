@@ -17,7 +17,7 @@ public enum RoCAShape implements RoCAIcons {
             120, 120, Entity.create("New Server", new Type("infra"))),
 
     PRINTER("Printer", IMAGE_PRINTER,
-            "icon;image=/com/mxgraph/examples/swing/images/printer.png;fill",
+            "icon;image=/com/mxgraph/examples/swing/images/printer.png",
             120, 120, Entity.create("New Printer", new Type("infra"))),
 
     COMPONENT("Component", ICON_RECTANGLE, null,
