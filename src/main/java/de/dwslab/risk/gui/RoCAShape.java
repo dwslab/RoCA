@@ -8,13 +8,26 @@ import de.dwslab.risk.gui.model.UserObject;
 
 public enum RoCAShape implements RoCAIcons {
 
-    COMPONENT("Component", ICON_RECTANGLE, null, 160, 120, Entity.create("New Component", new Type(
-            "infra"))),
+    SERVICE("Service", IMAGE_WRENCH,
+            "icon;image=/com/mxgraph/examples/swing/images/wrench.png",
+            120, 120, Entity.create("New Service", new Type("infra"))),
 
-    RISK("Risk", ICON_ELLIPSE, "ellipse", 160, 120, Entity.create("New Risk", new Type("risk"))),
+    SERVER("Server", IMAGE_SERVER,
+            "icon;image=/com/mxgraph/examples/swing/images/server.png",
+            120, 120, Entity.create("New Server", new Type("infra"))),
 
-    REDUNDANCY("Redundancy", ICON_CONTAINER, "swimlane", 280, 280, Entity.create(
-            "New Redundancy Component", new Type("redundancy")));
+    PRINTER("Printer", IMAGE_PRINTER,
+            "icon;image=/com/mxgraph/examples/swing/images/printer.png;fill",
+            120, 120, Entity.create("New Printer", new Type("infra"))),
+
+    COMPONENT("Component", ICON_RECTANGLE, null,
+            160, 120, Entity.create("New Component", new Type("infra"))),
+
+    REDUNDANCY("Redundancy", ICON_CONTAINER, "swimlane",
+            280, 280, Entity.create("New Redundancy Component", new Type("redundancy"))),
+
+    RISK("Risk", ICON_CLOUD, "ellipse;shape=cloud",
+            160, 120, Entity.create("New Risk", new Type("risk")));
 
     private final String name;
     private final ImageIcon icon;
