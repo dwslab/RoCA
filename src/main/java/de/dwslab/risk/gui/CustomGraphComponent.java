@@ -27,7 +27,7 @@ public class CustomGraphComponent extends mxGraphComponent {
         setPageVisible(true);
         setGridVisible(true);
         setToolTips(true);
-        getConnectionHandler().setCreateTarget(true);
+        getConnectionHandler().setCreateTarget(false);
 
         // Loads the defalt stylesheet from an external file
         mxCodec codec = new mxCodec();

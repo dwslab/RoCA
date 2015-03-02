@@ -56,10 +56,10 @@ public class RoCA extends BasicGraphEditor {
         super("RoCA", new CustomGraphComponent(new CustomGraph()));
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
             String message = e.getMessage();
-            if (message.trim().isEmpty()) {
+            if (message == null || message.trim().isEmpty()) {
                 message = "Unhandled exception: " + e.getClass();
             }
-            JOptionPane.showMessageDialog(RoCA.this, e.getMessage());
+            JOptionPane.showMessageDialog(RoCA.this, message);
             logger.error("Unhandled exception", e);
         });
 
@@ -78,27 +78,34 @@ public class RoCA extends BasicGraphEditor {
                             Entity entity = (Entity) cell.getValue();
                             cell.setValue(Entity.create(entity.getName(), entity.getType()));
                         } else {
-                            Entity source = (Entity) cell.getSource().getValue();
-                            Entity target = (Entity) cell.getTarget().getValue();
-                            String sourceType = source.getType().getName();
-                            String targetType = target.getType().getName();
-                            if (targetType.equals("risk") && sourceType.equals("infra")) {
-                                Entity weight = Entity.create(String.valueOf(0d),
-                                        new Type("_float"));
-                                Grounding grounding = new Grounding(new Predicate("hasRiskDegree"),
-                                        Arrays.asList(source, target, weight));
-                                cell.setValue(grounding);
-                            } else if (targetType.equals("infra") && sourceType.equals("infra")) {
-                                Grounding grounding = new Grounding(new Predicate("dependsOn"),
-                                        Arrays.asList(source, target));
-                                cell.setValue(grounding);
-                            } else {
+                            if (cell.getTarget() == null) {
                                 event.consume();
                                 graph.removeCells(new Object[] { cell });
-                                JOptionPane.showMessageDialog(
-                                        SwingUtilities.getWindowAncestor(graphComponent),
-                                        "Relation wird nicht unterstützt: " + source + " --> "
-                                                + target);
+                            } else {
+
+                                Entity source = (Entity) cell.getSource().getValue();
+                                Entity target = (Entity) cell.getTarget().getValue();
+                                String sourceType = source.getType().getName();
+                                String targetType = target.getType().getName();
+                                if (targetType.equals("risk") && sourceType.equals("infra")) {
+                                    Entity weight = Entity.create(String.valueOf(0d),
+                                            new Type("_float"));
+                                    Grounding grounding = new Grounding(new Predicate(
+                                            "hasRiskDegree"),
+                                            Arrays.asList(source, target, weight));
+                                    cell.setValue(grounding);
+                                } else if (targetType.equals("infra") && sourceType.equals("infra")) {
+                                    Grounding grounding = new Grounding(new Predicate("dependsOn"),
+                                            Arrays.asList(source, target));
+                                    cell.setValue(grounding);
+                                } else {
+                                    event.consume();
+                                    graph.removeCells(new Object[] { cell });
+                                    JOptionPane.showMessageDialog(
+                                            SwingUtilities.getWindowAncestor(graphComponent),
+                                            "Relation wird nicht unterstützt: " + source + " --> "
+                                                    + target);
+                                }
                             }
                         }
                     }
