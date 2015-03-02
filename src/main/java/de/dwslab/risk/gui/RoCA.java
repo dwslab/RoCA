@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -58,10 +57,10 @@ public class RoCA extends BasicGraphEditor {
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
             String message = e.getMessage();
             if (message.trim().isEmpty()) {
-                message = "Unhandeled exception: " + e.getClass();
+                message = "Unhandled exception: " + e.getClass();
             }
             JOptionPane.showMessageDialog(RoCA.this, e.getMessage());
-            logger.error("Unhandeled exception", e);
+            logger.error("Unhandled exception", e);
         });
 
         Path dummy = Utils.createTempPath("dummy", ".db");
@@ -107,20 +106,11 @@ public class RoCA extends BasicGraphEditor {
 
         // Creates the shapes palette
         EditorPalette shapesPalette = insertPalette(mxResources.get("shapes"));
+        for (RoCAShape shape : RoCAShape.values()) {
+            shapesPalette.addTemplate(shape.getName(), shape.getIcon(), shape.getStyle(),
+                    shape.getWidth(), shape.getHeight(), shape.getValue());
+        }
 
-        // Adds some template cells for dropping into the graph
-        shapesPalette.addTemplate("Component",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/rectangle.png")),
-                null, 160, 120, Entity.create("New Component", new Type("infra")));
-        // shapesPalette.addTemplate("Service",
-        // new ImageIcon(RoCA.class
-        // .getResource("/com/mxgraph/examples/swing/images/rounded.png")),
-        // "rounded=1", 160, 120, new Entity("", new Type("infra")));
-        shapesPalette.addTemplate("Risk",
-                new ImageIcon(RoCA.class
-                        .getResource("/com/mxgraph/examples/swing/images/ellipse.png")),
-                "ellipse", 160, 120, Entity.create("New Risk", new Type("risk")));
     }
 
     public BackgroundKnowledge getBackgroundKnowledge() {
