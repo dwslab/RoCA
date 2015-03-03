@@ -1,8 +1,8 @@
-/* 
+/*
  * Copyright (c) 2001-2005, Gaudenz Alder
- * 
+ *
  * All rights reserved.
- * 
+ *
  * See LICENSE file for license details. If you are unable to locate
  * this file please contact info (at) jgraph (dot) com.
  */
@@ -33,9 +33,8 @@ import javax.swing.JComponent;
 
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxEvent;
-import com.mxgraph.util.mxEventObject;
-import com.mxgraph.util.mxPoint;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
+import com.mxgraph.util.mxPoint;
 import com.mxgraph.view.mxGraph;
 
 /**
@@ -44,7 +43,7 @@ import com.mxgraph.view.mxGraph;
 public class EditorRuler extends JComponent implements MouseMotionListener, DropTargetListener {
 
     /**
-	 * 
+	 *
 	 */
     private static final long serialVersionUID = -6310912355878668096L;
 
@@ -73,7 +72,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
 
     /**
      * Holds the shared number formatter.
-     * 
+     *
      * @see NumberFormat#getInstance()
      */
     public static final NumberFormat numberFormat = NumberFormat.getInstance();
@@ -114,7 +113,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
     protected boolean metric = DEFAULT_ISMETRIC;
 
     /**
-	 * 
+	 *
 	 */
     protected Font labelFont = new Font("Tahoma", Font.PLAIN, 9);
 
@@ -144,18 +143,13 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
     protected double increment, units;
 
     /**
-	 * 
+	 *
 	 */
-    protected transient mxIEventListener repaintHandler = new mxIEventListener() {
-
-        public void invoke(Object source, mxEventObject evt) {
-            repaint();
-        }
-    };
+    protected transient mxIEventListener repaintHandler = (source, evt) -> repaint();
 
     /**
      * Constructs a new ruler for the specified graph and orientation.
-     * 
+     *
      * @param graph
      *            The graph to create the ruler for.
      * @param orientation
@@ -188,7 +182,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
 
     /**
      * Sets the start of the active region in pixels.
-     * 
+     *
      * @param offset
      *            The start of the active region.
      */
@@ -198,7 +192,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
 
     /**
      * Sets the length of the active region in pixels.
-     * 
+     *
      * @param length
      *            The length of the active region.
      */
@@ -208,7 +202,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
 
     /**
      * Returns true if the ruler uses metric units.
-     * 
+     *
      * @return Returns if the ruler is metric.
      */
     public boolean isMetric() {
@@ -217,19 +211,19 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
 
     /**
      * Sets if the ruler uses metric units.
-     * 
+     *
      * @param isMetric
      *            Whether to use metric units.
      */
     public void setMetric(boolean isMetric) {
-        this.metric = isMetric;
+        metric = isMetric;
         updateIncrementAndUnits();
         repaint();
     }
 
     /**
      * Returns the ruler's horizontal or vertical size.
-     * 
+     *
      * @return Returns the rulerSize.
      */
     public int getRulerSize() {
@@ -238,7 +232,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
 
     /**
      * Sets the ruler's horizontal or vertical size.
-     * 
+     *
      * @param rulerSize
      *            The rulerSize to set.
      */
@@ -247,14 +241,14 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
     }
 
     /**
-	 * 
+	 *
 	 */
     public void setTickDistance(int tickDistance) {
         this.tickDistance = tickDistance;
     }
 
     /**
-	 * 
+	 *
 	 */
     public int getTickDistance() {
         return tickDistance;
@@ -263,9 +257,10 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
     /**
      * Returns the preferred size by replacing the respective component of the
      * graph's preferred size with {@link #rulerSize}.
-     * 
+     *
      * @return Returns the preferred size for the ruler.
      */
+    @Override
     public Dimension getPreferredSize() {
         Dimension dim = graphComponent.getGraphControl().getPreferredSize();
 
@@ -283,6 +278,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
      * 
      * @see java.awt.dnd.DropTargetListener#dragEnter(java.awt.dnd.DropTargetDragEvent)
      */
+    @Override
     public void dragEnter(DropTargetDragEvent arg0) {
         // empty
     }
@@ -292,6 +288,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
      * 
      * @see java.awt.dnd.DropTargetListener#dragExit(java.awt.dnd.DropTargetEvent)
      */
+    @Override
     public void dragExit(DropTargetEvent arg0) {
         // empty
     }
@@ -301,6 +298,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
      * 
      * @see java.awt.dnd.DropTargetListener#dragOver(java.awt.dnd.DropTargetDragEvent)
      */
+    @Override
     public void dragOver(final DropTargetDragEvent arg0) {
         updateMousePosition(arg0.getLocation());
     }
@@ -310,6 +308,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
      * 
      * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
      */
+    @Override
     public void drop(DropTargetDropEvent arg0) {
         // empty
     }
@@ -319,6 +318,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
      * 
      * @see java.awt.dnd.DropTargetListener#dropActionChanged(java.awt.dnd.DropTargetDragEvent)
      */
+    @Override
     public void dropActionChanged(DropTargetDragEvent arg0) {
         // empty
     }
@@ -326,6 +326,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
     /*
      * (non-Javadoc)
      */
+    @Override
     public void mouseMoved(MouseEvent e) {
         updateMousePosition(e.getPoint());
     }
@@ -333,6 +334,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
     /*
      * (non-Javadoc)
      */
+    @Override
     public void mouseDragged(MouseEvent e) {
         updateMousePosition(e.getPoint());
     }
@@ -368,7 +370,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
     /**
      * Repaints the ruler between the specified 0 and x or y depending on the
      * orientation.
-     * 
+     *
      * @param x
      *            The endpoint for repainting a horizontal ruler.
      * @param y
@@ -384,10 +386,11 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
 
     /**
      * Paints the ruler.
-     * 
+     *
      * @param g
      *            The graphics to paint the ruler to.
      */
+    @Override
     public void paintComponent(Graphics g) {
         mxGraph graph = graphComponent.getGraph();
         Rectangle clip = g.getClipBounds();
@@ -448,7 +451,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
             xe += (int) Math.ceil(stepping);
 
             for (double x = xs; x <= xe; x += stepping) {
-                // FIXME: Workaround for rounding errors when adding stepping to
+                // LATER: Workaround for rounding errors when adding stepping to
                 // xs or ys multiple times (leads to double grid lines when zoom
                 // is set to eg. 121%)
                 double xx = Math.round((x - tx) / stepping) * stepping + tx;
@@ -474,7 +477,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
             ye += (int) Math.ceil(stepping);
 
             for (double y = ys; y <= ye; y += stepping) {
-                // FIXME: Workaround for rounding errors when adding stepping to
+                // LATER: Workaround for rounding errors when adding stepping to
                 // xs or ys multiple times (leads to double grid lines when zoom
                 // is set to eg. 121%)
                 y = Math.round((y - ty) / stepping) * stepping + ty;

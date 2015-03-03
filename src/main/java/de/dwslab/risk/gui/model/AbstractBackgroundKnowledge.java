@@ -1,28 +1,7 @@
 package de.dwslab.risk.gui.model;
 
-import java.util.List;
-
-import com.google.common.collect.HashMultimap;
 
 public abstract class AbstractBackgroundKnowledge implements BackgroundKnowledge {
-
-    @Override
-    public List<Formula> getFormulas() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public HashMultimap<Type, Entity> getEntities() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public HashMultimap<Predicate, Grounding> getGroundings() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @Override
     public int hashCode() {

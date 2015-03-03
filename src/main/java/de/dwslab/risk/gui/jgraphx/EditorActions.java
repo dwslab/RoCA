@@ -13,7 +13,6 @@ import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
@@ -78,7 +77,7 @@ import com.mxgraph.view.mxGraph;
 public class EditorActions {
 
     /**
-     * 
+     *
      * @param e
      * @return Returns the graph for the given action event.
      */
@@ -103,29 +102,23 @@ public class EditorActions {
     public static class ToggleRulersItem extends JCheckBoxMenuItem {
 
         /**
-		 * 
+		 *
 		 */
         public ToggleRulersItem(final BasicGraphEditor editor, String name) {
             super(name);
             setSelected(editor.getGraphComponent().getColumnHeader() != null);
 
-            addActionListener(new ActionListener() {
+            addActionListener(e -> {
+                mxGraphComponent graphComponent = editor.getGraphComponent();
 
-                /**
-				 * 
-				 */
-                public void actionPerformed(ActionEvent e) {
-                    mxGraphComponent graphComponent = editor.getGraphComponent();
-
-                    if (graphComponent.getColumnHeader() != null) {
-                        graphComponent.setColumnHeader(null);
-                        graphComponent.setRowHeader(null);
-                    } else {
-                        graphComponent.setColumnHeaderView(new EditorRuler(graphComponent,
-                                EditorRuler.ORIENTATION_HORIZONTAL));
-                        graphComponent.setRowHeaderView(new EditorRuler(graphComponent,
-                                EditorRuler.ORIENTATION_VERTICAL));
-                    }
+                if (graphComponent.getColumnHeader() != null) {
+                    graphComponent.setColumnHeader(null);
+                    graphComponent.setRowHeader(null);
+                } else {
+                    graphComponent.setColumnHeaderView(new EditorRuler(graphComponent,
+                            EditorRuler.ORIENTATION_HORIZONTAL));
+                    graphComponent.setRowHeaderView(new EditorRuler(graphComponent,
+                            EditorRuler.ORIENTATION_VERTICAL));
                 }
             });
         }
@@ -138,27 +131,21 @@ public class EditorActions {
     public static class ToggleGridItem extends JCheckBoxMenuItem {
 
         /**
-		 * 
+		 *
 		 */
         public ToggleGridItem(final BasicGraphEditor editor, String name) {
             super(name);
             setSelected(true);
 
-            addActionListener(new ActionListener() {
+            addActionListener(e -> {
+                mxGraphComponent graphComponent = editor.getGraphComponent();
+                mxGraph graph = graphComponent.getGraph();
+                boolean enabled = !graph.isGridEnabled();
 
-                /**
-				 * 
-				 */
-                public void actionPerformed(ActionEvent e) {
-                    mxGraphComponent graphComponent = editor.getGraphComponent();
-                    mxGraph graph = graphComponent.getGraph();
-                    boolean enabled = !graph.isGridEnabled();
-
-                    graph.setGridEnabled(enabled);
-                    graphComponent.setGridVisible(enabled);
-                    graphComponent.repaint();
-                    setSelected(enabled);
-                }
+                graph.setGridEnabled(enabled);
+                graphComponent.setGridVisible(enabled);
+                graphComponent.repaint();
+                setSelected(enabled);
             });
         }
     }
@@ -170,42 +157,28 @@ public class EditorActions {
     public static class ToggleOutlineItem extends JCheckBoxMenuItem {
 
         /**
-		 * 
+		 *
 		 */
         public ToggleOutlineItem(final BasicGraphEditor editor, String name) {
             super(name);
             setSelected(true);
 
-            addActionListener(new ActionListener() {
+            addActionListener(e -> {
+                final mxGraphOutline outline = editor.getGraphOutline();
+                outline.setVisible(!outline.isVisible());
+                outline.revalidate();
 
-                /**
-				 * 
-				 */
-                public void actionPerformed(ActionEvent e) {
-                    final mxGraphOutline outline = editor.getGraphOutline();
-                    outline.setVisible(!outline.isVisible());
-                    outline.revalidate();
-
-                    SwingUtilities.invokeLater(new Runnable() {
-
-                        /*
-                         * (non-Javadoc)
-                         * 
-                         * @see java.lang.Runnable#run()
-                         */
-                        public void run() {
-                            if (outline.getParent() instanceof JSplitPane) {
-                                if (outline.isVisible()) {
-                                    ((JSplitPane) outline.getParent()).setDividerLocation(editor
-                                            .getHeight() - 300);
-                                    ((JSplitPane) outline.getParent()).setDividerSize(6);
-                                } else {
-                                    ((JSplitPane) outline.getParent()).setDividerSize(0);
-                                }
-                            }
+                SwingUtilities.invokeLater(() -> {
+                    if (outline.getParent() instanceof JSplitPane) {
+                        if (outline.isVisible()) {
+                            ((JSplitPane) outline.getParent()).setDividerLocation(editor
+                                    .getHeight() - 300);
+                            ((JSplitPane) outline.getParent()).setDividerSize(6);
+                        } else {
+                            ((JSplitPane) outline.getParent()).setDividerSize(0);
                         }
-                    });
-                }
+                    }
+                });
             });
         }
     }
@@ -217,8 +190,9 @@ public class EditorActions {
     public static class ExitAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             BasicGraphEditor editor = getEditor(e);
 
@@ -235,20 +209,21 @@ public class EditorActions {
     public static class StylesheetAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected String stylesheet;
 
         /**
-		 * 
+		 *
 		 */
         public StylesheetAction(String stylesheet) {
             this.stylesheet = stylesheet;
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -272,20 +247,21 @@ public class EditorActions {
     public static class ZoomPolicyAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected int zoomPolicy;
 
         /**
-		 * 
+		 *
 		 */
         public ZoomPolicyAction(int zoomPolicy) {
             this.zoomPolicy = zoomPolicy;
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -302,20 +278,21 @@ public class EditorActions {
     public static class GridStyleAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected int style;
 
         /**
-		 * 
+		 *
 		 */
         public GridStyleAction(int style) {
             this.style = style;
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -332,8 +309,9 @@ public class EditorActions {
     public static class GridColorAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -355,20 +333,21 @@ public class EditorActions {
     public static class ScaleAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected double scale;
 
         /**
-		 * 
+		 *
 		 */
         public ScaleAction(double scale) {
             this.scale = scale;
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -398,8 +377,9 @@ public class EditorActions {
     public static class PageSetupAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -421,8 +401,9 @@ public class EditorActions {
     public static class PrintAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -454,17 +435,17 @@ public class EditorActions {
     public static class SaveAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected boolean showDialog;
 
         /**
-		 * 
+		 *
 		 */
         protected String lastDir = null;
 
         /**
-		 * 
+		 *
 		 */
         public SaveAction(boolean showDialog) {
             this.showDialog = showDialog;
@@ -508,8 +489,9 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             BasicGraphEditor editor = getEditor(e);
 
@@ -558,15 +540,15 @@ public class EditorActions {
                     // Finds all distinct extensions
                     HashSet<String> formats = new HashSet<String>();
 
-                    for (int i = 0; i < imageFormats.length; i++) {
-                        String ext = imageFormats[i].toString().toLowerCase();
+                    for (Object imageFormat : imageFormats) {
+                        String ext = imageFormat.toString().toLowerCase();
                         formats.add(ext);
                     }
 
                     imageFormats = formats.toArray();
 
-                    for (int i = 0; i < imageFormats.length; i++) {
-                        String ext = imageFormats[i].toString();
+                    for (Object imageFormat : imageFormats) {
+                        String ext = imageFormat.toString();
                         fc.addChoosableFileFilter(new DefaultFileFilter("." + ext, ext
                                 .toUpperCase() + " " + mxResources.get("file") + " (." + ext + ")"));
                     }
@@ -611,6 +593,7 @@ public class EditorActions {
                         mxSvgCanvas canvas = (mxSvgCanvas) mxCellRenderer.drawCells(graph, null, 1,
                                 null, new CanvasFactory() {
 
+                                    @Override
                                     public mxICanvas createCanvas(int width, int height) {
                                         mxSvgCanvas canvas = new mxSvgCanvas(mxDomUtils
                                                 .createSvgDocument(width, height));
@@ -683,20 +666,21 @@ public class EditorActions {
     public static class SelectShortestPathAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected boolean directed;
 
         /**
-		 * 
+		 *
 		 */
         public SelectShortestPathAction(boolean directed) {
             this.directed = directed;
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -708,12 +692,12 @@ public class EditorActions {
 
                 Object[] cells = graph.getSelectionCells();
 
-                for (int i = 0; i < cells.length; i++) {
-                    if (model.isVertex(cells[i])) {
+                for (Object cell : cells) {
+                    if (model.isVertex(cell)) {
                         if (source == null) {
-                            source = cells[i];
+                            source = cell;
                         } else if (target == null) {
-                            target = cells[i];
+                            target = cell;
                         }
                     }
 
@@ -742,20 +726,21 @@ public class EditorActions {
     public static class SelectSpanningTreeAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected boolean directed;
 
         /**
-		 * 
+		 *
 		 */
         public SelectSpanningTreeAction(boolean directed) {
             this.directed = directed;
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -765,9 +750,9 @@ public class EditorActions {
                 Object parent = graph.getDefaultParent();
                 Object[] cells = graph.getSelectionCells();
 
-                for (int i = 0; i < cells.length; i++) {
-                    if (model.getChildCount(cells[i]) > 0) {
-                        parent = cells[i];
+                for (Object cell : cells) {
+                    if (model.getChildCount(cell) > 0) {
+                        parent = cell;
                         break;
                     }
                 }
@@ -787,8 +772,9 @@ public class EditorActions {
     public static class ToggleDirtyAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -805,8 +791,9 @@ public class EditorActions {
     public static class ToggleConnectModeAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -823,25 +810,19 @@ public class EditorActions {
     public static class ToggleCreateTargetItem extends JCheckBoxMenuItem {
 
         /**
-		 * 
+		 *
 		 */
         public ToggleCreateTargetItem(final BasicGraphEditor editor, String name) {
             super(name);
             setSelected(true);
 
-            addActionListener(new ActionListener() {
+            addActionListener(e -> {
+                mxGraphComponent graphComponent = editor.getGraphComponent();
 
-                /**
-				 * 
-				 */
-                public void actionPerformed(ActionEvent e) {
-                    mxGraphComponent graphComponent = editor.getGraphComponent();
-
-                    if (graphComponent != null) {
-                        mxConnectionHandler handler = graphComponent.getConnectionHandler();
-                        handler.setCreateTarget(!handler.isCreateTarget());
-                        setSelected(handler.isCreateTarget());
-                    }
+                if (graphComponent != null) {
+                    mxConnectionHandler handler = graphComponent.getConnectionHandler();
+                    handler.setCreateTarget(!handler.isCreateTarget());
+                    setSelected(handler.isCreateTarget());
                 }
             });
         }
@@ -854,24 +835,24 @@ public class EditorActions {
     public static class PromptPropertyAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected Object target;
 
         /**
-		 * 
+		 *
 		 */
         protected String fieldname, message;
 
         /**
-		 * 
+		 *
 		 */
         public PromptPropertyAction(Object target, String message) {
             this(target, message, message);
         }
 
         /**
-		 * 
+		 *
 		 */
         public PromptPropertyAction(Object target, String message, String fieldname) {
             this.target = target;
@@ -880,8 +861,9 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof Component) {
                 try {
@@ -921,21 +903,21 @@ public class EditorActions {
     public static class TogglePropertyItem extends JCheckBoxMenuItem {
 
         /**
-		 * 
+		 *
 		 */
         public TogglePropertyItem(Object target, String name, String fieldname) {
             this(target, name, fieldname, false);
         }
 
         /**
-		 * 
+		 *
 		 */
         public TogglePropertyItem(Object target, String name, String fieldname, boolean refresh) {
             this(target, name, fieldname, refresh, null);
         }
 
         /**
-		 * 
+		 *
 		 */
         public TogglePropertyItem(final Object target, String name, final String fieldname,
                 final boolean refresh, ActionListener listener) {
@@ -947,28 +929,11 @@ public class EditorActions {
                 addActionListener(listener);
             }
 
-            addActionListener(new ActionListener() {
+            addActionListener(e -> execute(target, fieldname, refresh));
 
-                /**
-				 * 
-				 */
-                public void actionPerformed(ActionEvent e) {
-                    execute(target, fieldname, refresh);
-                }
-            });
-
-            PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
-
-                /*
-                 * (non-Javadoc)
-                 * 
-                 * @see
-                 * java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-                 */
-                public void propertyChange(PropertyChangeEvent evt) {
-                    if (evt.getPropertyName().equalsIgnoreCase(fieldname)) {
-                        update(target, fieldname);
-                    }
+            PropertyChangeListener propertyChangeListener = evt -> {
+                if (evt.getPropertyName().equalsIgnoreCase(fieldname)) {
+                    update(target, fieldname);
                 }
             };
 
@@ -982,7 +947,7 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
         public void update(Object target, String fieldname) {
             if (target != null && fieldname != null) {
@@ -1003,7 +968,7 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
         public void execute(Object target, String fieldname, boolean refresh) {
             if (target != null && fieldname != null) {
@@ -1045,20 +1010,21 @@ public class EditorActions {
     public static class HistoryAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected boolean undo;
 
         /**
-		 * 
+		 *
 		 */
         public HistoryAction(boolean undo) {
             this.undo = undo;
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             BasicGraphEditor editor = getEditor(e);
 
@@ -1079,20 +1045,21 @@ public class EditorActions {
     public static class FontStyleAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected boolean bold;
 
         /**
-		 * 
+		 *
 		 */
         public FontStyleAction(boolean bold) {
             this.bold = bold;
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -1147,8 +1114,9 @@ public class EditorActions {
     public static class WarningAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -1158,8 +1126,8 @@ public class EditorActions {
                     String warning = JOptionPane.showInputDialog(mxResources
                             .get("enterWarningMessage"));
 
-                    for (int i = 0; i < cells.length; i++) {
-                        graphComponent.setCellWarning(cells[i], warning);
+                    for (Object cell : cells) {
+                        graphComponent.setCellWarning(cell, warning);
                     }
                 } else {
                     JOptionPane
@@ -1176,8 +1144,9 @@ public class EditorActions {
     public static class NewAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             BasicGraphEditor editor = getEditor(e);
 
@@ -1206,14 +1175,14 @@ public class EditorActions {
     public static class ImportAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected String lastDir;
 
         /**
          * Loads and registers the shape as a new shape in mxGraphics2DCanvas and
          * adds a new entry to use that shape in the specified palette
-         * 
+         *
          * @param palette
          *            The palette to add the shape to.
          * @param nodeXml
@@ -1248,8 +1217,9 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             BasicGraphEditor editor = getEditor(e);
 
@@ -1274,12 +1244,9 @@ public class EditorActions {
                             EditorPalette palette = editor.insertPalette(fc.getSelectedFile()
                                     .getName());
 
-                            for (File f : fc.getSelectedFile().listFiles(new FilenameFilter() {
-
-                                public boolean accept(File dir, String name) {
-                                    return name.toLowerCase().endsWith(".shape");
-                                }
-                            })) {
+                            for (File f : fc.getSelectedFile().listFiles(
+                                    (FilenameFilter) (dir, name) -> name.toLowerCase().endsWith(
+                                            ".shape"))) {
                                 String nodeXml = mxUtils.readFile(f.getAbsolutePath());
                                 addStencilShape(palette, nodeXml, f.getParent() + File.separator);
                             }
@@ -1287,7 +1254,7 @@ public class EditorActions {
                             JComponent scrollPane = (JComponent) palette.getParent().getParent();
                             editor.getLibraryPane().setSelectedComponent(scrollPane);
 
-                            // FIXME: Need to update the size of the palette to force a layout
+                            // LATER: Need to update the size of the palette to force a layout
                             // update. Re/in/validate of palette or parent does not work.
                             // editor.getLibraryPane().revalidate();
                         } else {
@@ -1313,12 +1280,12 @@ public class EditorActions {
     public static class OpenAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected String lastDir;
 
         /**
-		 * 
+		 *
 		 */
         protected void resetEditor(BasicGraphEditor editor) {
             editor.setModified(false);
@@ -1375,8 +1342,9 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             BasicGraphEditor editor = getEditor(e);
 
@@ -1394,6 +1362,7 @@ public class EditorActions {
                         DefaultFileFilter defaultFilter = new DefaultFileFilter(".mxe",
                                 mxResources.get("allSupportedFormats") + " (.mxe, .png, .vdx)") {
 
+                            @Override
                             public boolean accept(File file) {
                                 String lcase = file.getName().toLowerCase();
 
@@ -1461,17 +1430,17 @@ public class EditorActions {
     public static class ToggleAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected String key;
 
         /**
-		 * 
+		 *
 		 */
         protected boolean defaultValue;
 
         /**
-         * 
+         *
          * @param key
          */
         public ToggleAction(String key) {
@@ -1479,7 +1448,7 @@ public class EditorActions {
         }
 
         /**
-         * 
+         *
          * @param key
          */
         public ToggleAction(String key, boolean defaultValue) {
@@ -1488,8 +1457,9 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             mxGraph graph = mxGraphActions.getGraph(e);
 
@@ -1506,12 +1476,12 @@ public class EditorActions {
     public static class SetLabelPositionAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected String labelPosition, alignment;
 
         /**
-         * 
+         *
          * @param key
          */
         public SetLabelPositionAction(String labelPosition, String alignment) {
@@ -1520,8 +1490,9 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             mxGraph graph = mxGraphActions.getGraph(e);
 
@@ -1553,12 +1524,12 @@ public class EditorActions {
     public static class SetStyleAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected String value;
 
         /**
-         * 
+         *
          * @param key
          */
         public SetStyleAction(String value) {
@@ -1566,8 +1537,9 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             mxGraph graph = mxGraphActions.getGraph(e);
 
@@ -1584,12 +1556,12 @@ public class EditorActions {
     public static class KeyValueAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected String key, value;
 
         /**
-         * 
+         *
          * @param key
          */
         public KeyValueAction(String key) {
@@ -1597,7 +1569,7 @@ public class EditorActions {
         }
 
         /**
-         * 
+         *
          * @param key
          */
         public KeyValueAction(String key, String value) {
@@ -1606,8 +1578,9 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             mxGraph graph = mxGraphActions.getGraph(e);
 
@@ -1624,12 +1597,12 @@ public class EditorActions {
     public static class PromptValueAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected String key, message;
 
         /**
-         * 
+         *
          * @param key
          */
         public PromptValueAction(String key, String message) {
@@ -1638,8 +1611,9 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof Component) {
                 mxGraph graph = mxGraphActions.getGraph(e);
@@ -1668,12 +1642,12 @@ public class EditorActions {
     public static class AlignCellsAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected String align;
 
         /**
-         * 
+         *
          * @param key
          */
         public AlignCellsAction(String align) {
@@ -1681,8 +1655,9 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             mxGraph graph = mxGraphActions.getGraph(e);
 
@@ -1699,8 +1674,9 @@ public class EditorActions {
     public static class AutosizeAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             mxGraph graph = mxGraphActions.getGraph(e);
 
@@ -1710,8 +1686,8 @@ public class EditorActions {
 
                 model.beginUpdate();
                 try {
-                    for (int i = 0; i < cells.length; i++) {
-                        graph.updateCellSize(cells[i]);
+                    for (Object cell : cells) {
+                        graph.updateCellSize(cell);
                     }
                 } finally {
                     model.endUpdate();
@@ -1727,12 +1703,12 @@ public class EditorActions {
     public static class ColorAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
         protected String name, key;
 
         /**
-         * 
+         *
          * @param key
          */
         public ColorAction(String name, String key) {
@@ -1741,8 +1717,9 @@ public class EditorActions {
         }
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -1766,8 +1743,9 @@ public class EditorActions {
     public static class BackgroundImageAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -1801,8 +1779,9 @@ public class EditorActions {
     public static class BackgroundAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -1827,8 +1806,9 @@ public class EditorActions {
     public static class PageBackgroundAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
@@ -1852,8 +1832,9 @@ public class EditorActions {
     public static class StyleAction extends AbstractAction {
 
         /**
-		 * 
+		 *
 		 */
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof mxGraphComponent) {
                 mxGraphComponent graphComponent = (mxGraphComponent) e.getSource();
