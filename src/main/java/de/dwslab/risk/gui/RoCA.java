@@ -1,6 +1,6 @@
 package de.dwslab.risk.gui;
 
-import static de.dwslab.risk.gui.model.Float.FLOAT;
+import static de.dwslab.risk.gui.model.Type.FLOAT;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -10,6 +10,7 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
@@ -139,22 +140,19 @@ public class RoCA extends BasicGraphEditor {
 
             // add the new entities
             Map<Entity, mxCell> cellMap = new HashMap<>();
-            // Set<Entity> infras = knowledge.getEntities().get(new Type("infra"));
-            // for (Entity infra : infras) {
-            // mxCell cell = insertEntity(infra, graph);
-            // cellMap.put(infra, cell);
-            // }
 
-            // add the risks
-            // Set<Entity> risks = knowledge.getEntities().get(new Type("risk"));
-            // for (Entity risk : risks) {
-            // mxCell cell = insertRisk(risk, graph);
-            // cellMap.put(risk, cell);
-            // }
-
-            HashMultimap<Predicate, Grounding> groundings = knowledge.getGroundings();
+            for (Entry<Type, Entity> entry : knowledge.getEntities().entries()) {
+                if (entry.getKey() instanceof Component) {
+                    mxCell cell = insertEntity(entry.getValue(), graph);
+                    cellMap.put(entry.getValue(), cell);
+                } else if (entry.getKey() instanceof Risk) {
+                    mxCell cell = insertRisk(entry.getValue(), graph);
+                    cellMap.put(entry.getValue(), cell);
+                }
+            }
 
             // connect the entities with edges
+            HashMultimap<Predicate, Grounding> groundings = knowledge.getGroundings();
             Set<Grounding> dependsOns = groundings.get(new Predicate("dependsOn"));
             for (Grounding literal : dependsOns) {
                 Entity source = literal.getValues().get(0);
@@ -168,7 +166,6 @@ public class RoCA extends BasicGraphEditor {
                 Entity target = literal.getValues().get(1);
                 insertHasRisk(literal, cellMap.get(source), cellMap.get(target), graph);
             }
-
             Set<Grounding> offlines = groundings.get(new Predicate("offline"));
             for (Grounding literal : offlines) {
                 Entity infra = literal.getValues().get(0);
@@ -181,7 +178,6 @@ public class RoCA extends BasicGraphEditor {
 
                 graph.getModel().setStyle(cell, "fillColor=#FF2222");
             }
-
             Set<Grounding> notOfflines = groundings.get(new Predicate(true, "offline"));
             for (Grounding literal : notOfflines) {
                 Entity infra = literal.getValues().get(0);
