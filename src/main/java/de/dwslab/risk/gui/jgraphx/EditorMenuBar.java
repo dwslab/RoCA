@@ -1,7 +1,6 @@
 package de.dwslab.risk.gui.jgraphx;
 
 import static de.dwslab.risk.gui.jgraphx.actions.LoadBackgroundKnowledgeAction.KnowledgeType.MLN;
-import static de.dwslab.risk.gui.jgraphx.actions.LoadBackgroundKnowledgeAction.KnowledgeType.ONTOLOGY;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -54,6 +53,7 @@ import de.dwslab.risk.gui.jgraphx.EditorActions.TogglePropertyItem;
 import de.dwslab.risk.gui.jgraphx.EditorActions.ToggleRulersItem;
 import de.dwslab.risk.gui.jgraphx.EditorActions.WarningAction;
 import de.dwslab.risk.gui.jgraphx.EditorActions.ZoomPolicyAction;
+import de.dwslab.risk.gui.jgraphx.actions.ExportBackgroundKnowledgeAction;
 import de.dwslab.risk.gui.jgraphx.actions.LoadBackgroundKnowledgeAction;
 import de.dwslab.risk.gui.jgraphx.actions.RootCauseAnalysisAction;
 
@@ -401,8 +401,9 @@ public class EditorMenuBar extends JMenuBar {
         menu = add(new JMenu("Root Cause Analyse"));
         menu.add(editor.bind("Load Evidence...", new LoadBackgroundKnowledgeAction(MLN,
                 editor)));
-        menu.add(editor.bind("Load Ontology...", new LoadBackgroundKnowledgeAction(ONTOLOGY,
-                editor)));
+        // menu.add(editor.bind("Load Ontology...", new LoadBackgroundKnowledgeAction(ONTOLOGY,
+        // editor)));
+        menu.add(editor.bind("Export Evidence...", new ExportBackgroundKnowledgeAction(editor)));
         menu.addSeparator();
         menu.add(editor.bind("Run Root Cause Analysis", new RootCauseAnalysisAction(editor)));
 
