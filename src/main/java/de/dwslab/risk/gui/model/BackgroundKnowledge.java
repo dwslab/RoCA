@@ -75,6 +75,17 @@ public interface BackgroundKnowledge {
         }
 
         try (BufferedWriter evidenceWriter = Files.newBufferedWriter(evidence)) {
+            HashMultimap<Type, Entity> entities = getEntities();
+            entities.values().stream()
+                    .forEach(consumer(
+                            e -> {
+                                evidenceWriter.write(e.getType().getName());
+                                evidenceWriter.write("(\"");
+                                evidenceWriter.write(e.getName());
+                                evidenceWriter.write("\")");
+                                evidenceWriter.newLine();
+                            }));
+
             Multimap<Predicate, Grounding> groundings = getGroundings();
             groundings.values().stream()
                     .forEach(consumer(g -> {
