@@ -67,10 +67,15 @@ public class CustomCellEditor extends mxCellEditor {
 
             if (cell.getValue() instanceof Entity) {
                 Entity entity = (Entity) cell.getValue();
-                if (entity.getType().getName().equals("infra")) {
+                switch (entity.getType().getName()) {
+                case "infra":
                     createDialogInfra(entity);
-                } else {
+                    break;
+                case "risk":
                     createDialogRisk(entity);
+                    break;
+                default:
+                    throw new RoCAException("Unknown entity type: " + entity.getType().getName());
                 }
             } else if (cell.getValue() instanceof Grounding) {
                 Grounding grounding = (Grounding) cell.getValue();

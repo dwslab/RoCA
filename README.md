@@ -60,6 +60,11 @@ When the root cause analysis is finished, a popup with the proposed most probabl
 
 <img src="http://web.informatik.uni-mannheim.de/risk/cause.png">
 
+- - -
+
+## Known Issues
+* 
+
 
 - - -
 
