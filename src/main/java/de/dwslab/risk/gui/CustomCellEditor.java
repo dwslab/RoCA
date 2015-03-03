@@ -1,5 +1,6 @@
 package de.dwslab.risk.gui;
 
+import static de.dwslab.risk.gui.model.Float.FLOAT;
 import static java.awt.Dialog.ModalityType.APPLICATION_MODAL;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -67,15 +68,10 @@ public class CustomCellEditor extends mxCellEditor {
 
             if (cell.getValue() instanceof Entity) {
                 Entity entity = (Entity) cell.getValue();
-                switch (entity.getType().getName()) {
-                case "infra":
+                if (entity.getType() instanceof de.dwslab.risk.gui.model.Component) {
                     createDialogInfra(entity);
-                    break;
-                case "risk":
+                } else {
                     createDialogRisk(entity);
-                    break;
-                default:
-                    throw new RoCAException("Unknown entity type: " + entity.getType().getName());
                 }
             } else if (cell.getValue() instanceof Grounding) {
                 Grounding grounding = (Grounding) cell.getValue();
@@ -284,8 +280,7 @@ public class CustomCellEditor extends mxCellEditor {
             buttonOk.addActionListener(l -> {
                 setVisible(false);
                 grounding.getValues().set(
-                        2, Entity.get(textFieldWeight.getText(), new de.dwslab.risk.gui.model.Type(
-                                "_float")));
+                        2, Entity.get(textFieldWeight.getText(), FLOAT));
 
                 mxCellState state = graphComponent.getGraph().getView().getState(cell);
                 graphComponent.redraw(state);

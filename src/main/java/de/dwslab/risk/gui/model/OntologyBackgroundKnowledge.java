@@ -201,7 +201,7 @@ public class OntologyBackgroundKnowledge extends AbstractBackgroundKnowledge {
         @Override
         public void visit(OWLClass ce) {
             String name = getName(ce.getIRI());
-            types.add(new Type(name));
+            // types.add(new Type(name));
         }
 
         @Override

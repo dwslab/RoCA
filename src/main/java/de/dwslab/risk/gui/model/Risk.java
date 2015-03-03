@@ -1,8 +1,8 @@
 package de.dwslab.risk.gui.model;
 
-class Risk extends Type {
+public class Risk extends Type {
 
-    public Risk(String name) {
+    Risk(String name) {
         super(name);
     }
 

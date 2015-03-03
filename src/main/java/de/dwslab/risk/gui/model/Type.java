@@ -1,14 +1,16 @@
 package de.dwslab.risk.gui.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+
+import de.dwslab.risk.gui.exception.RoCAException;
 
 public abstract class Type implements UserObject {
 
     private static final long serialVersionUID = -4714484350120480342L;
 
-    private static final Set<String> COMPONENTS = new HashSet<>();
-    private static final Set<String> RISKS = new HashSet<>();
+    private static final Map<String, Component> COMPONENTS = new HashMap<>();
+    private static final Map<String, Risk> RISKS = new HashMap<>();
 
     private final String name;
 
@@ -16,22 +18,42 @@ public abstract class Type implements UserObject {
         this.name = name;
     }
 
+    public static Type get(String name) {
+        Component c = COMPONENTS.get(name);
+        Risk r = RISKS.get(name);
+        if (c == null && r == null) {
+            throw new RoCAException("Type not found: " + name);
+        } else if (c != null) {
+            return c;
+        } else {
+            return r;
+        }
+    }
+
     public static Component newComponent(String name) {
-        COMPONENTS.add(name);
-        return new Component(name);
+        if (RISKS.containsKey(name)) {
+            throw new RoCAException("Ambigiuous type" + name);
+        }
+        Component c = new Component(name);
+        COMPONENTS.put(name, c);
+        return c;
     }
 
     public static boolean isComponent(String name) {
-        return COMPONENTS.contains(name);
+        return COMPONENTS.containsKey(name);
     }
 
     public static Risk newRisk(String name) {
-        RISKS.add(name);
-        return new Risk(name);
+        if (COMPONENTS.containsKey(name)) {
+            throw new RoCAException("Ambigiuous type" + name);
+        }
+        Risk r = new Risk(name);
+        RISKS.put(name, r);
+        return r;
     }
 
     public static boolean isRisk(String name) {
-        return RISKS.contains(name);
+        return RISKS.containsKey(name);
     }
 
     public String getName() {

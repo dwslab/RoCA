@@ -1,8 +1,10 @@
 package de.dwslab.risk.gui.model;
 
-public class Component extends Type {
+public class Float extends Type {
 
-    Component(String name) {
+    public static final Float FLOAT = new Float("_float");
+
+    Float(String name) {
         super(name);
     }
 
@@ -19,7 +21,7 @@ public class Component extends Type {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof Component)) {
+        if (!(obj instanceof Float)) {
             return false;
         }
         Type other = (Type) obj;
@@ -35,7 +37,7 @@ public class Component extends Type {
 
     @Override
     public String toString() {
-        return "Component [name=" + getName() + "]";
+        return "Float [name=" + getName() + "]";
     }
 
 }

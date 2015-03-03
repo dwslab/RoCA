@@ -60,7 +60,7 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
                             .split("\\s*,\\s*");
                     List<Type> types = new ArrayList<>();
                     for (String type : typesStr) {
-                        types.add(new Type(type));
+                        types.add(Type.get(type));
                     }
                     Predicate pred = new Predicate(name, observed, types);
                     predicateTypes.putAll(pred, types);

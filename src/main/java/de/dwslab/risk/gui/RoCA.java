@@ -1,5 +1,7 @@
 package de.dwslab.risk.gui;
 
+import static de.dwslab.risk.gui.model.Float.FLOAT;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,11 +33,13 @@ import de.dwslab.risk.gui.jgraphx.BasicGraphEditor;
 import de.dwslab.risk.gui.jgraphx.EditorMenuBar;
 import de.dwslab.risk.gui.jgraphx.EditorPalette;
 import de.dwslab.risk.gui.model.BackgroundKnowledge;
+import de.dwslab.risk.gui.model.Component;
 import de.dwslab.risk.gui.model.Entity;
 import de.dwslab.risk.gui.model.Grounding;
 import de.dwslab.risk.gui.model.GuiBackgroundKnowledge;
 import de.dwslab.risk.gui.model.MlnBackgroundKnowledge;
 import de.dwslab.risk.gui.model.Predicate;
+import de.dwslab.risk.gui.model.Risk;
 import de.dwslab.risk.gui.model.Type;
 
 public class RoCA extends BasicGraphEditor {
@@ -82,19 +86,17 @@ public class RoCA extends BasicGraphEditor {
                                 event.consume();
                                 graph.removeCells(new Object[] { cell });
                             } else {
-
                                 Entity source = (Entity) cell.getSource().getValue();
                                 Entity target = (Entity) cell.getTarget().getValue();
-                                String sourceType = source.getType().getName();
-                                String targetType = target.getType().getName();
-                                if (targetType.equals("risk") && sourceType.equals("infra")) {
-                                    Entity weight = Entity.create(String.valueOf(0d),
-                                            new Type("_float"));
+                                Type sourceType = source.getType();
+                                Type targetType = target.getType();
+                                if (sourceType instanceof Component && targetType instanceof Risk) {
+                                    Entity weight = Entity.create(String.valueOf(0d), FLOAT);
                                     Grounding grounding = new Grounding(new Predicate(
-                                            "hasRiskDegree"),
-                                            Arrays.asList(source, target, weight));
+                                            "hasRiskDegree"), Arrays.asList(source, target, weight));
                                     cell.setValue(grounding);
-                                } else if (targetType.equals("infra") && sourceType.equals("infra")) {
+                                } else if (sourceType instanceof Component
+                                        && targetType instanceof Component) {
                                     Grounding grounding = new Grounding(new Predicate("dependsOn"),
                                             Arrays.asList(source, target));
                                     cell.setValue(grounding);
@@ -136,20 +138,23 @@ public class RoCA extends BasicGraphEditor {
             graph.selectAll();
             graph.removeCells();
 
+            // FIXME //////////////////////////////////////////////
+
             // add the new entities
             Map<Entity, mxCell> cellMap = new HashMap<>();
-            Set<Entity> infras = knowledge.getEntities().get(new Type("infra"));
-            for (Entity infra : infras) {
-                mxCell cell = insertEntity(infra, graph);
-                cellMap.put(infra, cell);
-            }
+            // Set<Entity> infras = knowledge.getEntities().get(new Type("infra"));
+            // for (Entity infra : infras) {
+            // mxCell cell = insertEntity(infra, graph);
+            // cellMap.put(infra, cell);
+            // }
 
             // add the risks
-            Set<Entity> risks = knowledge.getEntities().get(new Type("risk"));
-            for (Entity risk : risks) {
-                mxCell cell = insertRisk(risk, graph);
-                cellMap.put(risk, cell);
-            }
+            // Set<Entity> risks = knowledge.getEntities().get(new Type("risk"));
+            // for (Entity risk : risks) {
+            // mxCell cell = insertRisk(risk, graph);
+            // cellMap.put(risk, cell);
+            // }
+            // FIXME //////////////////////////////////////////////
 
             HashMultimap<Predicate, Grounding> groundings = knowledge.getGroundings();
 
