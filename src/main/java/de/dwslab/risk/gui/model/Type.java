@@ -9,6 +9,8 @@ public abstract class Type implements UserObject {
 
     private static final long serialVersionUID = -4714484350120480342L;
 
+    public static final Float FLOAT = new Float("float_");
+
     private static final Map<String, Component> COMPONENTS = new HashMap<>();
     private static final Map<String, Risk> RISKS = new HashMap<>();
 
@@ -19,6 +21,9 @@ public abstract class Type implements UserObject {
     }
 
     public static Type get(String name) {
+        if ("float_".equals(name)) {
+            return FLOAT;
+        }
         Component c = COMPONENTS.get(name);
         Risk r = RISKS.get(name);
         if (c == null && r == null) {

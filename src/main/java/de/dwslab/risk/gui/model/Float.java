@@ -2,8 +2,6 @@ package de.dwslab.risk.gui.model;
 
 public class Float extends Type {
 
-    public static final Float FLOAT = new Float("_float");
-
     Float(String name) {
         super(name);
     }

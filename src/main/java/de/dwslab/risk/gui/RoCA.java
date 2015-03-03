@@ -67,10 +67,6 @@ public class RoCA extends BasicGraphEditor {
             logger.error("Unhandled exception", e);
         });
 
-        Path dummy = Utils.createTempPath("dummy", ".db");
-        knowledge = new MlnBackgroundKnowledge(RoCA.class.getResource("/default.mln"), dummy);
-        Files.delete(dummy);
-
         final mxGraph graph = graphComponent.getGraph();
         graph.addListener(
                 mxEvent.CELLS_ADDED,
@@ -120,6 +116,9 @@ public class RoCA extends BasicGraphEditor {
                     shape.getWidth(), shape.getHeight(), shape.getValue());
         }
 
+        Path dummy = Utils.createTempPath("dummy", ".db");
+        knowledge = new MlnBackgroundKnowledge(RoCA.class.getResource("/default.mln"), dummy);
+        Files.delete(dummy);
     }
 
     public BackgroundKnowledge getBackgroundKnowledge() {
@@ -138,8 +137,6 @@ public class RoCA extends BasicGraphEditor {
             graph.selectAll();
             graph.removeCells();
 
-            // FIXME //////////////////////////////////////////////
-
             // add the new entities
             Map<Entity, mxCell> cellMap = new HashMap<>();
             // Set<Entity> infras = knowledge.getEntities().get(new Type("infra"));
@@ -154,7 +151,6 @@ public class RoCA extends BasicGraphEditor {
             // mxCell cell = insertRisk(risk, graph);
             // cellMap.put(risk, cell);
             // }
-            // FIXME //////////////////////////////////////////////
 
             HashMultimap<Predicate, Grounding> groundings = knowledge.getGroundings();
 
