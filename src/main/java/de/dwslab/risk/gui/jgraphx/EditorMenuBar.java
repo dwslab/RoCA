@@ -308,7 +308,7 @@ public class EditorMenuBar extends JMenuBar {
         submenu.add(new TogglePropertyItem(graphComponent, mxResources.get("preferPageSize"),
                 "PreferPageSize", true, e -> graphComponent.zoomAndCenter()));
 
-        // TODO: This feature is not yet implemented
+        // LATER: This feature is not yet implemented
         // submenu.add(new TogglePropertyItem(graphComponent, mxResources
         // .get("pageBreaks"), "PageBreaksVisible", true));
 

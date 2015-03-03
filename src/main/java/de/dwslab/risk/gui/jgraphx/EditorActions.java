@@ -870,7 +870,7 @@ public class EditorActions {
                     Method getter = target.getClass().getMethod("get" + fieldname);
                     Object current = getter.invoke(target);
 
-                    // TODO: Support other atomic types
+                    // LATER: Support other atomic types
                     if (current instanceof Integer) {
                         Method setter = target.getClass().getMethod("set" + fieldname,
                                 new Class[] { int.class });
@@ -1759,7 +1759,7 @@ public class EditorActions {
                     } else {
                         Image background = mxUtils.loadImage(value);
                         // Incorrect URLs will result in no image.
-                        // TODO provide feedback that the URL is not correct
+                        // LATER provide feedback that the URL is not correct
                         if (background != null) {
                             graphComponent.setBackgroundImage(new ImageIcon(background));
                         }

@@ -275,7 +275,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.awt.dnd.DropTargetListener#dragEnter(java.awt.dnd.DropTargetDragEvent)
      */
     @Override
@@ -285,7 +285,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.awt.dnd.DropTargetListener#dragExit(java.awt.dnd.DropTargetEvent)
      */
     @Override
@@ -295,7 +295,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.awt.dnd.DropTargetListener#dragOver(java.awt.dnd.DropTargetDragEvent)
      */
     @Override
@@ -305,7 +305,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
      */
     @Override
@@ -315,7 +315,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.awt.dnd.DropTargetListener#dropActionChanged(java.awt.dnd.DropTargetDragEvent)
      */
     @Override
@@ -444,7 +444,7 @@ public class EditorRuler extends JComponent implements MouseMotionListener, Drop
         int smallTick = rulerSize - rulerSize / 3;
         int middleTick = rulerSize / 2;
 
-        // TODO: Merge into a single drawing loop for both orientations
+        // LATER: Merge into a single drawing loop for both orientations
         if (orientation == ORIENTATION_HORIZONTAL) {
             double xs = Math.floor((left - tx) / stepping) * stepping + tx;
             double xe = Math.ceil(right / stepping) * stepping;
