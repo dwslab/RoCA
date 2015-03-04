@@ -82,6 +82,8 @@ public interface BackgroundKnowledge {
                                 evidenceWriter.write(e.getType().getName());
                                 evidenceWriter.write("(\"");
                                 evidenceWriter.write(e.getName());
+                                evidenceWriter.write("_");
+                                evidenceWriter.write(Integer.toString(e.getId()));
                                 evidenceWriter.write("\")");
                                 evidenceWriter.newLine();
                             }));
