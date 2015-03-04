@@ -43,9 +43,9 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
         Map<String, Predicate> map = new HashMap<>();
 
         lines(mln.openStream())
+                .map(String::trim)
                 .filter(str -> !str.isEmpty() && !str.startsWith("//") && !str.contains("v")
                         && !str.contains("\""))
-                .map(String::trim)
                 .forEach(str -> {
                     String name;
                     boolean observed;
@@ -84,8 +84,22 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
         HashMultimap<Type, Entity> entities = HashMultimap.create();
 
         Files.lines(evidence)
-                .filter(str -> !str.isEmpty() && !str.startsWith("//"))
                 .map(String::trim)
+                .filter(str -> !str.isEmpty() && !str.startsWith("//") && !str.contains(","))
+                .map(str -> (str.startsWith("!") ? str.substring(1) : str))
+                .filter(str -> !str.startsWith("offline("))
+                .forEach(
+                        str -> {
+                            String predicate = str.substring(0, str.indexOf('('));
+                            String entityString = str.substring(str.indexOf('(') + 1,
+                                    str.indexOf(')')).replaceAll("\"", "");
+                            Type type = Type.get(predicate);
+                            entities.put(type, Entity.get(entityString, type));
+                        });
+
+        Files.lines(evidence)
+                .map(String::trim)
+                .filter(str -> !str.isEmpty() && !str.startsWith("//"))
                 .map(str -> (str.startsWith("!") ? str.substring(1) : str))
                 .forEach(
                         str -> {
@@ -97,12 +111,11 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
                             List<Type> types = predicateTypes.get(new Predicate(predicate));
                             for (int i = 0; i < types.size(); i++) {
                                 Type type = types.get(i);
-                                // if (!"float_".equals(type.getName())) {
-                        String entity = entititesArr[i];
-                        entities.put(type, Entity.get(entity, type));
-                        // }
-                    }
-                });
+                                String entityStr = entititesArr[i];
+                                Entity entity = Entity.get(entityStr, type);
+                                entities.put(entity.getType(), entity);
+                            }
+                        });
 
         return entities;
     }
@@ -111,8 +124,8 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
         HashMultimap<Predicate, Grounding> groundings = HashMultimap.create();
 
         Files.lines(evidence)
-                .filter(str -> !str.isEmpty() && !str.startsWith("//"))
                 .map(String::trim)
+                .filter(str -> !str.isEmpty() && !str.startsWith("//"))
                 .forEach(
                         str -> {
                             Predicate predicate;

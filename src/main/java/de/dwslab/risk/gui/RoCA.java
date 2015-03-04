@@ -176,7 +176,7 @@ public class RoCA extends BasicGraphEditor {
                 value.setOffline(Boolean.TRUE);
                 knowledge.getEntities().put(value.getType(), ((Entity) cell.getValue()));
 
-                graph.getModel().setStyle(cell, "fillColor=#FF2222");
+                graph.getModel().setStyle(cell, cell.getStyle() + ";fillColor=#FF2222");
             }
             Set<Grounding> notOfflines = groundings.get(new Predicate(true, "offline"));
             for (Grounding literal : notOfflines) {
@@ -188,7 +188,7 @@ public class RoCA extends BasicGraphEditor {
                 value.setOffline(Boolean.FALSE);
                 knowledge.getEntities().put(value.getType(), ((Entity) cell.getValue()));
 
-                graph.getModel().setStyle(cell, "fillColor=#22FF22");
+                graph.getModel().setStyle(cell, cell.getStyle() + ";fillColor=#22FF22");
             }
         } finally {
             graph.setEventsEnabled(true);
@@ -212,9 +212,9 @@ public class RoCA extends BasicGraphEditor {
         int y = 100;
         int width = 160;
         int height = 120;
-        RoCAShape shape = RoCAShape.valueOf(entity.getType().getName().toUpperCase());
         mxCell cell = (mxCell) graph.insertVertex(parent, entity.getName(), entity, x, y, width,
                 height);
+        RoCAShape shape = RoCAShape.valueOf(entity.getType().getName().toUpperCase());
         cell.setStyle(shape.getStyle());
         return cell;
     }
@@ -225,8 +225,11 @@ public class RoCA extends BasicGraphEditor {
         int y = 100;
         int width = 160;
         int height = 120;
-        return (mxCell) graph.insertVertex(parent, risk.getName(), risk, x, y, width, height,
-                "rounded=1");
+        mxCell cell = (mxCell) graph
+                .insertVertex(parent, risk.getName(), risk, x, y, width, height);
+        RoCAShape shape = RoCAShape.valueOf(risk.getType().getName().toUpperCase());
+        cell.setStyle(shape.getStyle());
+        return cell;
     }
 
     private mxCell insertDependsOn(Grounding grounding, mxCell source, mxCell target, mxGraph graph) {
