@@ -1,4 +1,9 @@
 // Observed Predicates
+*service(infra)
+*server(infra)
+*printer(infra)
+*infra(infra)
+*risk(risk)
 *dependsOn(infra, infra)
 *hasRiskDegree(infra, risk, float_)
 
