@@ -212,7 +212,11 @@ public class RoCA extends BasicGraphEditor {
         int y = 100;
         int width = 160;
         int height = 120;
-        return (mxCell) graph.insertVertex(parent, entity.getName(), entity, x, y, width, height);
+        RoCAShape shape = RoCAShape.valueOf(entity.getType().getName().toUpperCase());
+        mxCell cell = (mxCell) graph.insertVertex(parent, entity.getName(), entity, x, y, width,
+                height);
+        cell.setStyle(shape.getStyle());
+        return cell;
     }
 
     private mxCell insertRisk(Entity risk, mxGraph graph) {
