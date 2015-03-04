@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 import de.dwslab.risk.gui.model.Entity;
 import de.dwslab.risk.gui.model.UserObject;
 
-public enum RoCAShape implements RoCAIcons {
+public enum RoCAShape implements RoCAIcon {
 
     SERVICE("Service", IMAGE_WRENCH,
             "icon;image=/com/mxgraph/examples/swing/images/wrench.png",
@@ -22,7 +22,7 @@ public enum RoCAShape implements RoCAIcons {
             "icon;image=/com/mxgraph/examples/swing/images/printer.png",
             120, 120, Entity.create("New Printer", newComponent("printer"))),
 
-    COMPONENT("Component", ICON_RECTANGLE, null,
+    INFRA("Component", ICON_RECTANGLE, null,
             160, 120, Entity.create("New Component", newComponent("infra"))),
 
     REDUNDANCY("Redundancy", ICON_CONTAINER, "swimlane",
