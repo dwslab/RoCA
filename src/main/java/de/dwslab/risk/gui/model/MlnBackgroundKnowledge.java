@@ -44,7 +44,7 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
 
         lines(mln.openStream())
                 .map(String::trim)
-                .filter(str -> !str.isEmpty() && !str.startsWith("//") && !str.contains("v")
+                .filter(str -> !str.isEmpty() && !str.startsWith("//") && !str.contains(" v ")
                         && !str.contains("\""))
                 .forEach(str -> {
                     String name;
