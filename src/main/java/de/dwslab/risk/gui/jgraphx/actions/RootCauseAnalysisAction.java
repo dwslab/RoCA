@@ -78,9 +78,9 @@ public class RootCauseAnalysisAction extends AbstractAction {
                 monitor.setNote("Extending MLN for root cause analysis...");
                 ExistentialApi api = new ExistentialApi();
                 File mlnExtFile = createTempFile("existential-mln-", ".mln");
-                File evidenceExtFile = createTempFile("existential-evidence-", ".db");
                 api.existentialApi(mlnFile.getAbsolutePath(), evidenceFile.getAbsolutePath(),
-                        mlnExtFile.getAbsolutePath(), evidenceExtFile.getAbsolutePath());
+                        mlnExtFile.getAbsolutePath(),
+                        createTempFile("existential-evidence-", ".db").getAbsolutePath());
                 monitor.setProgress(20);
 
                 // Run RockIt
@@ -88,7 +88,7 @@ public class RootCauseAnalysisAction extends AbstractAction {
                 monitor.setNote("Executing MAP inference...");
                 RockItAPI rockit = new RockItAPI();
                 List<RockItResult> mapState = rockit.doMapState(mlnExtFile.getAbsolutePath(),
-                        evidenceExtFile.getAbsolutePath());
+                        evidenceFile.getAbsolutePath());
                 monitor.setProgress(90);
 
                 // Process the result
