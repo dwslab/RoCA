@@ -1,34 +1,34 @@
-// Observed Predicates
+// ========= OBSERVED PREDICATES ======
+*dependsOn(infra, infra)
+*hasRiskDegree(infra, risk, float_)
+
+*redundancyComponent(redundancy)
+*componentOf(infra, redundancy)
+
+
+// ========= TYPES ====================
 *service(infra)
 *server(infra)
 *printer(infra)
 *infra(infra)
 *risk(risk)
-*dependsOn(infra, infra)
-*hasRiskDegree(infra, risk, float_)
-*redundancyComponent(infra)
-*componentOf(infra, infra)
 
 
-// Hidden Predicates
+// ========= HIDDEN PREDICATES ========
 hasRisk(infra, risk)
 offline(infra)
 
 
-// ========= STANDARD ============
+// ========= STANDARD RULES ===========
 !dependsOn(x, y) v !offline(y) v offline(x).
 !hasRisk(x, y) v offline(x). 
 conf: !hasRiskDegree(x, y, conf) v hasRisk(x, y)
 
 
-// =========== ABDUCTION ==============
-// FORALL x !offline(x) v ((EXISTS y dependsOn(x,y) ^ offline(y)) v (EXISTS y hasRisk(x, y)))
-// ? !offline(x) v offline([dependsOn(x,?)]) v hasRisk(x, [hasRisk(x,?)])
-
-
+// ========= REDUNDANCY RULES =========
 // ? !redundancyComponent(x) v !offline([componentOf(?,x)]) v offline(x)
 
 
-
-
-
+// ========= ABDUCTION RULES ==========
+// FORALL x !offline(x) v ((EXISTS y dependsOn(x,y) ^ offline(y)) v (EXISTS y hasRisk(x, y)))
+// ? !offline(x) v offline([dependsOn(x,?)]) v hasRisk(x, [hasRisk(x,?)])
