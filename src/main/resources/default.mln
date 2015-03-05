@@ -6,6 +6,8 @@
 *risk(risk)
 *dependsOn(infra, infra)
 *hasRiskDegree(infra, risk, float_)
+*redundancyComponent(infra)
+*componentOf(infra, infra)
 
 
 // Hidden Predicates
@@ -24,8 +26,7 @@ conf: !hasRiskDegree(x, y, conf) v hasRisk(x, y)
 // ? !offline(x) v offline([dependsOn(x,?)]) v hasRisk(x, [hasRisk(x,?)])
 
 
-
-
+// ? !redundancyComponent(x) v !offline([componentOf(?,x)]) v offline(x)
 
 
 
