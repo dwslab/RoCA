@@ -9,18 +9,15 @@ import com.mxgraph.io.mxCodec;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.swing.view.mxICellEditor;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxGraph;
 
 public class CustomGraphComponent extends mxGraphComponent {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -6833603133512882012L;
 
     /**
-     *
      * @param graph
      */
     public CustomGraphComponent(mxGraph graph) {
@@ -30,7 +27,7 @@ public class CustomGraphComponent extends mxGraphComponent {
         setPageVisible(true);
         setGridVisible(true);
         setToolTips(true);
-        getConnectionHandler().setCreateTarget(true);
+        getConnectionHandler().setCreateTarget(false);
 
         // Loads the defalt stylesheet from an external file
         mxCodec codec = new mxCodec();
@@ -69,6 +66,11 @@ public class CustomGraphComponent extends mxGraphComponent {
         }
 
         return super.importCells(cells, dx, dy, target, location);
+    }
+
+    @Override
+    protected mxICellEditor createCellEditor() {
+        return new CustomCellEditor(this);
     }
 
 }
