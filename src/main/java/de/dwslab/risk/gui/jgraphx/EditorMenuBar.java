@@ -8,7 +8,6 @@ import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 
-import com.mxgraph.analysis.mxAnalysisGraph;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.util.mxGraphActions;
 import com.mxgraph.util.mxConstants;
@@ -64,7 +63,6 @@ public class EditorMenuBar extends JMenuBar {
     public EditorMenuBar(final RoCA editor) {
         final mxGraphComponent graphComponent = editor.getGraphComponent();
         final mxGraph graph = graphComponent.getGraph();
-        mxAnalysisGraph aGraph = new mxAnalysisGraph();
 
         JMenu menu = null;
         JMenu submenu = null;
