@@ -9,9 +9,6 @@ import com.mxgraph.util.mxPoint;
 import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
 
-import de.dwslab.risk.gui.model.Entity;
-import de.dwslab.risk.gui.model.Grounding;
-
 /**
  * A graph that creates new edges from a given template edge.
  */
@@ -105,12 +102,9 @@ public class CustomGraph extends mxGraph {
 
         mxPoint trans = getView().getTranslate();
 
-        tip += "<br>scale=" + RoCA.numberFormat.format(getView().getScale())
-                + ", translate=[x="
-                + RoCA.numberFormat.format(trans.getX())
-                + ",y="
-                + RoCA.numberFormat.format(trans.getY())
-                + "]";
+        tip += "<br>scale=" + RoCA.numberFormat.format(getView().getScale()) + ", translate=[x="
+                + RoCA.numberFormat.format(trans.getX()) + ",y="
+                + RoCA.numberFormat.format(trans.getY()) + "]";
         tip += "</html>";
 
         return tip;
@@ -138,28 +132,8 @@ public class CustomGraph extends mxGraph {
 
             return edge;
         }
-        return super.createEdge(parent, id, value, source, target, style);
-    }
 
-    @Override
-    public String convertValueToString(Object cell) {
-        if (((mxCell) cell).getValue() instanceof Entity) {
-            Entity entity = (Entity) ((mxCell) cell).getValue();
-            return entity.getName();
-        } else if (((mxCell) cell).getValue() instanceof Grounding) {
-            Grounding grounding = (Grounding) ((mxCell) cell).getValue();
-            StringBuilder builder = new StringBuilder();
-            builder.append(grounding.getPredicate().getName());
-            builder.append('(');
-            for (Entity value : grounding.getValues()) {
-                builder.append(value.getName());
-                builder.append(", ");
-            }
-            builder.delete(builder.length() - 2, builder.length());
-            builder.append(')');
-            return builder.toString();
-        }
-        return super.convertValueToString(cell);
+        return super.createEdge(parent, id, value, source, target, style);
     }
 
 }

@@ -3,7 +3,6 @@ package de.dwslab.risk.gui.jgraphx;
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
@@ -48,7 +47,6 @@ import com.mxgraph.swing.handler.mxKeyboardHandler;
 import com.mxgraph.swing.handler.mxRubberband;
 import com.mxgraph.swing.util.mxMorphing;
 import com.mxgraph.util.mxEvent;
-import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxResources;
@@ -128,24 +126,13 @@ public class BasicGraphEditor extends JPanel {
     /**
      *
      */
-    protected mxIEventListener undoHandler = new mxIEventListener() {
-
-        @Override
-        public void invoke(Object source, mxEventObject evt) {
-            undoManager.undoableEditHappened((mxUndoableEdit) evt.getProperty("edit"));
-        }
-    };
+    protected mxIEventListener undoHandler = (source, evt) -> undoManager
+            .undoableEditHappened((mxUndoableEdit) evt.getProperty("edit"));
 
     /**
      *
      */
-    protected mxIEventListener changeTracker = new mxIEventListener() {
-
-        @Override
-        public void invoke(Object source, mxEventObject evt) {
-            setModified(true);
-        }
-    };
+    protected mxIEventListener changeTracker = (source, evt) -> setModified(true);
 
     /**
      *
@@ -170,14 +157,10 @@ public class BasicGraphEditor extends JPanel {
         graph.getView().addListener(mxEvent.UNDO, undoHandler);
 
         // Keeps the selection in sync with the command history
-        mxIEventListener undoHandler = new mxIEventListener() {
-
-            @Override
-            public void invoke(Object source, mxEventObject evt) {
-                List<mxUndoableChange> changes = ((mxUndoableEdit) evt.getProperty("edit"))
-                        .getChanges();
-                graph.setSelectionCells(graph.getSelectionCellsForChanges(changes));
-            }
+        mxIEventListener undoHandler = (source, evt) -> {
+            List<mxUndoableChange> changes = ((mxUndoableEdit) evt.getProperty("edit"))
+                    .getChanges();
+            graph.setSelectionCells(graph.getSelectionCellsForChanges(changes));
         };
 
         undoManager.addListener(mxEvent.UNDO, undoHandler);
@@ -260,22 +243,21 @@ public class BasicGraphEditor extends JPanel {
      *
      */
     protected void installRepaintListener() {
-        graphComponent.getGraph().addListener(mxEvent.REPAINT, new mxIEventListener() {
+        graphComponent.getGraph().addListener(
+                mxEvent.REPAINT,
+                (source, evt) -> {
+                    String buffer = (graphComponent.getTripleBuffer() != null) ? ""
+                            : " (unbuffered)";
+                    mxRectangle dirty = (mxRectangle) evt.getProperty("region");
 
-            @Override
-            public void invoke(Object source, mxEventObject evt) {
-                String buffer = (graphComponent.getTripleBuffer() != null) ? "" : " (unbuffered)";
-                mxRectangle dirty = (mxRectangle) evt.getProperty("region");
-
-                if (dirty == null) {
-                    status("Repaint all" + buffer);
-                } else {
-                    status("Repaint: x=" + (int) (dirty.getX()) + " y=" + (int) (dirty.getY())
-                            + " w=" + (int) (dirty.getWidth()) + " h=" + (int) (dirty.getHeight())
-                            + buffer);
-                }
-            }
-        });
+                    if (dirty == null) {
+                        status("Repaint all" + buffer);
+                    } else {
+                        status("Repaint: x=" + (int) (dirty.getX()) + " y=" + (int) (dirty.getY())
+                                + " w=" + (int) (dirty.getWidth()) + " h="
+                                + (int) (dirty.getHeight()) + buffer);
+                    }
+                });
     }
 
     /**
@@ -327,46 +309,25 @@ public class BasicGraphEditor extends JPanel {
         JCheckBoxMenuItem item = new JCheckBoxMenuItem(mxResources.get("magnifyPage"));
         item.setSelected(graphOutline.isFitPage());
 
-        item.addActionListener(new ActionListener() {
-
-            /**
-             *
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                graphOutline.setFitPage(!graphOutline.isFitPage());
-                graphOutline.repaint();
-            }
+        item.addActionListener(e1 -> {
+            graphOutline.setFitPage(!graphOutline.isFitPage());
+            graphOutline.repaint();
         });
 
         JCheckBoxMenuItem item2 = new JCheckBoxMenuItem(mxResources.get("showLabels"));
         item2.setSelected(graphOutline.isDrawLabels());
 
-        item2.addActionListener(new ActionListener() {
-
-            /**
-             *
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                graphOutline.setDrawLabels(!graphOutline.isDrawLabels());
-                graphOutline.repaint();
-            }
+        item2.addActionListener(e1 -> {
+            graphOutline.setDrawLabels(!graphOutline.isDrawLabels());
+            graphOutline.repaint();
         });
 
         JCheckBoxMenuItem item3 = new JCheckBoxMenuItem(mxResources.get("buffering"));
         item3.setSelected(graphOutline.isTripleBuffered());
 
-        item3.addActionListener(new ActionListener() {
-
-            /**
-             *
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                graphOutline.setTripleBuffered(!graphOutline.isTripleBuffered());
-                graphOutline.repaint();
-            }
+        item3.addActionListener(e1 -> {
+            graphOutline.setTripleBuffered(!graphOutline.isTripleBuffered());
+            graphOutline.repaint();
         });
 
         JPopupMenu menu = new JPopupMenu();
@@ -401,18 +362,10 @@ public class BasicGraphEditor extends JPanel {
      */
     protected void installListeners() {
         // Installs mouse wheel listener for zooming
-        MouseWheelListener wheelTracker = new MouseWheelListener() {
-
-            /**
-             *
-             */
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                if (e.getSource() instanceof mxGraphOutline || e.isControlDown()) {
-                    BasicGraphEditor.this.mouseWheelMoved(e);
-                }
+        MouseWheelListener wheelTracker = e -> {
+            if (e.getSource() instanceof mxGraphOutline || e.isControlDown()) {
+                BasicGraphEditor.this.mouseWheelMoved(e);
             }
-
         };
 
         // Handles mouse wheel events in the outline and graph component
@@ -473,7 +426,8 @@ public class BasicGraphEditor extends JPanel {
             /*
              * (non-Javadoc)
              * 
-             * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
+             * @see
+             * java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
              */
             @Override
             public void mouseDragged(MouseEvent e) {
@@ -722,14 +676,8 @@ public class BasicGraphEditor extends JPanel {
                     } finally {
                         mxMorphing morph = new mxMorphing(graphComponent, 20, 1.2, 20);
 
-                        morph.addListener(mxEvent.DONE, new mxIEventListener() {
-
-                            @Override
-                            public void invoke(Object sender, mxEventObject evt) {
-                                graph.getModel().endUpdate();
-                            }
-
-                        });
+                        morph.addListener(mxEvent.DONE, (sender, evt) -> graph.getModel()
+                                .endUpdate());
 
                         morph.startAnimation();
                     }

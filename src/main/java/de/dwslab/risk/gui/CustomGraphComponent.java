@@ -9,15 +9,18 @@ import com.mxgraph.io.mxCodec;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.swing.view.mxICellEditor;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxGraph;
 
 public class CustomGraphComponent extends mxGraphComponent {
 
+    /**
+     *
+     */
     private static final long serialVersionUID = -6833603133512882012L;
 
     /**
+     *
      * @param graph
      */
     public CustomGraphComponent(mxGraph graph) {
@@ -27,7 +30,7 @@ public class CustomGraphComponent extends mxGraphComponent {
         setPageVisible(true);
         setGridVisible(true);
         setToolTips(true);
-        getConnectionHandler().setCreateTarget(false);
+        getConnectionHandler().setCreateTarget(true);
 
         // Loads the defalt stylesheet from an external file
         mxCodec codec = new mxCodec();
@@ -46,33 +49,26 @@ public class CustomGraphComponent extends mxGraphComponent {
      * type (eg. both vertices or both edges).
      */
     @Override
-    public Object[] importCells(Object[] cells, double dx, double dy, Object target,
-            Point location) {
-        Object newTarget = null;
+    public Object[] importCells(Object[] cells, double dx, double dy, Object target, Point location) {
         if (target == null && cells.length == 1 && location != null) {
-            newTarget = getCellAt(location.x, location.y);
+            target = getCellAt(location.x, location.y);
 
-            if (newTarget instanceof mxICell && cells[0] instanceof mxICell) {
-                mxICell targetCell = (mxICell) newTarget;
+            if (target instanceof mxICell && cells[0] instanceof mxICell) {
+                mxICell targetCell = (mxICell) target;
                 mxICell dropCell = (mxICell) cells[0];
 
                 if (targetCell.isVertex() == dropCell.isVertex()
                         || targetCell.isEdge() == dropCell.isEdge()) {
                     mxIGraphModel model = graph.getModel();
-                    model.setStyle(newTarget, model.getStyle(cells[0]));
-                    graph.setSelectionCell(newTarget);
+                    model.setStyle(target, model.getStyle(cells[0]));
+                    graph.setSelectionCell(target);
 
                     return null;
                 }
             }
         }
 
-        return super.importCells(cells, dx, dy, newTarget, location);
-    }
-
-    @Override
-    protected mxICellEditor createCellEditor() {
-        return new CustomCellEditor(this);
+        return super.importCells(cells, dx, dy, target, location);
     }
 
 }

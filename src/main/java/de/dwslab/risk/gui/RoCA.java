@@ -1,20 +1,16 @@
 package de.dwslab.risk.gui;
 
-import static de.dwslab.risk.gui.model.Type.FLOAT;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +21,6 @@ import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
-import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxResources;
 import com.mxgraph.view.mxGraph;
 
@@ -69,46 +64,46 @@ public class RoCA extends BasicGraphEditor {
         });
 
         final mxGraph graph = graphComponent.getGraph();
-        graph.addListener(
-                mxEvent.CELLS_ADDED,
-                (sender, event) -> {
-                    Object[] cells = (Object[]) event.getProperties().get("cells");
-                    for (Object obj : cells) {
-                        mxCell cell = (mxCell) obj;
-                        if (cell.isVertex()) {
-                            Entity entity = (Entity) cell.getValue();
-                            cell.setValue(Entity.create(entity.getName(), entity.getType()));
-                        } else {
-                            if (cell.getTarget() == null) {
-                                event.consume();
-                                graph.removeCells(new Object[] { cell });
-                            } else {
-                                Entity source = (Entity) cell.getSource().getValue();
-                                Entity target = (Entity) cell.getTarget().getValue();
-                                Type sourceType = source.getType();
-                                Type targetType = target.getType();
-                                if (sourceType instanceof Component && targetType instanceof Risk) {
-                                    Entity weight = Entity.create(String.valueOf(0d), FLOAT);
-                                    Grounding grounding = new Grounding(new Predicate(
-                                            "hasRiskDegree"), Arrays.asList(source, target, weight));
-                                    cell.setValue(grounding);
-                                } else if (sourceType instanceof Component
-                                        && targetType instanceof Component) {
-                                    Grounding grounding = new Grounding(new Predicate("dependsOn"),
-                                            Arrays.asList(source, target));
-                                    cell.setValue(grounding);
-                                } else {
-                                    event.consume();
-                                    graph.removeCells(new Object[] { cell });
-                                    JOptionPane.showMessageDialog(
-                                            SwingUtilities.getWindowAncestor(graphComponent),
-                                            "Relation wird nicht unterstützt: " + source + " --> "
-                                                    + target);
-                                }
-                            }
-                        }
-                    }
-                });
+        // graph.addListener(
+        // mxEvent.CELLS_ADDED,
+        // (sender, event) -> {
+        // Object[] cells = (Object[]) event.getProperties().get("cells");
+        // for (Object obj : cells) {
+        // mxCell cell = (mxCell) obj;
+        // if (cell.isVertex()) {
+        // Entity entity = (Entity) cell.getValue();
+        // cell.setValue(Entity.create(entity.getName(), entity.getType()));
+        // } else {
+        // if (cell.getTarget() == null) {
+        // event.consume();
+        // graph.removeCells(new Object[] { cell });
+        // } else {
+        // Entity source = (Entity) cell.getSource().getValue();
+        // Entity target = (Entity) cell.getTarget().getValue();
+        // Type sourceType = source.getType();
+        // Type targetType = target.getType();
+        // if (sourceType instanceof Component && targetType instanceof Risk) {
+        // Entity weight = Entity.create(String.valueOf(0d), FLOAT);
+        // Grounding grounding = new Grounding(new Predicate(
+        // "hasRiskDegree"), Arrays.asList(source, target, weight));
+        // cell.setValue(grounding);
+        // } else if (sourceType instanceof Component
+        // && targetType instanceof Component) {
+        // Grounding grounding = new Grounding(new Predicate("dependsOn"),
+        // Arrays.asList(source, target));
+        // cell.setValue(grounding);
+        // } else {
+        // event.consume();
+        // graph.removeCells(new Object[] { cell });
+        // JOptionPane.showMessageDialog(
+        // SwingUtilities.getWindowAncestor(graphComponent),
+        // "Relation wird nicht unterstützt: " + source + " --> "
+        // + target);
+        // }
+        // }
+        // }
+        // }
+        // });
 
         // Creates the shapes palette
         EditorPalette shapesPalette = insertPalette(mxResources.get("shapes"));
