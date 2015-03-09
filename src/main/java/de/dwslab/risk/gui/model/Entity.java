@@ -12,17 +12,17 @@ public class Entity implements UserObject {
     private static final long serialVersionUID = -566950411586680045L;
 
     private static final AtomicInteger NEXT_ID = new AtomicInteger();
-    private static final Cache<Integer, Entity> BY_ID =
-            CacheBuilder.newBuilder().weakValues().build();
-    private static final Cache<String, Entity> BY_NAME =
-            CacheBuilder.newBuilder().weakValues().build();
+    private static final Cache<Integer, Entity> BY_ID = CacheBuilder.newBuilder().weakValues()
+            .build();
+    private static final Cache<String, Entity> BY_NAME = CacheBuilder.newBuilder().weakValues()
+            .build();
     private final int id = NEXT_ID.getAndIncrement();
 
     private String name;
     private Boolean offline;
     private Type type;
 
-    private Entity(String name, Type type) {
+    protected Entity(String name, Type type) {
         this(name, type, null);
     }
 
@@ -74,7 +74,12 @@ public class Entity implements UserObject {
     }
 
     public static Entity create(String name, Type type) {
-        Entity entity = new Entity(name, type);
+        Entity entity;
+        if (!"redundancy".equals(type.getName())) {
+            entity = new Entity(name, type);
+        } else {
+            entity = new Redundancy(name);
+        }
         BY_NAME.put(name, entity);
         BY_ID.put(entity.getId(), entity);
         return entity;
@@ -164,9 +169,7 @@ public class Entity implements UserObject {
 
     @Override
     public String toString() {
-        return type.getName() + "("
-                + (Boolean.TRUE.equals(offline) ? "!" : "")
-                + (offline == null ? "?" : "")
-                + name + "_" + id + ")";
+        return type.getName() + "(" + (Boolean.TRUE.equals(offline) ? "!" : "")
+                + (offline == null ? "?" : "") + name + "_" + id + ")";
     }
 }

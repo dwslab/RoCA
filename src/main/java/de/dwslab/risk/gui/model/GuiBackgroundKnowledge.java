@@ -33,6 +33,13 @@ public class GuiBackgroundKnowledge extends AbstractBackgroundKnowledge {
         for (int i = 0; i < parent.getChildCount(); i++) {
             mxCell cell = (mxCell) parent.getChildAt(i);
             UserObject object = (UserObject) cell.getValue();
+            if (object instanceof Redundancy) {
+                Redundancy redundancy = (Redundancy) object;
+                for (int j = 0; j < cell.getChildCount(); j++) {
+                    mxCell child = (mxCell) cell.getChildAt(j);
+                    redundancy.add((Entity) child.getValue());
+                }
+            }
             object.accept(visitor);
         }
     }

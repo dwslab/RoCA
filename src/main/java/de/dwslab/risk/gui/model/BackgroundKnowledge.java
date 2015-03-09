@@ -76,56 +76,79 @@ public interface BackgroundKnowledge {
 
         try (BufferedWriter evidenceWriter = Files.newBufferedWriter(evidence)) {
             HashMultimap<Type, Entity> entities = getEntities();
-            entities.values().stream()
-                    .forEach(consumer(
-                            e -> {
-                                evidenceWriter.write(e.getType().getName());
-                                evidenceWriter.write("(\"");
-                                evidenceWriter.write(e.getName());
-                                evidenceWriter.write("_");
-                                evidenceWriter.write(Integer.toString(e.getId()));
-                                evidenceWriter.write("\")");
-                                evidenceWriter.newLine();
-                            }));
+            entities.values().stream().forEach(consumer(e -> {
+                evidenceWriter.write(e.getType().getName());
+                evidenceWriter.write("(\"");
+                evidenceWriter.write(e.getName());
+                evidenceWriter.write("_");
+                evidenceWriter.write(Integer.toString(e.getId()));
+                evidenceWriter.write("\")");
+                evidenceWriter.newLine();
+
+                if (e instanceof Redundancy) {
+                    Redundancy r = (Redundancy) e;
+                    r.getComponents().forEach(consumer(c -> {
+                        // Write the redundant entity
+                            evidenceWriter.write(c.getType().getName());
+                            evidenceWriter.write("(\"");
+                            evidenceWriter.write(c.getName());
+                            evidenceWriter.write("_");
+                            evidenceWriter.write(Integer.toString(c.getId()));
+                            evidenceWriter.write("\")");
+                            evidenceWriter.newLine();
+                            // Write the relation to its parent component
+                            evidenceWriter.write("componentOf(\"");
+                            evidenceWriter.write(c.getName());
+                            evidenceWriter.write("_");
+                            evidenceWriter.write(Integer.toString(c.getId()));
+                            evidenceWriter.write("\"");
+                            evidenceWriter.write(",\"");
+                            evidenceWriter.write(r.getName());
+                            evidenceWriter.write("_");
+                            evidenceWriter.write(Integer.toString(r.getId()));
+                            evidenceWriter.write("\")");
+                            evidenceWriter.newLine();
+                        }));
+                }
+            }));
 
             Multimap<Predicate, Grounding> groundings = getGroundings();
-            groundings.values().stream()
-                    .forEach(consumer(g -> {
-                        Predicate predicate = g.getPredicate();
-                        if (predicate.isNegated()) {
-                            evidenceWriter.write('!');
-                        }
+            groundings.values().stream().forEach(consumer(g -> {
+                Predicate predicate = g.getPredicate();
+                if (predicate.isNegated()) {
+                    evidenceWriter.write('!');
+                }
 
-                        evidenceWriter.write(predicate.getName());
-                        evidenceWriter.write('(');
-                        List<Entity> values = g.getValues();
-                        for (int i = 0; i < values.size() - 1; i++) {
-                            Entity value = values.get(i);
-                            if (!NumberUtils.isNumber(value.getName())) {
-                                evidenceWriter.write('"');
-                                evidenceWriter.write(value.getName());
-                                evidenceWriter.write('_');
-                                evidenceWriter.write(Integer.toString(value.getId()));
-                                evidenceWriter.write('"');
-                            } else {
-                                evidenceWriter.write(value.getName());
-                            }
-                            evidenceWriter.write(',');
-                        }
-                        Entity value = values.get(values.size() - 1);
-                        if (!NumberUtils.isNumber(value.getName())) {
-                            evidenceWriter.write('"');
-                            evidenceWriter.write(value.getName());
-                            evidenceWriter.write('_');
-                            evidenceWriter.write(Integer.toString(value.getId()));
-                            evidenceWriter.write('"');
-                        } else {
-                            evidenceWriter.write(value.getName());
-                        }
+                evidenceWriter.write(predicate.getName());
+                evidenceWriter.write('(');
+                List<Entity> values = g.getValues();
+                for (int i = 0; i < values.size() - 1; i++) {
+                    Entity value = values.get(i);
+                    if (!NumberUtils.isNumber(value.getName())) {
+                        evidenceWriter.write('"');
+                        evidenceWriter.write(value.getName());
+                        evidenceWriter.write('_');
+                        evidenceWriter.write(Integer.toString(value.getId()));
+                        evidenceWriter.write('"');
+                    } else {
+                        evidenceWriter.write(value.getName());
+                    }
+                    evidenceWriter.write(',');
+                }
+                Entity value = values.get(values.size() - 1);
+                if (!NumberUtils.isNumber(value.getName())) {
+                    evidenceWriter.write('"');
+                    evidenceWriter.write(value.getName());
+                    evidenceWriter.write('_');
+                    evidenceWriter.write(Integer.toString(value.getId()));
+                    evidenceWriter.write('"');
+                } else {
+                    evidenceWriter.write(value.getName());
+                }
 
-                        evidenceWriter.write(')');
-                        evidenceWriter.newLine();
-                    }));
+                evidenceWriter.write(')');
+                evidenceWriter.newLine();
+            }));
             evidenceWriter.flush();
         } catch (IOException e) {
             throw new RoCAException("Cannot write evidence file.", e);

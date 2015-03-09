@@ -25,6 +25,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import de.dwslab.ai.util.Utils;
 import de.dwslab.risk.gui.RoCA;
 import de.dwslab.risk.gui.exception.RoCAException;
+import de.dwslab.risk.gui.model.BackgroundKnowledge;
 
 public class ExportBackgroundKnowledgeAction extends AbstractAction {
 
@@ -98,8 +99,8 @@ public class ExportBackgroundKnowledgeAction extends AbstractAction {
                 new Thread(() -> {
                     try {
                         Path mln = Utils.createTempPath("export-mln-", ".mln");
-                        roca.getBackgroundKnowledge().exportAsMln(mln,
-                                Paths.get(textFieldEvidence.getText()));
+                        BackgroundKnowledge knowledge = roca.getBackgroundKnowledge();
+                        knowledge.exportAsMln(mln, Paths.get(textFieldEvidence.getText()));
                     } catch (Exception e) {
                         throw new RoCAException("Exception exporting evidence.", e);
                     }
