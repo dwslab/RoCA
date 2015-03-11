@@ -7,6 +7,8 @@ import static org.apache.logging.log4j.Level.INFO;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.nio.file.Files;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -46,7 +48,7 @@ public class RootCauseAnalysisAction extends AbstractAction {
         worker.execute();
     }
 
-    private static class RootCauseAnalysisWorker extends SwingWorker<Set<Grounding>, Integer> {
+    private static class RootCauseAnalysisWorker extends SwingWorker<List<Grounding>, Integer> {
 
         private final RoCA roca;
         private final ProgressMonitor monitor;
@@ -54,15 +56,14 @@ public class RootCauseAnalysisAction extends AbstractAction {
 
         public RootCauseAnalysisWorker(RoCA roca) {
             this.roca = roca;
-            monitor = new ProgressMonitor(
-                    SwingUtilities.getWindowAncestor(roca),
+            monitor = new ProgressMonitor(SwingUtilities.getWindowAncestor(roca),
                     "Running Root Cause Analysis...", "Please wait...", 0, 100);
             monitor.setMillisToPopup(0);
             monitor.setMillisToDecideToPopup(0);
         }
 
         @Override
-        protected Set<Grounding> doInBackground() throws Exception {
+        protected List<Grounding> doInBackground() throws Exception {
             try {
                 // Export the background knowledge to temporary files
                 logger.log(INFO, "exporting to temporary file");
@@ -91,24 +92,29 @@ public class RootCauseAnalysisAction extends AbstractAction {
                         evidenceFile.getAbsolutePath());
                 monitor.setProgress(90);
 
+                Set<String> provided = Files.lines(evidenceFile.toPath())
+                        .map(String::trim)
+                        .collect(toSet());
+
                 // Process the result
                 logger.log(INFO, "processing result");
                 monitor.setNote("Processing MAP result...");
-                Set<Grounding> rootCause = mapState
+                List<Grounding> rootCause = mapState
                         .stream()
-                        .filter(m -> "hasRisk".equals(m.getPredicate()))
+                        .filter(m -> !provided.contains(m.getStatement()))
                         .map(m -> {
                             Predicate p = new Predicate(m.getPredicate());
                             List<Entity> e = m
                                     .getObjects()
                                     .stream()
-                                    .map(s -> Entity.get(Integer.valueOf(s.substring(s
-                                            .lastIndexOf('_') + 1)))
-                                    ).collect(toList());
+                                    .map(s -> Entity.get(
+                                            Integer.valueOf(s.substring(s.lastIndexOf('_') + 1))))
+                                    .collect(toList());
                             return new Grounding(p, e);
-                        }).collect(toSet());
+                        }).collect(toList());
                 monitor.setProgress(100);
 
+                Collections.sort(rootCause, (o1, o2) -> o1.toString().compareTo(o2.toString()));
                 return rootCause;
             } catch (Exception e) {
                 this.e = e;
@@ -123,14 +129,20 @@ public class RootCauseAnalysisAction extends AbstractAction {
                 throw new RoCAException("Exception during root cause analysis", e);
             } else {
                 try {
-                    Set<Grounding> rootCause = get();
-                    JOptionPane.showMessageDialog(roca, "Proposed root cause:\n" + rootCause);
+                    List<Grounding> rootCause = get();
+                    StringBuilder message = new StringBuilder();
+                    message.append("Proposed root cause:\n");
+                    rootCause.forEach(r -> {
+                        message.append('\t');
+                        message.append(r);
+                        message.append('\n');
+                    });
+                    JOptionPane.showMessageDialog(roca, message);
                 } catch (Exception e) {
                     throw new RoCAException("Should Not Happen™", e);
                 }
             }
         }
-
     }
 
 }
