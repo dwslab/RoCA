@@ -2,7 +2,7 @@
 *dependsOn(infra, infra)
 *hasRiskDegree(infra, risk, float_)
 
-*redundancyComponent(redundancy)
+*redundancy(redundancy)
 *componentOf(infra, redundancy)
 
 
@@ -26,7 +26,9 @@ conf: !hasRiskDegree(x, y, conf) v hasRisk(x, y)
 
 
 // ========= REDUNDANCY RULES =========
-// ? !redundancyComponent(x) v !offline([componentOf(?,x)]) v offline(x)
+// ? !redundancy(x) v !offline([componentOf(?,x)]) v offline(x)
+
+!componentOf(x,y) v !offline(y) v offline(x).
 
 
 // ========= ABDUCTION RULES ==========
