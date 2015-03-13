@@ -65,16 +65,16 @@ public class Grounding implements UserObject {
         return true;
     }
 
-    public String valuesToString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < values.size(); i++) {
-            sb.append(values.get(i));
-            if (i < (values.size() - 1)) {
-                sb.append(", ");
-            }
-        }
-        return sb.toString();
-    }
+    // public String valuesToString() {
+    // StringBuilder sb = new StringBuilder();
+    // for (int i = 0; i < values.size(); i++) {
+    // sb.append(values.get(i));
+    // if (i < (values.size() - 1)) {
+    // sb.append(", ");
+    // }
+    // }
+    // return sb.toString();
+    // }
 
     @Override
     public String toString() {

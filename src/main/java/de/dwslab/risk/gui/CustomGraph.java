@@ -148,13 +148,13 @@ public class CustomGraph extends mxGraph {
             Grounding grounding = (Grounding) ((mxCell) cell).getValue();
             StringBuilder builder = new StringBuilder();
             builder.append(grounding.getPredicate().getName());
-            builder.append('(');
-            for (Entity value : grounding.getValues()) {
-                builder.append(value.getName());
-                builder.append(", ");
-            }
-            builder.delete(builder.length() - 2, builder.length());
-            builder.append(')');
+            // builder.append('(');
+            // for (Entity value : grounding.getValues()) {
+            // builder.append(value.getName());
+            // builder.append(", ");
+            // }
+            // builder.delete(builder.length() - 2, builder.length());
+            // builder.append(')');
             return builder.toString();
         }
         return super.convertValueToString(cell);
