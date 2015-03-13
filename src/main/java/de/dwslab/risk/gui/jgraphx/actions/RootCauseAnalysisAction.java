@@ -27,9 +27,6 @@ import com.googlecode.rockit.app.result.RockItResult;
 import de.dwslab.ai.riskmanagement.existential.ExistentialApi;
 import de.dwslab.risk.gui.RoCA;
 import de.dwslab.risk.gui.exception.RoCAException;
-import de.dwslab.risk.gui.model.Entity;
-import de.dwslab.risk.gui.model.Grounding;
-import de.dwslab.risk.gui.model.Predicate;
 
 public class RootCauseAnalysisAction extends AbstractAction {
 
@@ -48,7 +45,7 @@ public class RootCauseAnalysisAction extends AbstractAction {
         worker.execute();
     }
 
-    private static class RootCauseAnalysisWorker extends SwingWorker<List<Grounding>, Integer> {
+    private static class RootCauseAnalysisWorker extends SwingWorker<List<String>, Integer> {
 
         private final RoCA roca;
         private final ProgressMonitor monitor;
@@ -63,7 +60,7 @@ public class RootCauseAnalysisAction extends AbstractAction {
         }
 
         @Override
-        protected List<Grounding> doInBackground() throws Exception {
+        protected List<String> doInBackground() throws Exception {
             try {
                 // Export the background knowledge to temporary files
                 logger.log(INFO, "exporting to temporary file");
@@ -99,18 +96,22 @@ public class RootCauseAnalysisAction extends AbstractAction {
                 // Process the result
                 logger.log(INFO, "processing result");
                 monitor.setNote("Processing MAP result...");
-                List<Grounding> rootCause = mapState
+                List<String> rootCause = mapState
                         .stream()
                         .filter(m -> !provided.contains(m.getStatement()))
                         .map(m -> {
-                            Predicate p = new Predicate(m.getPredicate());
-                            List<Entity> e = m
-                                    .getObjects()
+                            StringBuilder str = new StringBuilder();
+                            str.append(m.getPredicate());
+                            str.append('(');
+                            m.getObjects()
                                     .stream()
-                                    .map(s -> Entity.get(
-                                            Integer.valueOf(s.substring(s.lastIndexOf('_') + 1))))
-                                    .collect(toList());
-                            return new Grounding(p, e);
+                                    .forEach(s -> {
+                                        str.append(s.substring(0, s.lastIndexOf('_')));
+                                        str.append(',');
+                                    });
+                            str.deleteCharAt(str.length() - 1);
+                            str.append(')');
+                            return str.toString();
                         }).collect(toList());
                 monitor.setProgress(100);
 
@@ -129,7 +130,7 @@ public class RootCauseAnalysisAction extends AbstractAction {
                 throw new RoCAException("Exception during root cause analysis", e);
             } else {
                 try {
-                    List<Grounding> rootCause = get();
+                    List<String> rootCause = get();
                     StringBuilder message = new StringBuilder();
                     message.append("Proposed root cause:\n");
                     rootCause.forEach(r -> {
