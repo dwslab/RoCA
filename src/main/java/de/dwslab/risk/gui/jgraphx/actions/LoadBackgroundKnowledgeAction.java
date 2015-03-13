@@ -105,8 +105,8 @@ public class LoadBackgroundKnowledgeAction extends AbstractAction {
             c.gridx = 2;
             c.gridwidth = 2;
             JTextField textFieldEvidence = new JTextField(50);
-            textFieldEvidence
-                    .setText("D:\\Documents\\3000 Projekte\\2013 Risikomanagement\\workspace\\RoCA\\src\\test\\resources\\test4_3.db");
+            // textFieldEvidence
+            // .setText("D:\\Documents\\3000 Projekte\\2013 Risikomanagement\\workspace\\RoCA\\src\\test\\resources\\test4_3.db");
             panel.add(textFieldEvidence, c);
 
             JButton buttonEvidence = new JButton("Durchsuchen...");

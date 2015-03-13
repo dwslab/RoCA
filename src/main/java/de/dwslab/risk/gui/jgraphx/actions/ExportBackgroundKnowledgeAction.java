@@ -70,8 +70,8 @@ public class ExportBackgroundKnowledgeAction extends AbstractAction {
             c.gridx = 2;
             c.gridwidth = 2;
             JTextField textFieldEvidence = new JTextField(50);
-            textFieldEvidence
-                    .setText("D:\\Documents\\3000 Projekte\\2013 Risikomanagement\\workspace\\RoCA\\temp\\export.db");
+            // textFieldEvidence
+            // .setText("D:\\Documents\\3000 Projekte\\2013 Risikomanagement\\workspace\\RoCA\\temp\\export.db");
             panel.add(textFieldEvidence, c);
 
             JButton buttonEvidence = new JButton("Durchsuchen...");
@@ -80,7 +80,12 @@ public class ExportBackgroundKnowledgeAction extends AbstractAction {
                 fileChooser.setFileFilter(new FileNameExtensionFilter("Evidence Files", "db"));
                 int returnVal = fileChooser.showOpenDialog(MlnFileChooserDialog.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    textFieldEvidence.setText(fileChooser.getSelectedFile().getPath());
+                    String fileName = fileChooser.getSelectedFile().getPath();
+                    if (fileName.endsWith(".db")) {
+                        textFieldEvidence.setText(fileChooser.getSelectedFile().getPath());
+                    } else {
+                        textFieldEvidence.setText(fileChooser.getSelectedFile().getPath() + ".db");
+                    }
                 }
             });
             c.gridx = 4;
