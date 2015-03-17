@@ -35,6 +35,7 @@ public class GuiBackgroundKnowledge extends AbstractBackgroundKnowledge {
             UserObject object = (UserObject) cell.getValue();
             if (object instanceof Redundancy) {
                 Redundancy redundancy = (Redundancy) object;
+                redundancy.getComponents().clear();
                 for (int j = 0; j < cell.getChildCount(); j++) {
                     mxCell child = (mxCell) cell.getChildAt(j);
                     redundancy.add((Entity) child.getValue());
