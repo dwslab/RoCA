@@ -143,6 +143,11 @@ public class MlnBackgroundKnowledge extends AbstractBackgroundKnowledge {
                             groundings.put(predicate, literal);
                         });
 
+        groundings.get(new Predicate("componentOf")).forEach(g -> {
+            Entity entity = g.getValues().get(0);
+            entities.values().remove(entity);
+        });
+
         return groundings;
     }
 

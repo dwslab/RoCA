@@ -151,6 +151,17 @@ public class RoCA extends BasicGraphEditor {
                 }
             }
 
+            knowledge.getGroundings().get(new Predicate("componentOf")).forEach(g -> {
+                // get the cell of the redundancy component
+                    Entity redundancy = g.getValues().get(1);
+                    mxCell redundancyCell = cellMap.get(redundancy);
+
+                    // create a cell for the entity with the redundancy component as parent
+                    Entity entity = g.getValues().get(0);
+                    mxCell cell = insertEntity(entity, graph, redundancyCell);
+                    cellMap.put(entity, cell);
+                });
+
             // connect the entities with edges
             HashMultimap<Predicate, Grounding> groundings = knowledge.getGroundings();
             Set<Grounding> dependsOns = groundings.get(new Predicate("dependsOn"));
@@ -206,8 +217,7 @@ public class RoCA extends BasicGraphEditor {
         }
     }
 
-    private mxCell insertEntity(Entity entity, mxGraph graph) {
-        Object parent = graph.getDefaultParent();
+    private mxCell insertEntity(Entity entity, mxGraph graph, mxCell parent) {
         int x = 100;
         int y = 100;
         int width = 160;
@@ -217,6 +227,11 @@ public class RoCA extends BasicGraphEditor {
         RoCAShape shape = RoCAShape.valueOf(entity.getType().getName().toUpperCase());
         cell.setStyle(shape.getStyle());
         return cell;
+    }
+
+    private mxCell insertEntity(Entity entity, mxGraph graph) {
+        mxCell parent = (mxCell) graph.getDefaultParent();
+        return insertEntity(entity, graph, parent);
     }
 
     private mxCell insertRisk(Entity risk, mxGraph graph) {
