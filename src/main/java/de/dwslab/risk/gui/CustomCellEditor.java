@@ -1,6 +1,6 @@
 package de.dwslab.risk.gui;
 
-import static de.dwslab.risk.gui.model.Float.FLOAT;
+import static de.dwslab.risk.gui.model.Type.FLOAT;
 import static java.awt.Dialog.ModalityType.APPLICATION_MODAL;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -60,7 +60,7 @@ public class CustomCellEditor extends mxCellEditor {
         private EventObject event;
 
         public UserObjectEditDialog(mxCell cell, EventObject event, mxGraphComponent graphComponent) {
-            super(SwingUtilities.getWindowAncestor(graphComponent), "Eigenschaften");
+            super(SwingUtilities.getWindowAncestor(graphComponent), "Properties");
             this.cell = cell;
             this.event = event;
             this.graphComponent = graphComponent;
@@ -226,7 +226,7 @@ public class CustomCellEditor extends mxCellEditor {
             panel.add(buttonOk, c);
 
             c.gridx = 1;
-            JButton buttonCancel = new JButton("Abbrechen");
+            JButton buttonCancel = new JButton("Cancel");
             buttonCancel.addActionListener(l -> {
                 setVisible(false);
             });
@@ -265,7 +265,7 @@ public class CustomCellEditor extends mxCellEditor {
             c.insets = new Insets(10, 10, 0, 10);
             c.gridx = 0;
             c.gridy = 0;
-            panel.add(new JLabel("Gewicht"), c);
+            panel.add(new JLabel("Weight"), c);
 
             c.gridx = 1;
             JTextField textFieldWeight = new JTextField(15);
@@ -290,7 +290,7 @@ public class CustomCellEditor extends mxCellEditor {
             panel.add(buttonOk, c);
 
             c.gridx = 1;
-            JButton buttonCancel = new JButton("Abbrechen");
+            JButton buttonCancel = new JButton("Cancel");
             buttonCancel.addActionListener(l -> {
                 setVisible(false);
             });

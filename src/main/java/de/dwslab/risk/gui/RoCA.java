@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -102,7 +103,7 @@ public class RoCA extends BasicGraphEditor {
                                     graph.removeCells(new Object[] { cell });
                                     JOptionPane.showMessageDialog(
                                             SwingUtilities.getWindowAncestor(graphComponent),
-                                            "Relation wird nicht unterstützt: " + source + " --> "
+                                            "Relation not supported: " + source + " --> "
                                                     + target);
                                 }
                             }
@@ -264,6 +265,8 @@ public class RoCA extends BasicGraphEditor {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
+        Locale.setDefault(Locale.US);
+        System.out.println(Locale.getDefault());
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e1) {

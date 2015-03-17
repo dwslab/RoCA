@@ -52,7 +52,7 @@ public class ExportBackgroundKnowledgeAction extends AbstractAction {
         private static final long serialVersionUID = -6670451737041631711L;
 
         public MlnFileChooserDialog(Window parent) {
-            super(parent, "Evidence File auswählen");
+            super(parent, "Choose evidence file");
             JPanel panel = new JPanel(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
 
@@ -65,7 +65,7 @@ public class ExportBackgroundKnowledgeAction extends AbstractAction {
             c.gridx = 0;
             c.gridy = 1;
             c.gridwidth = 2;
-            panel.add(new JLabel("Evidence file:"), c);
+            panel.add(new JLabel("Evidence File:"), c);
 
             c.gridx = 2;
             c.gridwidth = 2;
@@ -74,7 +74,7 @@ public class ExportBackgroundKnowledgeAction extends AbstractAction {
             // .setText("D:\\Documents\\3000 Projekte\\2013 Risikomanagement\\workspace\\RoCA\\temp\\export.db");
             panel.add(textFieldEvidence, c);
 
-            JButton buttonEvidence = new JButton("Durchsuchen...");
+            JButton buttonEvidence = new JButton("Browse...");
             buttonEvidence.addActionListener(l -> {
                 JFileChooser fileChooser = new JFileChooser("temp/");
                 fileChooser.setFileFilter(new FileNameExtensionFilter("Evidence Files", "db"));
@@ -116,7 +116,7 @@ public class ExportBackgroundKnowledgeAction extends AbstractAction {
 
             c.gridx = 3;
             c.gridy = 2;
-            JButton buttonCancel = new JButton("Abbrechen");
+            JButton buttonCancel = new JButton("Cancel");
             buttonCancel.addActionListener(l -> {
                 setVisible(false);
             });
