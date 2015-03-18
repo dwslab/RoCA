@@ -122,7 +122,7 @@ public class CustomCellEditor extends mxCellEditor {
             panel.add(new JLabel("Status"), c);
 
             c.gridx = 1;
-            String[] values = { "online", "unbekannt", "offline" };
+            String[] values = { "online", "unknown", "offline" };
             JComboBox<String> comboOffline = new JComboBox<>(values);
             if (TRUE.equals(entity.getOffline())) {
                 comboOffline.setSelectedIndex(2);
