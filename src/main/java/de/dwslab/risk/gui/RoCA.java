@@ -266,7 +266,6 @@ public class RoCA extends BasicGraphEditor {
      */
     public static void main(String[] args) throws Exception {
         Locale.setDefault(Locale.US);
-        System.out.println(Locale.getDefault());
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e1) {
