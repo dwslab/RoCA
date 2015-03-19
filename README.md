@@ -62,12 +62,6 @@ When the root cause analysis is finished, a popup with the proposed most probabl
 
 - - -
 
-## Known Issues
-* 
-
-
-- - -
-
 ## Publications
 * Schoenfisch, J., von Stülpnagel, J., Ortmann, J., Meilicke, C., Stuckenschmidt, H.: 
   *Root Cause Analysis through Abduction in Markov Logic Networks*, 2015, to appear 
